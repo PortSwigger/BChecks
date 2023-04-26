@@ -1,0 +1,14 @@
+metadata:
+    language: v1-beta
+    name: "Response-level (passive)"
+    description: "Looks in responses to see if there are leaked AWS Access Key IDs"
+    tags: "passive"
+
+given response then
+    if {latest.response} matches "AKIA[0-9A-Z]{16}" then
+        report issue:
+            severity: high
+            confidence: firm
+            detail: "Leaked AWS Access Key ID."
+            remediation: "Replace your keys and ensure keys are no longer revealed."
+    end if

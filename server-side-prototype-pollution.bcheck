@@ -1,0 +1,43 @@
+metadata:
+    language: v1-beta
+    name: "Server-side prototype pollution (status)"
+    description: "Server-side prototype pollution using the status technique"
+    author: "Gareth Heyes"
+    tags: "Server-Side Prototype Pollution"
+
+define:
+    payload = `,"__proto__":\{"status\":510\}\}`
+    nullify = `,"__proto__":\{"status\":0\}\}`
+    issueDetail = "Server-Side Prototype Pollution was found on this web site."
+    issueRemediation = "Ensure that property keys, such as __proto__, constructor, and prototype are correctly filtered when merging objects.
+                        When creating objects, we recommend using the Object.create(null) API to ensure that your object does not inherit
+                        from the Object.prototype and, therefore, won't be vulnerable to prototype pollution."
+
+given request then
+    if {base.request.body} matches "^[{]" then
+        send request called inject_sspp:
+            method: "POST"
+            body: {regex_replace({base.request.body}, "[}]$", {payload})}
+
+        send request called check_sspp:
+            method: "POST"
+            body: "{,}"
+
+        if {latest.response.body} matches "\"statusCode\":510" or {latest.response.status_code} is "510" then
+            send request called clean_sspp:
+                method: "POST"
+                body: {regex_replace({base.request.body}, "[}]$", {nullify})}
+
+            send request called followup_check_sspp:
+                method: "POST"
+                body: "{,}"
+
+            if not({followup_check_sspp.response.body} matches "\"statusCode\":510" or {followup_check_sspp.response.status_code} is "510") then
+                report issue:
+                    severity: high
+                    confidence: firm
+                    detail: `{issueDetail}`
+                    remediation: `{issueRemediation}`
+            end if
+        end if
+    end if

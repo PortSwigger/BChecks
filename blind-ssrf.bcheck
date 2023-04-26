@@ -1,0 +1,18 @@
+metadata:
+    language: v1-beta
+    name: "Request-level collaborator based"
+    description: "Blind SSRF with out-of-band detection"
+    author: "Carlos Montoya"
+
+given request then
+    send request:
+        headers:
+            "Referer": {generate_collaborator_address()}
+
+    if http interactions then
+        report issue:
+            severity: high
+            confidence: firm
+            detail: "This site fetches arbitrary URLs specified in the Referer header."
+            remediation: "Ensure that the site does not directly request URLs from the Referer header."
+    end if

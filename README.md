@@ -4,7 +4,7 @@ Burp Suite Prosessional BChecks developed both by PortSwigger and the community 
 
 ## the BChecks
 
-### examples
+### Examples
 Example BChecks to help you get started covering
 * Blind SSRF with out-of-band detection
 * Exposed git directory
@@ -13,14 +13,14 @@ Example BChecks to help you get started covering
 * Server Side Prototype Pollution
 * Suspicious Input Transformation
 
-### vulnerabilities-CVEd
-BChecks for specific CVEs
+### Vulnerabilities-CVEd
+BChecks for specific vulnerabilities which have a CVE
 
-### vulnerability-classes
-BChecks for vulnerability classes
+### Vulnerability-classes
+BChecks for specific vulnerability classes as opposed to discrete vulnerabilities. 
 
-### other
-Other BChecks
+### Other
+Other BChecks doing all the wonderful things which aren't vulnerability related
 
 ## Documentation and Blogs
 _TBC post launch_

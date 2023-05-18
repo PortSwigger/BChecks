@@ -6,10 +6,10 @@ Burp Suite Prosessional BChecks developed both by PortSwigger and the community 
 
 ### Examples
 Example BChecks to help you get started covering
-* Blind SSRF with out-of-band detection
+* Blind SSRF via out-of-band detection
 * Exposed git directory
 * Leaked AWS Tokens
-* Log4Shell
+* Log4Shell via out-of-band detection
 * Server Side Prototype Pollution
 * Suspicious Input Transformation
 

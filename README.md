@@ -26,4 +26,4 @@ Other BChecks
 _TBC post launch_
 
 ## Community submissions
-Please issue a pull query
+Please issue a pull request

@@ -23,7 +23,7 @@ BChecks for vulnerability classes
 Other BChecks
 
 ## Documentation and Blogs
-__TBC post launch__
+_TBC post launch_
 
 ## Community submissions
 Please issue a pull query

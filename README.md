@@ -1,6 +1,6 @@
 # BChecks
 
-Burp Suite Prosessional BChecks developed both by PortSwigger and the community with ❤️
+Burp Suite Prosessional BChecks developed both by PortSwigger and the community with 🧡
 
 ## the BChecks
 

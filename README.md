@@ -23,7 +23,8 @@ BChecks for specific vulnerability classes as opposed to discrete vulnerabilitie
 Other BChecks doing all the wonderful things which aren't vulnerability related
 
 ## Documentation and Blogs
-_TBC post launch_
+If you click the ? Icon in the top right of the BChecks sub tab in the Extensions tab you will be linked to the documentation.
+Blogs and more documentation to follow when it hits our Stable release channel. 
 
 ## Community submissions
 Please issue a pull request

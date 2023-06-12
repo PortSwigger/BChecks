@@ -24,7 +24,10 @@ Other BChecks doing all the wonderful things which aren't vulnerability related
 
 ## Documentation and Blogs
 If you click the ? Icon in the top right of the BChecks sub tab in the Extensions tab you will be linked to the documentation.
-Blogs and more documentation to follow when it hits our Stable release channel. 
+
+Online documentation can be found here https://portswigger.net/burp/documentation/scanner/bchecks
+
+Blogs to follow when it hits our Stable release channel. 
 
 ## Community submissions
 Please issue a pull request

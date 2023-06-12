@@ -16,7 +16,7 @@ given host then
 
     if {check.response.status_code} is "200" and "memory" in {check.response.body} then
         report issue:
-            severity: medium
+            severity: low
             confidence: certain
             detail: `Prometheus Metrics found at {potential_path}.`
             remediation: "Ensure your Prometheus Metrics is not exposed."

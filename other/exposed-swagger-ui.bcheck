@@ -83,7 +83,7 @@ run for each:
 given host then
   send request called checkSwagger:
     method: "GET"
-    appending path: {potential_path}
+    replacing path: {potential_path}
     headers:
       "Accept": "text/html"
 

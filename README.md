@@ -13,14 +13,22 @@ Example BChecks to help you get started covering
 * Server Side Prototype Pollution
 * Suspicious Input Transformation
 
+(/examples/)
+
 ### Vulnerabilities CVEd
 BChecks for specific vulnerabilities which have a CVE
+
+(/vulnerabilities-CVEd/)
 
 ### Vulnerability classes
 BChecks for specific vulnerability classes as opposed to discrete vulnerabilities. 
 
+(/vulnerability-classes/)
+
 ### Other
 Other BChecks doing all the wonderful things which we didn't imagine
+
+(/other/)
 
 ## Documentation and Blogs
 If you click the ? Icon in the top right of the BChecks sub tab in the Extensions tab you will be linked to the documentation.

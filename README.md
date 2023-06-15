@@ -13,7 +13,7 @@ Example BChecks to help you get started covering
 * Server Side Prototype Pollution
 * Suspicious Input Transformation
 
-(/examples/)
+[/examples](/examples/)
 
 ### Vulnerabilities CVEd
 BChecks for specific vulnerabilities which have a CVE

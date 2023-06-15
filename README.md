@@ -20,7 +20,7 @@ BChecks for specific vulnerabilities which have a CVE
 BChecks for specific vulnerability classes as opposed to discrete vulnerabilities. 
 
 ### Other
-Other BChecks doing all the wonderful things which aren't vulnerability related
+Other BChecks doing all the wonderful things which we didn't imagine
 
 ## Documentation and Blogs
 If you click the ? Icon in the top right of the BChecks sub tab in the Extensions tab you will be linked to the documentation.

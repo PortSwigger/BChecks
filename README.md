@@ -18,17 +18,17 @@ Example BChecks to help you get started covering
 ### Vulnerabilities CVEd
 BChecks for specific vulnerabilities which have a CVE
 
-(/vulnerabilities-CVEd/)
+[/vulnerabilities-CVEd](/vulnerabilities-CVEd/)
 
 ### Vulnerability classes
 BChecks for specific vulnerability classes as opposed to discrete vulnerabilities. 
 
-(/vulnerability-classes/)
+[/vulnerability-classes](/vulnerability-classes/)
 
 ### Other
 Other BChecks doing all the wonderful things which we didn't imagine
 
-(/other/)
+[/other](/other/)
 
 ## Documentation and Blogs
 If you click the ? Icon in the top right of the BChecks sub tab in the Extensions tab you will be linked to the documentation.

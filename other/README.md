@@ -1,1 +1,1 @@
-# BCheck's for other use cases
+# BChecks for other use cases

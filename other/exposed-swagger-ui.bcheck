@@ -1,0 +1,107 @@
+metadata:
+  language: v1-beta
+  name: "Swagger endpoint found"
+  description: "Tests for an exposed SwaggerUI endpoint"
+  author: "254 Labs, Org."
+  tags: "open-api", "passive", "swagger", "swagger-ui", "exposure", "informative"
+
+run for each:
+  potential_path = 
+    "swagger",
+    "__swagger__/",
+    "_swagger_/",
+    "swagger/index.html",
+    "swagger/swagger-ui.html",
+    "swagger/swagger-ui.js",
+    "swagger/ui/swagger-ui.js",
+    "swagger/ui/index",
+    "swagger-ui",
+    "swagger-ui.html",
+    "swagger-ui.js",
+    "swagger-ui/index.html",
+    "swagger-ui/swagger-ui.js",
+    "swagger-ui/springfox.js",
+    "swagger-ui-bundle.js",
+    "swagger-ui/swagger-ui-standalone-preset.js",
+    "swagger-ui/swagger-initializer.js",
+    "swagger.json",
+    "swagger.yaml",
+    "swagger/v1/swagger.json",
+    "swagger/v1/swagger.yaml",
+    "swagger-resources/restservices/v2/api-docs",
+    "api",
+    "api/doc",
+    "api/doc.json",
+    "api/docs/",
+    "api/index.html",
+    "api/swagger",
+    "api/__swagger__/",
+    "api/_swagger_/",
+    "api/swagger-ui.html",
+    "api/swagger.json",
+    "api/swagger_doc.json",
+    "api/swagger.yaml",
+    "api/swagger.yml",
+    "api/swagger/index.html",
+    "api/swagger/swagger-ui.html",
+    "api/swagger-ui/swagger.json",
+    "api/swagger-ui/swagger.yaml",
+    "api/swagger-ui/api-docs",
+    "api/swagger/ui/index",
+    "api-doc",
+    "api-docs",
+    "api-docs/swagger.json",
+    "api-docs/swagger.yaml",
+    "api_docs",
+    "api/apidocs",
+    "api/apidocs/swagger.json",
+    "api/apidocs/swagger.yaml",
+    "api/api-docs",
+    "api/api-docs/swagger.json",
+    "api/api-docs/swagger.yaml",
+    "api/swagger/static/index.html",
+    "api/swagger-resources",
+    "api/swagger-resources/restservices/v2/api-docs",
+    "api/spec/swagger.json",
+    "api/spec/swagger.yaml",
+    "api/v1/swagger-ui/swagger.json",
+    "api/v1/swagger-ui/swagger.yaml",
+    "docu",
+    "docs",
+    "open-api",
+    "open-api/swagger-ui.html",
+    "webjars/springfox-swagger-ui/springfox.css",
+    "webjars/springfox-swagger-ui/swagger-ui.css",
+    "webjars/springfox-swagger-ui/springfox.js",
+    "v1/swagger.json",
+    "v1/api-docs",
+    "v2/swagger.json",
+    "v2/api-docs",
+    "v3/swagger.json",
+    "v3/api-docs"
+
+given host then
+  send request called checkSwagger:
+    method: "GET"
+    replacing path: {potential_path}
+    headers:
+      "Accept": "text/html"
+
+  if {checkSwagger.response.status_code} is "200" then
+    if {checkSwagger.response.body} matches "Swagger UI"
+    or {checkSwagger.response.body} matches "swagger-ui" 
+    or {checkSwagger.response.body} matches "swagger-section"
+    or {checkSwagger.response.body} matches "swagger-ui-wrap"
+    or {checkSwagger.response.body} matches "id=\"swagger-ui"
+    or {checkSwagger.response.body} matches "\"swagger\":"
+    or {checkSwagger.response.body} matches "Swagger 2.0" 
+    or {checkSwagger.response.body} matches "loadSwaggerUI"
+    or {checkSwagger.response.body} matches "\"swagger\":" 
+    or {checkSwagger.response.body} matches "\"openapi\":" then
+      report issue:
+        severity: info
+        confidence: certain
+        detail: `Swagger UI and/or its OpenAPI definition found at {potential_path}`
+        remediation: "Disable Swagger UI on production environments, if the API is not made to be publicly available. Ensure to use proper configuration before pushing the changes to production env."
+    end if
+  end if

@@ -1,0 +1,17 @@
+metadata:
+    language: v1-beta
+    name: "Javascript Source map detected"
+    description: "This rule checks for the presence of indicators suggesting the availability of a JavaScript map file."
+    author: "TheButcher"
+    tags: "passive","javascript","informative"
+
+given response then
+    if {latest.response.headers} matches "application/javascript" or {latest.response.headers} matches "text/javascript"  then
+        if {latest.response.body} matches "sourceMappingURL=" then
+            report issue:
+            severity: info
+            confidence: firm
+            detail: "Client-side JavaScript source code can be combined, minified, or compiled. A source map is a file that maps from the transformed source code back to the original source code. However, exposing a source map in a production environment may potentially aid attackers in reading and debugging JavaScript code."
+            remediation: "According to the best practices, source maps should not be accessible in a Production Environment."
+        end if
+    end if

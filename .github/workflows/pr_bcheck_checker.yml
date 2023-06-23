@@ -1,0 +1,19 @@
+name: Pull Request BCheckChecker
+
+on:
+  pull_request_target:
+    types: [opened, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'oracle'
+
+      - name: Validate BChecks
+        run: java -jar BCheckChecker-1.0.jar

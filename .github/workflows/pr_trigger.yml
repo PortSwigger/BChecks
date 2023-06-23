@@ -16,7 +16,6 @@ jobs:
         run: |
           echo $AUTHOR $TITLE $LINK 
           curl "$WEBHOOK" -X POST -H "Authorization: $AUTH_TOKEN" -d "$AUTHOR"$'\n'"$TITLE"$'\n'"$LINK"
-          exit 1 
         env:
           AUTHOR: ${{ github.event.pull_request.user.login }}
           TITLE: ${{ github.event.pull_request.title }}

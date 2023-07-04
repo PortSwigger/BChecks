@@ -17,7 +17,7 @@ given host then
         method: "GET"
         path: {potential_path}
 		
-	if {check.response.status_code} is "200" and "web-app" in {check.response.body} then
+	if {check.response.status_code} is "200" and "web-app" in {check.response.body} or "servlet" in {check.response.body} then
         report issue:
             severity: medium
             confidence: firm

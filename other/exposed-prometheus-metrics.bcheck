@@ -5,8 +5,7 @@ metadata:
     author: "Sourav Kalal"
 
 define:
-    potential_path =
-        "/metrics"
+    potential_path = "/metrics"
 
 given host then
     send request called check:

@@ -1,0 +1,23 @@
+metadata:
+    language: v1-beta
+    name: "Simple SAML php Admin Interface"
+    description: "Tests for exposed admin interface of Simple SAML php"
+    author: "Patrick Schmid"
+
+run for each:
+    potential_path =
+        "/saml/module.php/core/login-admin.php?ReturnTo=",
+        "/sso/module.php/core/login-admin.php?ReturnTo="
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if "loginuserpass.php" in {check.response.body} then
+        report issue:
+            severity: info
+            confidence: certain
+            detail: `Simple SAML php admin interface found at {potential_path}.`
+            remediation: "Ensure your Simple SAML php admin interface is not exposed."
+    end if

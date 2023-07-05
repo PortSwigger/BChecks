@@ -6,3 +6,4 @@
 
 ## CVE-2021-27748 Websphere Portal Server Side Request Forgery 
 
+## CVE-2023-24488 Citrix Gateway CRLF Injection / Reflected Xss

@@ -1,0 +1,24 @@
+metadata:
+    language: v1-beta
+    name: "IBM Websphere Portal Information Disclosure"
+    description: "IBM Websphere Source File Publicly Accessible "
+    author: "Sourav Kalal"
+
+run for each:
+    potential_path =
+	"/iojs/%2e/WEB-INF/web.xml",
+  	"/iojs/%2e/WEB-INF/",
+  	"/iojs/%2e/META-INF/"
+       
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+		
+	if {check.response.status_code} is "200" and "web-app" in {check.response.body} or "servlet" in {check.response.body} then
+        report issue:
+            severity: medium
+            confidence: firm
+            detail: `IBM  Websphere Source File found at {potential_path}.`
+            remediation: "Upgrade the WebSphere Portal."
+    end if

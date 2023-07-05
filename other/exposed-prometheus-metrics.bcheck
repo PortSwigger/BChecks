@@ -1,0 +1,21 @@
+metadata:
+    language: v1-beta
+    name: "Prometheus Metrics Publicly Available"
+    description: "Prometheus Metrics Found"
+    author: "Sourav Kalal"
+
+define:
+    potential_path = "/metrics"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if {check.response.status_code} is "200" and "memory" in {check.response.body} then
+        report issue:
+            severity: low
+            confidence: certain
+            detail: `Prometheus Metrics found at {potential_path}.`
+            remediation: "Ensure your Prometheus Metrics is not exposed."
+    end if

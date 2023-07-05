@@ -1,0 +1,21 @@
+name: Pull Request Webhook
+
+on:
+  pull_request_target:
+    types: [opened, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Push to webhook
+        run: |
+          echo $AUTHOR $TITLE $LINK 
+          curl "$WEBHOOK" -X POST -H "Authorization: $AUTH_TOKEN" -d "$AUTHOR"$'\n'"$TITLE"$'\n'"$LINK"
+        env:
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          TITLE: ${{ github.event.pull_request.title }}
+          LINK: ${{ github.event.pull_request.html_url }}
+          WEBHOOK: ${{ secrets.WEBHOOK_URL }}
+          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}

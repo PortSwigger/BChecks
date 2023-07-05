@@ -1,0 +1,22 @@
+name: Issues Webhook
+
+on:
+  issues:
+    types: [opened, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Push to webhook
+        run: |
+          echo $AUTHOR $TITLE $LINK 
+          curl "$WEBHOOK" -X POST -H "Authorization: $AUTH_TOKEN" -d "$AUTHOR"$'\n'"$TITLE"$'\n'"$LINK"
+        env:
+          AUTHOR: ${{ github.event.issue.user.login }}
+          TITLE: ${{ github.event.issue.title }}
+          LINK: ${{ github.event.issue.html_url }}
+          WEBHOOK: ${{ secrets.WEBHOOK_URL }}
+          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+        

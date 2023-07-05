@@ -7,7 +7,7 @@ metadata:
 run for each:
     potential_path =
         "/saml/module.php/core/login-admin.php?ReturnTo=",
-				"/sso/module.php/core/login-admin.php?ReturnTo="
+        "/sso/module.php/core/login-admin.php?ReturnTo="
 
 given host then
     send request called check:

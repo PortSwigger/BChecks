@@ -1,0 +1,22 @@
+metadata:
+    language: v1-beta
+    name: "Missing security.txt"
+    description: "Checks for a missing security.txt according to RFC 9116"
+    author: "Patrick Schmid"
+
+define:
+    potential_path =
+        "/.well-known/security.txt"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if not("Contact:" in {check.response.body}) then
+        report issue:
+            severity: info
+            confidence: certain
+            detail: `No security.txt could be found at {potential_path}.`
+            remediation: "Consider describing your security vulnerability disclosure process in a security.txt file according to RFC 9116 (https://www.rfc-editor.org/rfc/rfc9116)."
+    end if

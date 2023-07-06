@@ -4,7 +4,7 @@ metadata:
     description: "Checks for a missing security.txt according to RFC 9116"
     author: "Patrick Schmid"
 
-run for each:
+define:
     potential_path =
         "/.well-known/security.txt"
 

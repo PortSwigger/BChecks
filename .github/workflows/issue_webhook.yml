@@ -16,8 +16,7 @@ jobs:
         env:
           AUTHOR: ${{ github.event.issue.user.login }}
           TITLE: ${{ github.event.issue.title }}
-          LINK: ${{ github.event.issue.url }}
-          GITHUB_CONTEXT: ${{ toJson(github) }}
+          LINK: ${{ github.event.issue.html_url }}
           WEBHOOK: ${{ secrets.WEBHOOK_URL }}
           AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
         

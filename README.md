@@ -2,6 +2,18 @@
 
 Burp Suite Professional BChecks developed both by PortSwigger and the community with 🧡
 
+## Documentation and Blogs
+If you click the ? Icon in the top right of the BChecks sub tab in the Extensions tab you will be linked to the documentation.
+
+Online documentation can be found [here](https://portswigger.net/burp/documentation/scanner/bchecks)
+
+[BChecks: Houston, we have a solution! (blog)](https://portswigger.net/blog/bchecks-houston-we-have-a-solution)
+
+[Burp Suite Short (video)](https://youtu.be/NaiQMJk4nus)
+
+## Community submissions
+Please issue a pull request
+
 ## the BChecks
 
 ### Examples
@@ -29,13 +41,3 @@ BChecks for specific vulnerability classes as opposed to discrete vulnerabilitie
 Other BChecks doing all the wonderful things which we didn't imagine
 
 [/other](/other/)
-
-## Documentation and Blogs
-If you click the ? Icon in the top right of the BChecks sub tab in the Extensions tab you will be linked to the documentation.
-
-Online documentation can be found here https://portswigger.net/burp/documentation/scanner/bchecks
-
-Blogs to follow when it hits our Stable release channel. 
-
-## Community submissions
-Please issue a pull request

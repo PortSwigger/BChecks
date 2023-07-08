@@ -1,0 +1,21 @@
+metadata:
+    language: v1-beta
+    name: "Apache Struts OGNL Console Publicly Accessible"
+    description: "Apache Struts OGNL Console is public and could be exploited to gain access"
+    author: "Sourav Kalal"
+
+define:
+    potential_path = "/struts/webconsole.html?debug=console"
+       
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+		
+	if {check.response.status_code} is "200" and "title>OGNL Console" in {check.response.body} then
+        report issue:
+            severity: low
+            confidence: firm
+            detail: `Apache Struts OGNL Console found at {potential_path}.`
+            remediation: "Restrict access to the struts console."
+    end if

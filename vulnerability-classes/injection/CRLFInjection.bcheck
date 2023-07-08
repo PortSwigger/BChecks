@@ -1,0 +1,20 @@
+metadata:
+    language: v1-beta
+    name: "CRLF Injection"
+    description: "Checks for CRLF Injection"
+    author: "0xGodson_"
+
+define:
+  crlf_payload = `%0d%0aX-TEST-Header:%20{random_str(13)}%0d%0a`
+
+given request then
+    send request called crlf:
+        appending path: {crlf_payload}
+
+    if "x-test-header" in {to_lower({crlf.response.headers})} then
+        report issue:
+            severity: low
+            confidence: certain
+            detail: "The application is vulnerable to CRLF Injection."
+            remediation: "Strip any newline characters before passing content into the HTTP header."
+		end if

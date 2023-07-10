@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "OpenAI API Key"
+  description: "Looks for OpenAI API key exposure."
+  author: "@puzzlepeaches"
+  tags: "openai", "token", "exposure"
+
+given response then
+  if {latest.response} matches "sk-[a-zA-Z0-9]{48}" then
+      report issue:
+          severity: info 
+          confidence: tentative
+          detail: "OpenAI API key found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Sendgrid API Key Disclosure"
+  description: "Looks for exposed Sendgrid API keys."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "sendgrid" 
+
+given response then
+  if {latest.response} matches "SG\.[a-zA-Z0-9-_]{22}\.[a-zA-Z0-9_-]{43}" then
+      report issue:
+          severity: info
+          confidence: tentative
+          detail: "Sendgrid API key found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

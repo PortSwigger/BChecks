@@ -1,0 +1,16 @@
+metadata:
+  language: v1-beta
+  name: "Tugboat Configuration File Exposure"
+  description: "A Tugboat configuration file was discovered. Tugboat is a command line tool for interacting with DigitalOcean droplets."
+  author: "@puzzlepeaches"
+  tags: "tugboat","config","exposure"
+
+given response then
+  if {latest.response} matches "access_token: .*" then
+      if {latest.response} matches "authentication" and {latest.response} matches "access_token" and {latest.response} matches "ssh_user" then
+          report issue:
+              severity: low 
+              confidence: tentative
+              detail: "Tugboat configuration file was discovered. Tugboat is a command line tool for interacting with DigitalOcean droplets."
+      end if
+  end if

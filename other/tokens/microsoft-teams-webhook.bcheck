@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Microsoft Teams Webhook Disclosure"
+  description: "Detects a Microsoft Teams Webhook disclosure in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "microsoft" 
+
+given response then
+  if {latest.response} matches "https://outlook\.office\.com/webhook/[A-Za-z0-9\-@]+/IncomingWebhook/[A-Za-z0-9\-]+/[A-Za-z0-9\-]+" then
+      report issue:
+          severity: info 
+          confidence: tentative
+          detail: "Microsoft Teams Webhook disclosed in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

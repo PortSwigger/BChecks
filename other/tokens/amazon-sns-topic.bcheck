@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Amazon SNS Topic Disclosure"
+  description: "Discloses Amazon SNS Topics."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "amazon" 
+
+given response then
+  if {latest.response} matches "arn:aws:sns:[a-z0-9\-]+:[0-9]+:[A-Za-z0-9\-_]+" then
+      report issue:
+          severity: info
+          confidence: tentative
+          detail: "Amazon SNS topic disclosed in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

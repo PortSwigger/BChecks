@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "NuGet API Key"
+  description: "Looks for NuGet API keys in page source."
+  author: "@puzzlepeaches"
+  tags: "nuget", "token", "exposure" 
+
+given response then
+  if {latest.response} matches "oy2[a-z0-9]{43}" then
+      report issue:
+          severity: info
+          confidence: tentative
+          detail: "NuGet API key found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

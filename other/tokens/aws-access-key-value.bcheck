@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "AWS Access Key ID Value"
+  description: "Detects AWS Access Key IDs exposed in the response body."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "aws", "amazon"
+
+given response then
+  if {latest.response} matches "\b(A3T[A-Z0-9]|AKIA|AGPA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}\b" then
+      report issue:
+          severity: info
+          confidence: tentative
+          detail: "AWS Access Key ID detected in the response body."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

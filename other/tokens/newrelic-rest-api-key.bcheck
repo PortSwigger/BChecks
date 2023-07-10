@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "NewRelic REST API Key Disclosure"
+  description: "Searches for NewRelic REST API keys in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "NewRelic"
+
+given response then
+  if {latest.response} matches "(?i)NRRA-[a-f0-9]{42}" then
+      report issue:
+          severity: info
+          confidence: tentative
+          detail: "Found NewRelic REST API key in page source."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

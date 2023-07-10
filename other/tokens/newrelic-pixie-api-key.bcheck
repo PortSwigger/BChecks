@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "New Relic Pixie API Key"
+  description: "Looks for New Relic Pixie API Key in page source."
+  author: "@puzzlepeaches"
+  tags: "newrelic", "pixie", "token", "exposure" 
+
+given response then
+  if {latest.response} matches "px-api-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}" then
+      report issue:
+          severity: info
+          confidence: tentative
+          detail: "New Relic Pixie API Key found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

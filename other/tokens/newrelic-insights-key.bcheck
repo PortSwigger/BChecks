@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "New Relic Insights Keys Disclosure"
+  description: "Looks for New Relic Insights keys in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "newrelic", "keys"
+
+given response then
+  if {latest.response} matches "(?i)NRI(?:I|Q)-[A-Za-z0-9\-_]{32}" then
+      report issue:
+          severity: info
+          confidence: tentative
+          detail: "New Relic Insights key found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

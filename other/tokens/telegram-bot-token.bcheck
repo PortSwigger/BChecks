@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Telegram Bot Token"
+  description: "Looks for Telegram Bot Tokens in page source."
+  author: "@puzzlepeaches"
+  tags: "telegram", "token", "exposure"
+
+given response then
+  if {latest.response} matches "\b(\d+:AA[a-zA-Z0-9_-]{32,33})" then
+      report issue:
+          severity: info
+          confidence: tentative
+          detail: "Telegram Bot Token found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

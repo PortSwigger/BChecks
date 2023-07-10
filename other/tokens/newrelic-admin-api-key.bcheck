@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "NewRelic Admin API Key Disclosure"
+  description: "Looks for NewRelic Admin API keys in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token"
+
+given response then
+  if {latest.response} matches "(?i)NRAA-[a-f0-9]{27}" then
+      report issue:
+          severity: info
+          confidence: tentative
+          detail: "NewRelic Admin API key found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

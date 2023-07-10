@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "StackHawk API Key"
+  description: "Looks for StackHawk API keys in page source."
+  author: "@puzzlepeaches"
+  tags: "stackhawk", "token", "exposure"
+
+given response then
+  if {latest.response} matches "\b(hawk\.[0-9A-Za-z_-]{20}\.[0-9A-Za-z_-]{20})\b" then
+      report issue:
+          severity: info 
+          confidence: tentative
+          detail: "StackHawk API key found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Loqate API Key"
+  description: "Looks for Loqate API keys in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "loqate"
+
+given response then
+  if {latest.response} matches "[A-Z]{2}[0-9]{2}-[A-Z]{2}[0-9]{2}-[A-Z]{2}[0-9]{2}-[A-Z]{2}[0-9]{2}" then
+      report issue:
+          severity: info 
+          confidence: tentative
+          detail: "Loqate API key found in page source."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

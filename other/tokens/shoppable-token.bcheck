@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Shoppable Service Auth Token"
+  description: "Looks for Shoppable Service Auth Tokens in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "shoppable", "token", "auth", "service"
+
+given response then
+  if {latest.response} matches "data-shoppable-auth-token" then
+      report issue:
+          severity: info
+          confidence: tentative
+          detail: "Shoppable Service Auth Token found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

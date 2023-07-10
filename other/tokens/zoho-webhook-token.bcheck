@@ -8,8 +8,8 @@ metadata:
 given response then
     if {latest.response} matches "https://creator\.zoho\.com/api/[A-Za-z0-9/\-_\.]+\?authtoken=[A-Za-z0-9]+" then
         report issue:
-            severity: info 
-            confidence: tentative
-            detail: "Zoho webhook token found in page."
-            remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+          severity: info 
+          confidence: tentative
+          detail: "Zoho webhook token found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
     end if

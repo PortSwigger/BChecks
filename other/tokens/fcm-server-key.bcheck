@@ -7,9 +7,9 @@ metadata:
 
 given response then
   if {latest.response} matches "AAAA[a-zA-Z0-9_-]{7}:[a-zA-Z0-9_-]{140}" then
-    report issue:
-      severity: low
-      confidence: tentative
-      detail: "FCM server key found in page."
-      remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+     report issue:
+       severity: low
+       confidence: tentative
+       detail: "FCM server key found in page."
+       remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
   end if

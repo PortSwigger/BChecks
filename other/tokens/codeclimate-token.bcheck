@@ -8,8 +8,8 @@ metadata:
 given response then
   if {latest.response} matches "(?i)codeclima.{0,50}\b([a-f0-9]{64})\b" then
       report issue:
-          severity: info
-          confidence: tentative
-          detail: "CodeClimate token found in page."
-          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+        severity: info
+        confidence: tentative
+        detail: "CodeClimate token found in page."
+        remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
   end if

@@ -8,8 +8,8 @@ metadata:
 given response then
   if {latest.response} matches "access_token\$production\$[0-9a-z]{16}\$[0-9a-f]{32}" then
       report issue:
-          severity: info
-          confidence: tentative
-          detail: "Paypal Braintree access token found in page."
-          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+        severity: info
+        confidence: tentative
+        detail: "Paypal Braintree access token found in page."
+        remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
   end if

@@ -8,8 +8,8 @@ metadata:
 given response then
   if {latest.response} matches "jdbc:[a-z:]+://[A-Za-z0-9\.\-_:;=/@?,&]+" then
       report issue:
-          severity: info 
-          confidence: tentative
-          detail: "JDBC Connection String found in page."
-          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+        severity: info 
+        confidence: tentative
+        detail: "JDBC Connection String found in page."
+        remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
   end if

@@ -8,8 +8,8 @@ metadata:
 given response then
   if {latest.response} matches "\"do_key\"\: .*" then
       report issue:
-          severity: low 
-          confidence: tentative
-          detail: "DigitalOcean key exposed via Axiom."
-          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+        severity: low 
+        confidence: tentative
+        detail: "DigitalOcean key exposed via Axiom."
+        remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
   end if

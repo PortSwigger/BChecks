@@ -1,0 +1,22 @@
+metadata:
+    language: v1-beta
+    name: "go debug pprof exposed"
+    description: "go /debug/pprof is exposed this endpoint can leak sensitive information"
+    author: "Mateusz Dabrowski (dbrwsky)"
+    tags: "go", "debug", "exposure"
+
+run for each:
+    potential_path = "/debug/pprof"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if {check.response.status_code} is "200" and "Types of profiles available:" in {check.response.body} and "text/html" in {check.response.headers} then
+        report issue:
+            severity: medium
+            confidence: certain
+            detail: `go /debug/pprof is exposed this endpoint can leak sensitive information`
+            remediation: "Restrict access to /debug/pprof/ endpoint"
+    end if

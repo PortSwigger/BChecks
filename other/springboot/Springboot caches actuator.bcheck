@@ -3,7 +3,7 @@ metadata:
     name: "Springboot caches actuator"
     description: "Springboot caches actuator exposed"
     author: "Mateusz Dabrowski (dbrwsky)"
-		tags: "actuator", "springboot", "exposure", "informative"
+	tags: "actuator", "springboot", "exposure", "informative"
 
 run for each:
     potential_path =
@@ -15,16 +15,16 @@ given host then
         method: "GET"
         path: {potential_path}
 
-    if {check.response.status_code} is "200" then 
-			if "\"cacheManagers\"" in {check.response.body} then
-				if "application/json" in {check.response.headers} or "application/vnd.spring-boot.actuator" in {check.response.headers} 
-						or "application/vnd.spring-boot.actuator.v1+json" in {check.response.headers} or "application/vnd.spring-boot.actuator.v2+json" in {check.response.headers}
-						or "application/vnd.spring-boot.actuator.v3+json" in {check.response.headers} then
-			        report issue:
-			            severity: low
-			            confidence: certain
-			            detail: `Springboot info caches found at {potential_path}.`
-			            remediation: "Ensure info caches is not exposed."
-				end if
-			end if
-		end if
+    if {check.response.status_code} is "200" 
+		and "\"cacheManagers\"" in {check.response.body}
+		and ("application/json" in {check.response.headers} 
+			or "application/vnd.spring-boot.actuator" in {check.response.headers} 
+			or "application/vnd.spring-boot.actuator.v1+json" in {check.response.headers} 
+			or "application/vnd.spring-boot.actuator.v2+json" in {check.response.headers}
+			or "application/vnd.spring-boot.actuator.v3+json" in {check.response.headers}) then
+				report issue:
+					severity: low
+					confidence: certain
+					detail: `Springboot info caches found at {potential_path}.`
+					remediation: "Ensure info caches is not exposed."
+	end if

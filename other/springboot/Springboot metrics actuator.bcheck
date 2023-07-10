@@ -3,7 +3,7 @@ metadata:
     name: "Springboot metrics actuator"
     description: "Springboot metrics actuator may expose sensitive information"
     author: "Mateusz Dabrowski (dbrwsky)"
-		tags: "actuator", "springboot", "exposure", "informative"
+	tags: "actuator", "springboot", "exposure", "informative"
 
 run for each:
     potential_path =
@@ -15,15 +15,15 @@ given host then
         method: "GET"
         path: {potential_path}
 
-    if {check.response.status_code} is "200" then 
-			if "mem" in {check.response.body} and "mem.free" in {check.response.body}
-					and  "processors" in {check.response.body} and "instance.uptime" in {check.response.body} then
-				if "text/plain" in {check.response.headers} then
-			        report issue:
-			            severity: low
-			            confidence: certain
-			            detail: `Springboot metrics actuator found at {potential_path}.`
-			            remediation: "Ensure metrics is not exposed or doesn't contain sensitive information."
-				end if
-			end if
-		end if
+    if {check.response.status_code} is "200" 
+		and "mem" in {check.response.body} 
+		and "mem.free" in {check.response.body}
+		and "processors" in {check.response.body} 
+		and "instance.uptime" in {check.response.body} 
+		and "text/plain" in {check.response.headers} then
+	        report issue:
+	            severity: low
+	            confidence: certain
+	            detail: `Springboot metrics actuator found at {potential_path}.`
+	            remediation: "Ensure metrics is not exposed or doesn't contain sensitive information."
+	end if

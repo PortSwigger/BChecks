@@ -1,0 +1,41 @@
+metadata:
+  language: v1-beta
+  name: "Common Python file exposures."
+  description: "Checks for common Python files that may be exposed."
+  author: "@puzzlepeaches"
+  tags: "python", "file", "exposure" 
+
+run for each:
+  potential_path = 
+    "/Pipfile",
+    "/pyproject.toml",
+    "Pipfile.lock"
+
+
+given request then
+  send request called check:
+    method: "GET"
+    replacing path: `{regex_replace({regex_replace({base.request.url},"^.*?\/.*?\/.*?\/","/")},"([^/]+)$", "")}{potential_path}`
+    
+  if {check.response.status_code} is "200" and
+    "[[source]]" in {check.response.body} or "[packages]" in {check.response.body} or "[dev-packages]" in {check.response.body} then
+    report issue:
+      severity: low
+      confidence: firm 
+      detail: `Python Pipfile exposed at {check.response.url}`
+  
+    else if {check.response.status_code} is "200" and
+    "[tool.poetry]" in {check.response.body} or "[tool.poetry.dependencies]" in {check.response.body} or "[tool.poetry.dev-dependencies]" in {check.response.body} then
+    report issue:
+      severity: low
+      confidence: firm 
+      detail: `Python pyproject.toml exposed at {check.response.url}`
+     
+    else if {check.response.status_code} is "200" and
+    "pipfile-spec" in {check.response.body} and "requires" in {check.response.body} then
+    report issue:
+      severity: low
+      confidence: firm 
+      detail: `Python Pipfile.lock exposed at {check.response.url}` 
+  end if
+

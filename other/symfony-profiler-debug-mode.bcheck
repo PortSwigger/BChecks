@@ -1,0 +1,32 @@
+metadata:
+    language: v1-beta
+    name: "Symfony Profiler Mode Enabled"
+    description: "Symfony based applications, like many similar frameworks it includes a debug mode with a special interface, allowing developers to view the internal state of network connections for the purpose of identifying errors and misconfigurations, before going production. If debug mode enabled, some systems show the full details of passwords and databases in debug mode."
+    author: "Yasin Yilmaz"
+    tags: "symfony", "php"
+
+run for each:
+    potential_path =
+      "/app_dev.php/_profiler",
+      "/_profiler",
+      "/_profiler/",
+      "/app_dev.php/_profiler/open?file=app/config/parameters.yml",
+      "/app_dev.php/_profiler/empty/search/results?limit=100",
+      "/_profiler/empty/search/results?limit=10",
+      "/app_dev.php",
+      "/app_dev.php/_profiler/phpinfo",
+      "/app_dev.php/_profiler/6e219a?panel=config"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if {check.response.status_code} is "200"
+    and "Profiler" in {check.response.body} or "Symfony Profiler" in {check.response.body} or "Search on Symfony website" in {check.response.body} or "Project Configuration" in {check.response.body} then
+        report issue:
+            severity: high
+            confidence: tentative
+            detail: `A Symfony Profiler was enabled at {potential_path}. If debug mode enabled, some systems show the full details of passwords and databases in debug mode.`
+            remediation: "Never enable the profiler in production environments as it will lead to major security vulnerabilities in your project. Please disable Symfony profiler debug mode."
+    end if

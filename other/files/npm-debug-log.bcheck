@@ -1,0 +1,27 @@
+metadata:
+  language: v1-beta
+  name: "NPM Debug Log Files"
+  description: "Checks for NPM debug log files in current path as opposed to just root directory of site."
+  author: "@puzzlepeaches"
+  tags: "npm", "log", "exposure", "error"
+
+run for each:
+  potential_path = 
+    "/npm-debug.log",
+    "/assets/npm-debug.log"
+
+
+given request then
+  send request called check:
+    method: "GET"
+    replacing path: `{regex_replace({regex_replace({base.request.url},"^.*?\/.*?\/.*?\/","/")},"([^/]+)$", "")}{potential_path}`
+    
+  if {check.response.body} matches "verbose cli" or
+    {check.response.body} matches "verbose stack" and
+    {check.response.status_code} is "200" then
+    report issue:
+      severity: low
+      confidence: tentative
+      detail: `NPM debug log file found at {potential_path}.`
+  end if
+

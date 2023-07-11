@@ -1,0 +1,25 @@
+metadata:
+    language: v1-beta
+    name: "web.config file exposure"
+    description: "IIS Web configuration file was detected."
+    author: "@puzzlepeaches"
+    tags: "exposure", "web", "config", "iis"
+
+run for each:
+    potential_path =
+        "/web.config",
+        "/app/web.config",
+        "/../../web.config"
+
+given request then
+    send request called check:
+        method: "GET"
+        replacing path: `{regex_replace({regex_replace({base.request.url},"^.*?\/.*?\/.*?\/","/")},"([^/]+)$", "")}{potential_path}`
+
+    if {check.response.status_code} is "200" and
+        {check.response.body} matches "<configuration>" and {check.response.body} matches "<system.webServer>" then
+        report issue:
+            severity: low
+            confidence: certain 
+			detail: `IIS Web configuration file was detected at {check.response.url}`
+	end if

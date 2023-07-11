@@ -1,0 +1,44 @@
+metadata:
+    language: v1-beta
+    name: "PHP Info Exposure"
+    description: "PHPinfo page was detected. The output of the phpinfo() command can reveal sensitive and detailed PHP environment information."
+    author: "@puzzlepeaches"
+    tags: "exposure", "php", "info" 
+
+run for each:
+    potential_path =
+      "/php.php",
+      "/phpinfo.php",
+      "/info.php",
+      "/infophp.php",
+      "/php_info.php",
+      "/test.php",
+      "/i.php",
+      "/asdf.php",
+      "/pinfo.php",
+      "/phpversion.php",
+      "/time.php",
+      "/index.php",
+      "/temp.php",
+      "/old_phpinfo.php",
+      "/infos.php",
+      "/linusadmin-phpinfo.php",
+      "/php-info.php",
+      "/dashboard/phpinfo.php",
+      "/_profiler/phpinfo.php",
+      "/_profiler/phpinfo",
+      "/?phpinfo=1"
+
+given request then
+    send request called check:
+        method: "GET"
+        replacing path: `{regex_replace({regex_replace({base.request.url},"^.*?\/.*?\/.*?\/","/")},"([^/]+)$", "")}{potential_path}`
+
+    if "PHP Extension" in {check.response.body} or "PHP Version" in {check.response.body} and
+        {check.response.status_code} is "200" then
+        report issue:
+            severity: low
+            confidence: firm 
+			detail: `PHP info page was found at {check.response.url}`
+            remediation: "Remove PHP Info pages from publicly accessible locations, or restrict access to authorized users only."
+	end if

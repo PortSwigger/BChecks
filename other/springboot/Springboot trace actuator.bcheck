@@ -1,0 +1,35 @@
+metadata:
+	language: v1-beta
+	name: "Springboot trace actuator"
+	description: "Springboot trace actuator displays trace information (by default the last few HTTP requests)."
+	author: "Mateusz Dabrowski (dbrwsky)"
+	tags: "actuator", "springboot", "exposure", "informative"
+
+run for each:
+    potential_path =
+        "/trace",
+        "/actuator/trace",
+		"/httptrace",
+		"/actuator/httptrace"
+
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if {check.response.status_code} is "200" 
+		and "\"timestamp\"" in {check.response.body} 
+		and "\"info\"" in {check.response.body}
+		and  "\"method\"" in {check.response.body} 
+		and "\"path\"" in {check.response.body} 
+		and ("application/json" in {check.response.headers} 
+			or "application/vnd.spring-boot.actuator" in {check.response.headers} 
+			or "application/vnd.spring-boot.actuator.v1+json" in {check.response.headers} 
+			or "application/vnd.spring-boot.actuator.v2+json" in {check.response.headers}
+			or "application/vnd.spring-boot.actuator.v3+json" in {check.response.headers}) then
+				report issue:
+					severity: low
+					confidence: certain
+					detail: `Springboot trace actuator found at {potential_path}.`
+	end if

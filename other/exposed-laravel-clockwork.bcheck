@@ -3,7 +3,7 @@ metadata:
     name: "Exposed Laravel Clockwork Endpoint"
     description: "A Laravel Clockwork php dev tools was discovered, which exposed cleartext HTTP request, responses, passwords, tokens and some information containing app secrets. "
     author: "Yasin Yilmaz"
-	tags: "laravel", "clockwork", "php"
+    tags: "laravel", "clockwork", "php"
 
 run for each:
     potential_path =

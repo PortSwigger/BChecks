@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Google Calendar URI Disclosure"
+  description: "Looks for Google Calendar URIs in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "google"
+
+given response then
+  if {latest.response} matches "https://www\.google\.com/calendar/embed\?src=[A-Za-z0-9%@&;=\-_\./]+" then
+      report issue:
+        severity: info 
+        confidence: tentative
+        detail: "Google Calendar URI found in page."
+        remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

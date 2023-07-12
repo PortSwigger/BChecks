@@ -1,0 +1,15 @@
+metadata:
+    language: v1-beta
+    name: "Zoho Webhook Disclosure"
+    description: "Looks for exposure of Zoho webhook tokens in page source."
+    author: "@puzzlepeaches"
+    tags: "exposure", "token", "zoho"
+
+given response then
+    if {latest.response} matches "https://creator\.zoho\.com/api/[A-Za-z0-9/\-_\.]+\?authtoken=[A-Za-z0-9]+" then
+        report issue:
+          severity: info 
+          confidence: tentative
+          detail: "Zoho webhook token found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+    end if

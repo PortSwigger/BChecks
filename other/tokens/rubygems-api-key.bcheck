@@ -1,0 +1,15 @@
+metadata:
+    language: v1-beta
+    name: "RubyGems API Key"
+    description: "Looks for RubyGems API keys in page source."
+    author: "@puzzlepeaches"
+    tags: "rubygems", "token", "exposure", "ruby"
+
+given response then
+    if {latest.response} matches "rubygems_[a-f0-9]{48}" then
+        report issue:
+            severity: info
+            confidence: tentative
+            detail: "RubyGems API key found in page."
+            remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+    end if

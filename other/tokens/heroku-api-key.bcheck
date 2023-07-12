@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Heroku API Key"
+  description: "Looks for Heroku API keys in page source."
+  author: "@puzzlepeaches"
+  tags: "heroku", "token", "exposure", "api"
+
+given response then
+  if {latest.response} matches "(?i)heroku.{0,20}key.{0,20}\b([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\b" then
+      report issue:
+        severity: info 
+        confidence: tentative
+        detail: "Heroku API key found in page."
+        remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

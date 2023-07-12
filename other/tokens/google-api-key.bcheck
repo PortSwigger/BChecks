@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Google API Key"
+  description: "Looks for Google API keys in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "google" 
+
+given response then
+  if {latest.response} matches "AIza[0-9A-Za-z\-_]{35}" then
+      report issue:
+        severity: info
+        confidence: tentative
+        detail: "Google API key found in page."
+        remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

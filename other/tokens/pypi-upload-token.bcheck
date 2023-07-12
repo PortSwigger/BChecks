@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "PyPI Upload Token"
+  description: "Searches for PyPI upload tokens in website content."
+  author: "@puzzlepeaches"
+  tags: "pypi", "token", "exposure" 
+
+given response then
+  if {latest.response} matches "pypi-AgEIcHlwaS5vcmc[a-zA-Z0-9_-]{50,}" then
+      report issue:
+          severity: info 
+          confidence: tentative
+          detail: "PyPI Upload Token found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

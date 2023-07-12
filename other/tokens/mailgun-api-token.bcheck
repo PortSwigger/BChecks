@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Mailgun API Key"
+  description: "Looks for Mailgun API keys in page source."
+  author: "@puzzlepeaches"
+  tags: "mailgun", "token", "exposure" 
+
+given response then
+  if {latest.response} matches "(?i)(?:mailgun|mg).{0,20}key-([a-z0-9]{32})\\b" then
+      report issue:
+        severity: info 
+        confidence: tentative
+        detail: "Mailgun API key found in page."
+        remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

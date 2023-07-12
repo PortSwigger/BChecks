@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "GitHub Personal Access Token"
+  description: "Looks for GitHub personal access token in page source."
+  author: "@puzzlepeaches"
+  tags: "github", "token", "exposure" 
+
+given response then
+  if {latest.response} matches "\b(ghp_[a-zA-Z0-9]{36})\b" then
+      report issue:
+        severity: info 
+        confidence: tentative
+        detail: "GitHub Personal Access Token found in page."
+        remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

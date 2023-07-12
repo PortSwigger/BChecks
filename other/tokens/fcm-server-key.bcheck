@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "FCM Server Key"
+  description: "Looks for Firebase Cloud Messaging (FCM) server keys in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "google" 
+
+given response then
+  if {latest.response} matches "AAAA[a-zA-Z0-9_-]{7}:[a-zA-Z0-9_-]{140}" then
+     report issue:
+       severity: low
+       confidence: tentative
+       detail: "FCM server key found in page."
+       remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

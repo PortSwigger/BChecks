@@ -1,0 +1,15 @@
+metadata:
+    language: v1-beta
+    name: "JWT Token Disclosure"
+    description: "Looks for exposure of various JWT tokens in page source."
+    author: "@puzzlepeaches"
+    tags: "exposure", "token"
+
+given response then
+    if {latest.response} matches "eyJ[a-zA-Z0-9]{10,}\.eyJ[a-zA-Z0-9]{10,}\.[a-zA-Z0-9_\-]{10,}" then
+        report issue:
+          severity: info
+          confidence: tentative
+          detail: "JWT token found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+    end if

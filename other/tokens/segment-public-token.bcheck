@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Segment Public API Token"
+  description: "Looks for Segment's API tokens in page source."
+  author: "@puzzlepeaches"
+  tags: "segment", "token", "exposure"
+
+given response then
+  if {latest.response} matches "sgp_[a-zA-Z0-9]{64}" then
+      report issue:
+          severity: info
+          confidence: tentative
+          detail: "Segment Public API Token found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

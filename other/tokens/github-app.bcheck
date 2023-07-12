@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Github App Token"
+  description: "Looks for Github App Tokens in page source."
+  author: "@puzzlepeaches"
+  tags: "github", "app", "token", "exposure"
+
+given response then
+  if {latest.response} matches "\b((?:ghu|ghs)_[a-zA-Z0-9]{36})\b" then
+     report issue:
+       severity: info
+       confidence: tentative
+       detail: "Github App Token found in page."
+       remediation: "Review and remove unnecessary exposure of keys and\/or sensitive data from page source."
+  end if

@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Zapier Webhook Disclosure"
+  description: "Looks for disclosed Zapier Webhook tokens."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "zapier", "webhook"
+
+given response then
+  if {latest.response} matches "https://(?:www.)?hooks\.zapier\.com/hooks/catch/[A-Za-z0-9]+/[A-Za-z0-9]+/" then
+      report issue:
+          severity: info 
+          confidence: tentative
+          detail: "Zapier Webhook token found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

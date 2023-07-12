@@ -1,0 +1,16 @@
+metadata:
+  language: v1-beta
+  name: "Zenserp API Key"
+  description: "Looks for Zenserp API keys in page source."
+  author: "puzzlepeaches"
+  tags: "exposure", "token", "zenserp", "apikey" 
+
+given response then
+  if {latest.response} matches "([0-9a-z-]{36})" and 
+     {latest.response} matches "zenserp" then
+      report issue:
+          severity: info
+          confidence: tentative
+          detail: "Zenserp API key found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Facebook Access Token"
+  description: "Looks for Facebook access tokens in page source."
+  author: "@puzzlepeaches"
+  tags: "facebook", "token", "exposure"
+
+given response then
+  if {latest.response} matches "\b(EAACEdEose0cBA[a-zA-Z0-9]+)\b" then
+      report issue:
+        severity: info
+        confidence: tentative
+        detail: "Facebook access token found in page."
+        remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

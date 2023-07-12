@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Mailchimp API Value"
+  description: "Looks for Mailchimp API values in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "mailchimp" 
+
+given response then
+  if {latest.response} matches "[0-9a-f]{32}-us[0-9]{1,2}" then
+     report issue:
+       severity: info
+       confidence: tentative
+       detail: "Mailchimp API value found in page."
+       remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

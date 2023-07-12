@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "GitHub Refresh Token"
+  description: "Checks for GitHub refresh tokens in page source."
+  author: "@puzzlepeaches"
+  tags: "github", "refresh", "token", "exposure"
+
+given response then
+  if {latest.response} matches "\b(ghr_[a-zA-Z0-9]{76})\b" then
+      report issue:
+        severity: info
+        confidence: tentative
+        detail: "GitHub refresh token found in page."
+        remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

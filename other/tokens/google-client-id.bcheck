@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Google Client ID"
+  description: "Looks for Google client IDs in page source."
+  author: "@puzzlepeaches"
+  tags: "google", "token", "exposure"
+
+given response then
+  if {latest.response} matches "(?i)\b([0-9]+-[a-z0-9_]{32})\.apps\.googleusercontent\.com" then
+      report issue:
+        severity: info 
+        confidence: tentative
+        detail: "Google client ID found in page."
+        remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

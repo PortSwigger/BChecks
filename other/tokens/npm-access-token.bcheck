@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "NPM Access Token (fine-grained)"
+  description: "A detector for NPM access token exposure in page source."
+  author: "@puzzlepeaches"
+  tags: "npm", "token", "exposure" 
+
+given response then
+  if {latest.response} matches "npm_[A-Za-z0-9]{36}" then
+      report issue:
+          severity: info 
+          confidence: tentative
+          detail: "NPM access token found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Google OAuth Access Key Disclosure"
+  description: "Looks for Google OAuth access keys in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "google"
+
+given response then
+  if {latest.response} matches "ya29\.[0-9A-Za-z\-_]+" then
+      report issue:
+          severity: info
+          confidence: tentative
+          detail: "Google OAuth access key found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

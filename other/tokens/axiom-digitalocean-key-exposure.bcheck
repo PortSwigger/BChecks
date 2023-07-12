@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "DigitalOcean Key Exposure via Axiom"
+  description: "Axiom is a dynamic infrastructure framework to efficiently work with multi-cloud environments."
+  author: "@puzzlepeaches"
+  tags: "axiom", "digitalocean","key","exposure" 
+
+given response then
+  if {latest.response} matches "\"do_key\"\: .*" then
+      report issue:
+        severity: low 
+        confidence: tentative
+        detail: "DigitalOcean key exposed via Axiom."
+        remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

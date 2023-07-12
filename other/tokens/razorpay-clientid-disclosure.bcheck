@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Razorpay Client ID Disclosure"
+  description: "Identifies exposure of Razorpay client ID."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "razorpay" 
+
+given response then
+  if {latest.response} matches "rzp_(live|test)_.{14}" then
+      report issue:
+          severity: low 
+          confidence: tentative
+          detail: "Razorpay Client ID disclosed."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

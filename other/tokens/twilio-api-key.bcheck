@@ -1,0 +1,15 @@
+metadata:
+      language: v1-beta
+      name: "Twilio API Key"
+      description: "Looks for Twilio API keys in page source."
+      author: "@puzzlepeaches"
+      tags: "twilio", "token", "exposure"
+
+given response then
+      if {latest.response} matches "(?i)twilio.{0,20}\b(sk[a-f0-9]{32})\b" then
+          report issue:
+            severity: info 
+            confidence: tentative
+            detail: "Twilio API key found in page."
+            remediation: "Review and remove unnecessary exposure of keys and\/or sensitive data from page source."
+      end if

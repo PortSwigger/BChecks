@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Slack Access Token"
+  description: "Looks for slack access token in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "slack"
+
+given response then
+  if {latest.response} matches "xoxb-[0-9A-Za-z\-]{51}" then
+      report issue:
+          severity: info 
+          confidence: tentative
+          detail: "Slack access token found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

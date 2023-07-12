@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Google OAuth Client Secret (prefixed)"
+  description: "Looks for Google OAuth Client Secret in page source."
+  author: "@puzzlepeaches"
+  tags: "google", "token", "exposure"
+
+given response then
+  if {latest.response} matches "(GOCSPX-[a-zA-Z0-9_-]{28})" then
+     report issue:
+       severity: info
+       confidence: tentative
+       detail: "Google OAuth Client Secret found in page."
+       remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

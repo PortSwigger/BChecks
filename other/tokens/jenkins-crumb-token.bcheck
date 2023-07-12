@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Jenkins Token or Crumb in Source Code"
+  description: "Looks for Jenkins token or crumb in page source."
+  author: "@puzzlepeaches"
+  tags: "jenkins", "crumb", "token", "exposure" 
+
+given response then
+  if {latest.response} matches "(?i)jenkins.{0,10}(?:crumb)?.{0,10}\b([0-9a-f]{32,36})\b" then
+      report issue:
+        severity: info 
+        confidence: tentative
+        detail: "Jenkins token or crumb found in page."
+        remediation: "Review and remove unnecessary exposure of keys and\/or sensitive data from page source."
+  end if

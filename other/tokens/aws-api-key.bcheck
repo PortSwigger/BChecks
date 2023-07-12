@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "AWS API Key"
+  description: "Looks for AWS API keys in page source."
+  author: "@puzzlepeaches"
+  tags: "aws", "amazon", "token", "exposure" 
+
+given response then
+  if {latest.response} matches "\b((?:A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16})\b" then
+     report issue:
+       severity: info
+       confidence: tentative
+       detail: "AWS API key found in page."
+       remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

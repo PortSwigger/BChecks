@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Picatic API Key Disclosure"
+  description: "Looks for Picatic API key disclosures in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token" 
+
+given response then
+  if {latest.response} matches "sk_live_[0-9a-z]{32}" then
+      report issue:
+          severity: info 
+          confidence: tentative
+          detail: "Picatic API Key has been disclosed."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Square Access Token"
+  description: "Looks for Square access tokens in page source."
+  author: "@puzzlepeaches"
+  tags: "square", "token", "exposure" 
+
+given response then
+  if {latest.response} matches "(?i)\b(sq0atp-[a-z0-9_-]{22})\b" then
+      report issue:
+        severity: info
+        confidence: tentative
+        detail: "Square Access Token found in page."
+        remediation: "Review and remove unnecessary exposure of keys and\/or sensitive data from page source."
+  end if

@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Sauce Token"
+  description: "Searches for Sauce Tokens in page source."
+  author: "@puzzlepeaches"
+  tags: "sauce", "token", "exposure" 
+
+given response then
+  if {latest.response} matches "(?i)sauce.{0,50}\b([a-f0-9-]{36})\b" then
+      report issue:
+        severity: info
+        confidence: tentative
+        detail: "Sauce Token found in page."
+        remediation: "Review and remove unnecessary exposure of keys and\/or sensitive data from page source."
+      end if

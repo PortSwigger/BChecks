@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Stripe Restricted Key Disclosure"
+  description: "Looks for Stripe restricted keys in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "stripe"
+
+given response then
+  if {latest.response} matches "rk_(?:live|test)_[0-9a-zA-Z]{24}" then
+      report issue:
+          severity: info 
+          confidence: tentative
+          detail: "Stripe restricted key found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Age Recipient (X25519 public key)"
+  description: "Looks for Age Encryption public keys in page source."
+  author: "@puzzlepeaches"
+  tags: "age-encryption", "exposure", "tokens" 
+
+given response then
+  if {latest.response} matches "\bage1[0-9a-z]{58}\b" then
+      report issue:
+          severity: info 
+          confidence: tentative
+          detail: "Age Encryption Key found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

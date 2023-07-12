@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Slack User token disclosure"
+  description: "Looks for Slack User token in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "slack" 
+
+given response then
+  if {latest.response} matches "xoxp-[0-9A-Za-z\-]{72}" then
+    report issue:
+      severity: info
+      confidence: tentative
+      detail: "Slack User token found in page."
+      remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

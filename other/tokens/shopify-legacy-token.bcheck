@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Shopify Access Token (Legacy Private App)"
+  description: "Looks for Shopify access tokens in page source."
+  author: "@puzzlepeaches"
+  tags: "shopify", "token", "exposure"
+
+given response then
+  if {latest.response} matches "\b(shppa_[a-fA-F0-9]{32})\b" then
+      report issue:
+          severity: info 
+          confidence: tentative
+          detail: "Shopify access token found in page."
+          remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

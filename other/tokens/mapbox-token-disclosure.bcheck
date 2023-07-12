@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Mapbox Token Disclosure"
+  description: "Looks for Mapbox tokens in page source."
+  author: "@puzzlepeaches"
+  tags: "token", "exposure", "mapbox", "disclosure"
+
+given response then
+  if {latest.response} matches "sk\.eyJ1Ijoi\w+\.[\w-]*" then
+      report issue:
+        severity: low
+        confidence: tentative
+        detail: "Mapbox token found in page source."
+        remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

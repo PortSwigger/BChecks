@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "GitLab Runner Registration Token"
+  description: "Searches for exposed GitLab Runner Registration Token in page source."
+  author: "@puzzlepeaches"
+  tags: "gitlab", "runner", "token", "exposure" 
+
+given response then
+  if {latest.response} matches "\b(GR1348941[0-9a-zA-Z_-]{20})(?:\b|$)" then
+      report issue:
+        severity: info
+        confidence: tentative
+        detail: "Exposed GitLab Runner Registration Token found in page."
+        remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

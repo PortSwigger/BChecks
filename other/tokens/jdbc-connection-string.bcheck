@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "JDBC Connection String Disclosure"
+  description: "Looks for JDBC connection strings in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "jdbc"
+
+given response then
+  if {latest.response} matches "jdbc:[a-z:]+://[A-Za-z0-9\.\-_:;=/@?,&]+" then
+      report issue:
+        severity: info 
+        confidence: tentative
+        detail: "JDBC Connection String found in page."
+        remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

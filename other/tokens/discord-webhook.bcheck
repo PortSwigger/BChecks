@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Discord Webhook Disclosure"
+  description: "Looks for Discord Webhook in page source."
+  author: "@puzzlepeaches"
+  tags: "exposure", "token", "discord"
+
+given response then
+  if {latest.response} matches "https://discordapp\.com/api/webhooks/[0-9]+/[A-Za-z0-9\-]+" then
+     report issue:
+       severity: info 
+       confidence: tentative
+       detail: "Discord Webhook found in page."
+       remediation: "Review and remove unnecessary exposure of keys and/or sensitive data from page source."
+  end if

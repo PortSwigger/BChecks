@@ -3,7 +3,7 @@ metadata:
     name: "Misconfigured Symfony Verbose Plugin"
     description: "Misconfigured Symfony Verbose plugin vulnerable to sensitive data exposure."
     author: "Yasin Yilmaz"
-	tags: "symfony", "php"
+    tags: "symfony", "php"
 
 run for each:
     potential_path =

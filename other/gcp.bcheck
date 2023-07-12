@@ -6,18 +6,24 @@ metadata:
 	author: "Joe Thiha"
 
 define:
-	path = "http://metadata.google.internal/computeMetada/v1/instance/service-accounts/default/token"
+	potential_path = "http://metadata.google.internal/computeMetada/v1/instance/service-accounts/default/token"
 
 given insertion point then
 	send payload:
-		appending: {path}
-	if {latest.response.status_code} is "200" then
-		if("access_token:" in {latest.response.body} then
-			report issue:
-			severity: high
-			confidence: firm
-			detail: "Leaked GCP Service Account Access Token via SSRF."
-			remediation: "Restrict access to the metadat url."
+		appending: {potential_path}
+
+		if {latest.response.status_code} is "200" then
+			if("access_token:" in {latest.response.body})then
+					report issue:
+					severity: high
+					confidence: firm
+					detail: "Leaked GCP Service Account Access Token via SSRF."
+					remediation: "Restrict access to the metadat url."
+			end if
 		end if
-	end if
+
+
+
+
+
 

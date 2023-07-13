@@ -1,0 +1,26 @@
+metadata:
+    language: v1-beta
+    name: "Exposed Laravel Clockwork Endpoint"
+    description: "A Laravel Clockwork php dev tools was discovered, which exposed cleartext HTTP request, responses, passwords, tokens and some information containing app secrets. "
+    author: "Yasin Yilmaz"
+    tags: "laravel", "clockwork", "php"
+
+run for each:
+    potential_path =
+        "/__clockwork/latest",
+        "/_debugbar/clockwork/latest",
+        "/public/clockwork/latest",
+        "/public/__clockwork/latest"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if {check.response.status_code} is "200" and "jobQueue" in {check.response.body} or "xdebug" in {check.response.body} or "webVitals" in {check.response.body} then
+        report issue:
+            severity: high
+            confidence: firm
+            detail: `A Laravel Clockwork php dev tools was discovered at {potential_path}, which exposed cleartext HTTP request, responses, passwords, tokens and some information containing app secrets.`
+            remediation: "The instance of Laravel Clockwork should be restricted."
+    end if

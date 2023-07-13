@@ -1,0 +1,33 @@
+metadata:
+    language: v1-beta
+    name: "Springboot beans actuator"
+    description: "Springboot beans actuator may expose sensitive information"
+    author: "Mateusz Dabrowski (dbrwsky)"
+	tags: "actuator", "springboot", "exposure", "informative"
+
+run for each:
+    potential_path =
+        "/beans",
+        "/actuator/beans"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if {check.response.status_code} is "200" 
+		and "\"type\"" in {check.response.body} 
+		and "\"beans\"" in {check.response.body}
+		and  "\"dependencies\"" in {check.response.body} 
+		and "\"scope\"" in {check.response.body}
+		and ("application/json" in {check.response.headers} 
+			or "application/vnd.spring-boot.actuator" in {check.response.headers} 
+			or "application/vnd.spring-boot.actuator.v1+json" in {check.response.headers} 
+			or "application/vnd.spring-boot.actuator.v2+json" in {check.response.headers}
+			or "application/vnd.spring-boot.actuator.v3+json" in {check.response.headers}) then
+				report issue:
+					severity: low
+					confidence: certain
+					detail: `Springboot beans actuator found at {potential_path}.`
+					remediation: "Ensure beans is not exposed."
+		end if

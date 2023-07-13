@@ -1,0 +1,25 @@
+metadata:
+    language: v1-beta
+    name: "Misconfigured Symfony Verbose Plugin"
+    description: "Misconfigured Symfony Verbose plugin vulnerable to sensitive data exposure."
+    author: "Yasin Yilmaz"
+    tags: "symfony", "php"
+
+run for each:
+    potential_path =
+      "/raxacoricofallapatorians",
+      "/frontend_dev.php/$"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if {check.response.status_code} is "404"
+    and "Profiler" in {check.response.body} or "sfError404Exception" in {check.response.body} or "SF_ROOT_DIR" in {check.response.body} or "sf_globals" in {check.response.body} or "sfWebDebug" in {check.response.body} or "Debug toolbar" in {check.response.body} then
+        report issue:
+            severity: high
+            confidence: tentative
+            detail: `Misconfigured Symfony Verbose plugin vulnerable to sensitive data exposure.`
+            remediation: "Disable Symfony Verbosity."
+    end if

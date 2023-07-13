@@ -1,0 +1,29 @@
+metadata: 
+	language: v1-beta
+	name: "Response-level"
+	description: "Checking GCP Service Account Access Token via SSRF"
+	tags: "passive"
+	author: "Joe Thiha"
+
+define:
+	potential_path = "http://metadata.google.internal/computeMetada/v1/instance/service-accounts/default/token"
+
+given insertion point then
+	send payload:
+		appending: {potential_path}
+
+		if {latest.response.status_code} is "200" then
+			if("access_token:" in {latest.response.body})then
+					report issue:
+					severity: high
+					confidence: firm
+					detail: "Leaked GCP Service Account Access Token via SSRF."
+					remediation: "Restrict access to the metadat url."
+			end if
+		end if
+
+
+
+
+
+

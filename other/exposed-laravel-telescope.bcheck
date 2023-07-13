@@ -1,0 +1,29 @@
+metadata:
+    language: v1-beta
+    name: "Exposed Laravel Telescope Endpoint"
+    description: "A Laravel Telescope was discovered, which exposed log files, requests and some information containing app secrets."
+    author: "Yasin Yilmaz"
+    tags: "laravel", "telescope", "php"
+
+run for each:
+    potential_path =
+        "/telescope/requests",
+        "/telescope/commands",
+        "/telescope/logs",
+        "/telescope",
+        "/_debugbar/telescope/",
+        "/public/telescope",
+        "/en/public/telescope"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if {check.response.status_code} is "200" and "<strong>Laravel</strong> Telescope" in {check.response.body} or "/telescope/favicon.ico" in {check.response.body} or "<title>Telescope</title>" in {check.response.body} then
+        report issue:
+            severity: high
+            confidence: firm
+            detail: `A Laravel Telescope was discovered at {potential_path}, which exposed log files, requests and some information containing app secrets. `
+            remediation: "The instance of Laravel Telescope should be restricted."
+    end if

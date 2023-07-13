@@ -1,0 +1,27 @@
+metadata:
+    language: v1-beta
+    name: "Springboot logfile actuator"
+    description: "Springboot logfile actuator exposed and may expose sensitive information"
+    author: "Mateusz Dabrowski (dbrwsky)"
+	tags: "actuator", "springboot", "exposure", "informative"
+
+run for each:
+    potential_path =
+        "/logfile",
+        "/actuator/logfile"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if {check.response.status_code} is "200" 
+        and "[main]" in {check.response.body} 
+        and "INFO" in {check.response.body} 
+        and "text/plain" in {check.response.headers} then
+	        report issue:
+	            severity: low
+	            confidence: certain
+	            detail: `Springboot logfile actuator found at {potential_path}.`
+	            remediation: "Ensure logfile actuator is not exposed and doesn't contain sensitive information."
+	end if

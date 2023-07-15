@@ -1,0 +1,24 @@
+metadata:
+	language: v1-beta
+	name: "CVE-2021-20114 TCExam <= 14.8.1 - Sensitive Information Exposure"
+	author: "Parimal Shaw"
+	description: "Check for CVE-2021-20114"
+	tags: "CVE-2021-20114"
+
+define:
+    potential_path = "/cache/backup/"
+
+
+given host then
+    send request called check:
+	method: "GET"
+	path: {potential_path}
+	  
+	  
+	  if {check.response.status_code} is "200" and "Index of /cache/backup" in {check.response.body} and "Parent Directory" in {check.response.body} and ".sql.gz" in {check.response.body} then
+	  report issue:
+            severity: high
+            confidence: certain
+            detail: "When installed following the default/recommended settings, TCExam <= 14.8.1 allowed unauthenticated users to access the /cache/backup/ directory, which includes sensitive database backup files. Among other things, these backup files contain usernames, password hashes and other user information that was supplied on signup."
+			remediation: "It is Recommended to Upgrade to latest version or disable directory listing."
+end if

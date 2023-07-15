@@ -1,0 +1,31 @@
+metadata:
+	language: v1-beta
+	name: "Apache Tomcat Manager Path Normalization Panel - Detect"
+	author: "Parimal Shaw"
+	description: "Apache Tomcat Manager Path Normalization login panel was discovered via path normalization. Normalizing a path involves modifying the string that identifies a path or file so that it confirms to a valid path on the target operating system."
+	tags: "Apache Tomcat Misconfiguration"
+
+run for each:
+    potential_path = 
+		"/..;/manager/html",
+		"/..;/..;/manager/html;/",
+		"/..;/hostmanager/html",
+		"/..;/..;/hostmanager/html;/",
+		"/bchecktest/..;/manager/html",
+		"/bchecktest/..;/hostmanager/html"
+	
+
+given host then
+    send request called check:
+		method: "GET"
+		path: {potential_path}
+
+			if {check.response.status_code} is "403" 
+			and "username=\"tomcat\" password=\"s3cret\"" in {check.response.body} 
+			and "manager-gui" in {check.response.body} then
+					report issue:
+						severity: info
+						confidence: certain
+						detail: "Apache Tomcat Manager Path Normalization login panel was discovered via path normalization. Normalizing a path involves modifying the string that identifies a path or file so that it conforms to a valid path on the target operating system."
+						remediation: "Ensure to accept only the whitelisted path and directory or implement proper access control to the following directory"
+			end if

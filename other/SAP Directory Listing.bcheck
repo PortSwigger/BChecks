@@ -1,0 +1,27 @@
+metadata:
+	language: v1-beta
+	name: "SAP Directory Listing"
+	author: "Parimal Shaw"
+	description: "Within SAP NetWeaver, directory listing is enabled."
+	tags: "SAP NetWeaver Misconfiguration"
+
+define:
+    potential_path = "/irj/go/km/navigation/"
+
+
+given host then
+    send request called check:
+	method: "GET"
+	path: {potential_path}
+	  
+	  
+	  if {check.response.status_code} is "200" 
+	  and "title=\"~system\"" in {check.response.body} 
+	  and "NetWeaver" in {check.response.body} 
+	  and "text/html" in {check.response.headers} then
+	  report issue:
+            severity: medium
+            confidence: certain
+            detail: "In SAP NetWeaver the directory listing is enabled or not configured properly."
+            remediation: "Ensure to Disable directory listing."
+end if

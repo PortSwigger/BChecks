@@ -16,6 +16,6 @@ given host then
         report issue:
             severity: medium
             confidence: certain
-            detail: `PHP Laravel Debug Model enabled.`
+            detail: `PHP Laravel Debug Mode enabled.`
             remediation: "Ensure your APP_DEBUG is set to False."
     end if

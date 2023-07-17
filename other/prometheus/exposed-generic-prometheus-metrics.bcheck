@@ -1,0 +1,29 @@
+metadata:
+    language: v1-beta
+    name: "Exposed Generic Prometheus Metrics"
+    description: "Check for information disclosure from any exporter"
+    author: "@nightshiba"
+
+run for each:
+    # Prometheus metrics most popular endpoints, you can add some more organization-specific
+    potential_path =
+        "/metrics", # default
+        "/sys/metrics", # hashicorp vault
+        "/monitoring/prometheus",
+        "/pro/metrics"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    # format specification: https://prometheus.io/docs/concepts/data_model/ and https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format
+    if {check.response.status_code} is "200"
+        and {check.response.body} matches "((# (HELP|TYPE) .*)|([a-zA-Z_:][a-zA-Z0-9_:]*(\{([a-zA-Z_][a-zA-Z0-9_]*=.*(,\s)?)+\})?\s+.*))"
+        and {check.response.headers} matches "text/plain" then
+	          report issue:
+	              severity: low
+	              confidence: certain
+	              detail: `Prometheus metrics exposed at {potential_path}.`
+	              remediation: "Ensure your Prometheus metrics are not accessible outside of the monitoring stack."
+    end if

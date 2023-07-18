@@ -1,0 +1,35 @@
+metadata:
+  language: v1-beta
+  name: "WebBackup Exposed"
+  description: "The website has detected a backup file leak."
+  author: "JaveleyQAQ"
+  tags: "Leak", "Exposed"
+
+run for each:
+  url_array = 
+    `/{base.request.url.host}.bak`,
+    `/{base.request.url.host}.rar`,
+    `/{base.request.url.host}.zip`,
+    "/web.rar",
+    "/web.zip",
+    "/wwwroot.rar",
+    "/wwwroot.zip",
+    "/data.bak",
+    "/db.rar",
+    "/db.zip",
+    "/db.bak",
+    "/backup.zip"
+  
+
+given host then
+  send request called check:
+    method: "GET"
+    path: {url_array}
+
+  if {check.response.status_code} is "200" and ("application/zip" in {check.response.headers} or "application/x-rar-compressed" in {check.response.headers} or "application/octet-stream" in {check.response.headers}) then
+    report issue:
+      severity: high
+      confidence: tentative
+      detail: "The website has detected a backup file leak. Please perform a manual inspection."
+      remediation: "none"
+  end if

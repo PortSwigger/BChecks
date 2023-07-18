@@ -1,0 +1,26 @@
+metadata:
+    language: v1-beta
+    name: "Nacos User List Unauthorized"
+    description: "Alibaba Nacos V1 Auth Bypass. CVE-2021-29441"
+    tags: "Unauthorized","Nacos"
+    author: "JaveleyQAQ"
+
+run for each:
+    nacos_detect =
+        "/nacos/v1/auth/users?pageNo=1&pageSize=9",
+        "/v1/auth/users?pageNo=1&pageSize=9"
+
+given host then
+    send request called nacos:
+        method: "GET"
+        path: {nacos_detect}
+
+    if {nacos.response.status_code} is "200" and "application/json" in {nacos.response.headers} and "\"username\":" in {nacos.response.body} and "\"password\":" in {nacos.response.body} then
+        report issue:
+            severity: high
+            confidence: certain
+            detail: `Nacos is a platform designed for dynamic service discovery and configuration and service management. In Nacos before version 1.4.1, when configured to use authentication (-Dnacos.core.auth.enabled=true), Nacos uses the AuthFilter servlet filter to enforce authentication. This filter has a backdoor that enables Nacos servers to bypass this filter and therefore skip authentication checks. This mechanism relies on the user-agent HTTP header, so it can be easily spoofed. This is										sue may allow any user to carry out any administrative tasks on the Nacos server.`
+            remediation: "https://github.com/alibaba/nacos/pull/4703.
+                          \n https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-29441"
+    end if
+

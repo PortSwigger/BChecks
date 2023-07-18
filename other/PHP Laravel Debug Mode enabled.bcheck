@@ -1,0 +1,21 @@
+metadata:
+    language: v1-beta
+    name: "PHP Laravel Debug Mode enabled"
+    description: "PHP Laravel with debug method enabled which shows the verbose error message"
+    author: "Sourav Kalal"
+
+define:
+    potential_path = "/_ignition/health-check"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if {check.response.status_code} is "200" and "execute_command" in {check.response.body} then
+        report issue:
+            severity: medium
+            confidence: certain
+            detail: `PHP Laravel Debug Mode enabled.`
+            remediation: "Ensure your APP_DEBUG is set to False."
+    end if

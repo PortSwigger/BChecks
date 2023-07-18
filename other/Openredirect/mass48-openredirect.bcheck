@@ -1,0 +1,71 @@
+metadata:
+    language: v1-beta
+    name: "Mass 48 Param For Open Redirect"
+    description: "Open Redirect"
+    author: "SirBugs, xelkomy"
+
+run for each:
+    # you could add more values to this list to make the check repeat
+    potential_path =
+       "/https://bing.com/",
+       "//https://bing.com//",
+       "/?targetOrigin=https://bing.com/",
+       "/?fallback=https://bing.com/",
+       "/?query=https://bing.com/",
+       "/?redirection_url=https://bing.com/",
+       "/?next=https://bing.com/",
+       "/?ref_url=https://bing.com/",
+       "/?state=https://bing.com/",
+       "/?1=https://bing.com/",
+       "/?redirect_uri=https://bing.com/",
+       "/?forum_reg=https://bing.com/",
+       "/?return_to=https://bing.com/",
+       "/?redirect_url=https://bing.com/",
+       "/?return_url=https://bing.com/",
+       "/?host=https://bing.com/",
+       "/?url=https://bing.com/",
+       "/?redirectto=https://bing.com/",
+       "/?return=https://bing.com/",
+       "/?prejoin_data=https://bing.com/",
+       "/?callback_url=https://bing.com/",
+       "/?path=https://bing.com/",
+       "/?authorize_callback=https://bing.com/",
+       "/?email=https://bing.com/",
+       "/?origin=https://bing.com/",
+       "/?continue=https://bing.com/",
+       "/?domain_name=https://bing.com/",
+       "/?redir=https://bing.com/",
+       "/?wp_http_referer=https://bing.com/",
+       "/?endpoint=https://bing.com/",
+       "/?shop=https://bing.com/",
+       "/?qpt_question_url=https://bing.com/",
+       "/?checkout_url=https://bing.com/",
+       "/?ref_url=https://bing.com/",
+       "/?redirect_to=https://bing.com/",
+       "/?succUrl=https://bing.com/",
+       "/?file=https://bing.com/",
+       "/?link=https://bing.com/",
+       "/?referrer=https://bing.com/",
+       "/?recipient=https://bing.com/",
+       "/?redirect=https://bing.com/",
+       "/?u=https://bing.com/",
+       "/?hostname=https://bing.com/",
+       "/?returnTo=https://bing.com/",
+       "/?return_path=https://bing.com/",
+       "/?image=https://bing.com/",
+       "/?requestTokenAndRedirect=https://bing.com/",
+       "/?retURL=https://bing.com/",
+       "/?next_url=https://bing.com/"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if "Location: https://bing.com" in {check.response.headers} then
+        report issue:
+            severity: low
+            confidence: certain
+            detail: `Open Redirect found at {potential_path}.`
+            remediation: "Ensure your website are not redirect the users outside it without wihtelist."
+    end if

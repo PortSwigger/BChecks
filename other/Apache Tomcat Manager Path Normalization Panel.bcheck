@@ -20,9 +20,9 @@ given host then
 		method: "GET"
 		path: {potential_path}
 
-			if {check.response.status_code} is "403" 
-			and "username=\"tomcat\" password=\"s3cret\"" in {check.response.body} 
-			and "manager-gui" in {check.response.body} then
+			if {check.response.status_code} is "403" or "401" in {check.response.status_code}
+			and "username=\"[.*.]\" password=\"[.*.]\"" in {check.response.body} 
+			or "manager-gui" in {check.response.body} then
 					report issue:
 						severity: info
 						confidence: certain

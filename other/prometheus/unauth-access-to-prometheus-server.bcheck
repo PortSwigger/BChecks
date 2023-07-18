@@ -1,0 +1,17 @@
+metadata:
+    language: v1-beta
+    name: "Unauthenticated Access to Prometheus (passive)"
+    description: "Check if the Prometheus Server is publicly accessible."
+    author: "@nightshiba"
+    tags: "passive"
+
+given response then
+    if {latest.response.status_code} is "200"
+        and ({latest.response.body} matches "<title>Prometheus Time Series Collection and Processing Server</title>"
+            or ({latest.response.body} matches "<a href=\"/metrics\">Metrics</a>'" and {latest.response.body} matches "Exporter")) then
+                report issue:
+                    severity: medium
+                    confidence: certain
+                    detail: "The Prometheus Server is publicly accessible without any authentication. This can lead to sensitive data exposure."
+                    remediation: "Ensure that the Prometheus Server is not publicly accessible and is properly secured."
+    end if

@@ -1,0 +1,28 @@
+metadata:
+    language: v1-beta
+    name: "Exposed Prometheus API Endpoints"
+    description: "Check for exposed Prometheus Config, Flags and Targets API endpoints."
+    author: "@nightshiba"
+
+run for each:
+    # Prometheus API endpoints: https://prometheus.io/docs/prometheus/latest/querying/api/ and https://jfrog.com/blog/dont-let-prometheus-steal-your-fire/
+    potential_path =
+        "/api/v1/status/config",
+        "/api/v1/status/flags",
+        "/api/v1/targets"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if {check.response.status_code} is "200"
+        and {check.response.body} matches "\"status\": \"success\""
+        and {check.response.body} matches "\"data\":"
+        and {check.response.headers} matches "application/json" then
+	          report issue:
+	              severity: info
+	              confidence: certain
+	              detail: "The Prometheus API endpoint at {potential_path} is exposed publicly and could disclose sensitive information about the application's configuration, flags or targets."
+	              remediation: "Ensure that the Prometheus API endpoints are not publicly accessible and are properly secured."
+    end if

@@ -6,9 +6,24 @@ Please note we have a code of conduct, please follow it in all your interactions
 
 ## Pull Request Process
 
-1. Update the appropiate README.md.
-2. Place your BCheck in the correct folder
-3. Include a description of the BCheck you are adding in the Pull Request
+1. Place your BCheck in the correct folder
+2. Include a description of the BCheck you are adding in the Pull Request
+3. Ensure the BCheck follows our submission guidelines (below)
+4. Engage with any comments and feedback given in the review
+
+## Submission Guidelines
+
+1. Where possible, please ONLY link to the primary research
+2. Please ensure all metadata fields are completed.
+3. Please ensure the BCheck is syntactically valid.
+4. Please ensure the BCheck is formatted correctly.
+    - Indentation is four spaces, not tabs.
+5. Please ensure the BCheck is optimized.
+    - No run for each on single items.
+    - Avoid excessive nested if blocks. Instead, use a more complex predicate. 
+    - Use appropriate conditionals. I.e. avoid lazy matching. 
+    - Please avoid unnecessary or repeat requests. 
+
 
 ## Code of Conduct
 

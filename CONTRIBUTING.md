@@ -16,11 +16,13 @@ Please note we have a code of conduct, please follow it in all your interactions
 1. Where possible, please ONLY link to the primary research
 2. Please ensure all metadata fields are completed.
 3. Please ensure the BCheck is syntactically valid.
-4. Please ensure that your filename is lower-case-kebab style
-5. Please ensure your file ends in .bcheck
-6. Please ensure the BCheck is formatted correctly.
+4. Please ensure your filename is correctly formatted:
+    - should be lower-kebab-case
+    - should end in .bcheck
+    - should only contain a-z0-9- 
+5. Please ensure the BCheck is formatted correctly.
     - Indentation is four spaces, not tabs.
-7. Please ensure the BCheck is optimized.
+6. Please ensure the BCheck is optimized.
     - No run for each on single items.
     - Avoid excessive nested if blocks. Instead, use a more complex predicate. 
     - Use appropriate conditionals. I.e. avoid lazy matching. 

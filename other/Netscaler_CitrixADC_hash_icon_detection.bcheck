@@ -3,7 +3,7 @@ metadata:
     name: "Netscaler/CitrixADC Icon Hash"
     description: "Detects the hash of Netscaler and Citrix ADC"
     tags: "passive"
-		author: "Randsec"
+    author: "Randsec"
 
 given response then
     if "/vpn/images/AccessGateway.ico" in {latest.response.body} or "receiver/images/common/icon_vpn.ico" in {latest.response.body} then

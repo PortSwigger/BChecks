@@ -6,9 +6,9 @@ metadata:
 		author: "Randsec"
 
 given response then
-		if "/vpn/images/AccessGateway.ico" in {latest.response.body} or "receiver/images/common/icon_vpn.ico" in {latest.response.body} then
-				report issue:
-					severity: info
-					confidence: firm
-					detail: "Possible Netscaler / Citrix ADC detected"
-		end if
+    if "/vpn/images/AccessGateway.ico" in {latest.response.body} or "receiver/images/common/icon_vpn.ico" in {latest.response.body} then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: "Possible Netscaler / Citrix ADC detected"
+    end if

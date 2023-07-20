@@ -1,0 +1,27 @@
+metadata:
+    language: v1-beta
+    name: "WordPress README file Exposure"
+    description: "Tests for WordPress README file exposed"
+    author: "r3dg33k"
+    tags: "exposure", "php", "wordpress"
+
+run for each:
+    # you could add more values to this list to make the check repeat
+    potential_path =
+        "/readme.html",
+        "/wp/readme.html",
+				"/blog/wp/readme.html"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if "First Things First" in {check.response.body} and
+        {check.response.status_code} is "200" then
+        report issue:
+            severity: info
+            confidence: certain
+            detail: `WordPress README file found at {potential_path}.`
+            remediation: "Ensure WordPress is hardened."
+   		 end if

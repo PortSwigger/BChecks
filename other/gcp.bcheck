@@ -18,7 +18,7 @@ given insertion point then
 					severity: high
 					confidence: firm
 					detail: "Leaked GCP Service Account Access Token via SSRF."
-					remediation: "Restrict access to the metadata url."
+					remediation: "Restrict access to the metadat url."
 			end if
 		end if
 

@@ -1,0 +1,28 @@
+metadata:
+	language: v1-beta
+	name: "Xdebug remote code execution via xdebug.remote_connect_back"
+	author: "Parimal Shaw"
+	description: "The XDebug extension <= v2.6.0 for PHP is designed to expand the debugging capabilities of developers, including the ability to perform remote debugging. A misconfigured server, with ‘xdebug.remote_connect_back’ enabled, exposed to the internet could allow an unauthenticated remote attacker to trigger a debugging session using any IP via a simple web request. With a remote debugging session established, the attacker effectively has remote code execution (RCE) capabilities with which to establish persistence, exfiltrate data, or launch further attacks against the system or network."
+	tags: "Cloudflare Misconfiguration"
+
+define:
+    potential_path = "/?XDEBUG_SESSION_START=bchecks"
+
+
+given host then
+    send request called check:
+	method: "GET"
+        headers:
+		"X-Forwarded-For:": `{generate_collaborator_address()}`
+	path: {potential_path}
+	  
+	  
+	  if dns interactions
+	  and {check.response.status_code} is "200"
+	  and "Set-Cookie: XDEBUG_SESSION=" in {check.response.headers} then
+	  report issue:
+            severity: high
+            confidence: certain
+            detail: "The XDebug extension <= v2.6.0 for PHP is designed to expand the debugging capabilities of developers, including the ability to perform remote debugging. A misconfigured server, with ‘xdebug.remote_connect_back’ enabled, exposed to the internet could allow an unauthenticated remote attacker to trigger a debugging session using any IP via a simple web request. With a remote debugging session established, the attacker effectively has remote code execution (RCE) capabilities with which to establish persistence, exfiltrate data, or launch further attacks against the system or network."
+            remediation: "Upgrade the XDebug extension to the latest version."
+end if

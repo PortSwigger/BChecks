@@ -1,0 +1,23 @@
+metadata:
+    language: v1-beta
+    name: "Git Configuration Check"
+    description: "Tests for exposed git config in current path as opposed to just root directory of site."
+    author: "github.com/BuffaloWill"
+    tags: "exposure", "git", "config", "file"
+
+run for each:
+    potential_path =
+        ".git/config",
+        ".git/config~"
+
+given request then
+    send request called check:
+        method: "GET"
+        replacing path: `{regex_replace({regex_replace({base.request.url},"^.*?\/.*?\/.*?\/","/")},"([^/]+)$", "")}{potential_path}`
+
+    if "[core]" in {check.response.body} then
+        report issue:
+            severity: low
+            confidence: tentative
+			detail: `Git configuration found at {potential_path}.`
+	end if

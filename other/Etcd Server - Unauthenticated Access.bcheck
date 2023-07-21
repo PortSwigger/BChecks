@@ -1,0 +1,27 @@
+metadata:
+	language: v1-beta
+	name: "Etcd Server - Unauthenticated Access"
+	author: "Parimal Shaw"
+	description: "A Kubernetes etcd server stores the cluster secrets and configurations files. Anonymous access on etcd allows unauthenticated access the data without providing any authentication credentials."
+	tags: "Kubernetes Misconfiguration"
+
+define:
+    potential_path = "/v2/keys/"
+
+
+given host then
+    send request called check:
+	method: "GET"
+	path: {potential_path}
+	  
+	  
+	  if {check.response.status_code} is "200" 
+	  and "\"node\":" in {check.response.body} 
+	  and "\"key\":" in {check.response.body} 
+	  and "application/json" in {check.response.headers} then
+	  report issue:
+            severity: high
+            confidence: certain
+            detail: "A Kubernetes etcd server cluster secrets and configurations files are accessible."
+            remediation: "Implement the following remediation https://etcd.io/docs/v2.3/authentication/"
+end if

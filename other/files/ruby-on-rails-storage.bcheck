@@ -1,0 +1,30 @@
+metadata:
+  language: v1-beta
+  name: "Ruby on Rails storage.yml File Disclosure"
+  description: "Checks for Ruby on Rails storage.yml file disclosure."
+  author: "@puzzlepeaches"
+  tags: "ruby", "storage", "exposure", "rails"
+
+run for each:
+  potential_path = 
+    "/storage.yml",
+    "/config/storage.yml",
+    "/ruby/config/storage.yml",
+    "/railsapp/config/storage.yml"
+
+
+given request then
+  send request called check:
+    method: "GET"
+    replacing path: `{regex_replace({regex_replace({base.request.url},"^.*?\/.*?\/.*?\/","/")},"([^/]+)$", "")}{potential_path}`
+    
+  if {check.response.body} matches "service:" or
+    {check.response.body} matches "local:" and
+    {check.response.status_code} is "200" and
+    not({check.response.headers} matches "text/html" or {check.response.headers} matches "application/json") then
+    report issue:
+      severity: low
+      confidence: firm 
+      detail: `Ruby on Rails storage.yml file disclosure.`
+  end if
+

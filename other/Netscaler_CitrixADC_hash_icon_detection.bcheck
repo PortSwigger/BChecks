@@ -1,0 +1,14 @@
+metadata:
+    language: v1-beta
+    name: "Netscaler/CitrixADC Icon Hash"
+    description: "Detects the hash of Netscaler and Citrix ADC"
+    tags: "passive"
+    author: "Randsec"
+
+given response then
+    if "/vpn/images/AccessGateway.ico" in {latest.response.body} or "receiver/images/common/icon_vpn.ico" in {latest.response.body} then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: "Possible Netscaler / Citrix ADC detected"
+    end if

@@ -1,0 +1,26 @@
+metadata:
+	language: v1-beta
+	name: "Cloudflare External Image Resizing Misconfiguration"
+	author: "Parimal Shaw"
+	description: "Cloudflare Image Resizing defaults to restricting resizing to the same domain. This prevents third parties from resizing any image at any origin. However, you can enable this option if you check Resize images from any origin."
+	tags: "Cloudflare Misconfiguration"
+
+define:
+    potential_path = `/cdn-cgi/image/width/https://{generate_collaborator_address()}`
+
+
+given host then
+    send request called check:
+	method: "GET"
+	replacing headers:
+		"Accept": "*/*"
+	path: {potential_path}
+	  
+	  
+	  if http interactions then
+	  report issue:
+            severity: info
+            confidence: certain
+            detail: "Cloudflare Image Resizing defaults to restricting resizing to the same domain. This prevents third parties from resizing any image at any origin. However, you can enable this option if you check Resize images from any origin."
+            remediation: "Disable image Resizing from all origin or restrict it to certain doamins in Cloudflare."
+end if

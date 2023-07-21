@@ -1,0 +1,30 @@
+metadata:
+  language: v1-beta
+  name: "Cache Deception check (Path confusion)"
+  description: "Check for misconfiguration while routing .css, .js, .png files"
+  author: "Sergey Kolesnikov (tr3harder) "
+
+run for each:
+  potential_path =
+    `/{random_str(17)}.css`,
+    `/{random_str(17)}.js`,
+    `/{random_str(17)}.png`,
+    `{random_str(17)}.css`,
+    `{random_str(17)}.js`,
+    `{random_str(17)}.png`
+
+given request then
+  if {base.response.status_code} is "200" then
+    send request called check:
+      appending path: {potential_path}
+    
+
+    if {check.response.status_code} is "200"
+      and {base.response.body} is {check.response.body} then
+        report issue:
+          severity: medium
+          confidence: certain
+          detail: `Cache deception misconfiguration was probably found while routing .css, .js, .png files. More detailed: https://book.hacktricks.xyz/pentesting-web/cache-deception#cache-deception`
+          remediation: "Correctly configure rules to route certain filetypes"
+    end if
+  end if

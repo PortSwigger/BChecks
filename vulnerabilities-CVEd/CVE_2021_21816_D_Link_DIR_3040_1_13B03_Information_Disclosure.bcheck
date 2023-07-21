@@ -1,0 +1,27 @@
+metadata:
+	language: v1-beta
+	name: "CVE-2021-21816 D-Link DIR-3040 1.13B03 - Information Disclosure"
+	author: "Parimal Shaw"
+	description: "Check For CVE-2021-21816"
+	tags: "CVE-2021-21816"
+	
+define:
+    potential_path = "/messages"
+
+
+given host then
+    send request called check:
+	method: "GET"
+	path: {potential_path}
+	  
+	  
+	  if {check.response.status_code} is "200" 
+	  and "syslog:" in {check.response.body} 
+	  and "admin" in {check.response.body}
+	  and "/etc_ro/lighttpd/www" in {check.response.body} then
+	  report issue:
+            severity: medium
+            confidence: certain
+            detail: "D-Link DIR-3040 1.13B03 is susceptible to information disclosure in the Syslog functionality. A specially crafted HTTP network request can lead to the disclosure of sensitive information. An attacker can obtain access to user accounts and access sensitive information, modify data, and/or execute unauthorized operations."
+            remediation: "Proper Access Control should be implemented."
+end if

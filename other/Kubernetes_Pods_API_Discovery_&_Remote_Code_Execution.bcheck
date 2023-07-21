@@ -1,0 +1,29 @@
+metadata:
+	language: v1-beta
+	name: "Kubernetes Pods - API Discovery & Remote Code Execution"
+	author: "Parimal Shaw"
+	description: "A Kubernetes Pods API was discovered. When the service port is available, unauthenticated users can execute commands inside the container."
+	tags: "Kubernetes Misconfiguration"
+
+
+run for each:
+    potential_path = 
+		"/pods",
+		"/api/v1/pods"
+
+
+given host then
+    send request called check:
+	method: "GET"
+	path: {potential_path}
+	  
+	  
+	  if {check.response.status_code} is "200" 
+	  and "apiVersion" in {check.response.body}
+	  and "application/json" in {check.response.headers} then
+	  report issue:
+            severity: high
+            confidence: certain
+            detail: "A Kubernetes Pods API was discovered. When the service port is available, unauthenticated users can execute commands inside the container."
+            remediation: "Ensure to Disable access to following instances in Kubernetes."
+end if

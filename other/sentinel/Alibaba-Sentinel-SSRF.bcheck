@@ -8,7 +8,7 @@ metadata:
 define:
     ssrf_path=`/registry/machine?app={random_str(5)}&appType=0&version=0&hostname={random_str(5)}&ip={generate_collaborator_address()}&port=0`
 
-given request then
+given host then
     send request:
         method: "GET"
         path: {ssrf_path}

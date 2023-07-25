@@ -3,12 +3,11 @@ metadata:
     name: "Microsoft Exchange Admin Center Exposure"
     description: "Tests for MS Exchnage Admin Center exposure"
     author: "r3dg33k"
-		tags: "msexchange", "ecp", "admin-panel"
+    tags: "msexchange", "ecp", "admin-panel"
 
 run for each:
     # you could add more values to this list to make the check repeat
-    potential_path =
-        "/ecp"
+    potential_path = "/ecp"
 
 given host then
     send request called check:
@@ -22,4 +21,4 @@ given host then
             confidence: certain
             detail: `Microsoft Exchange Admin Center Login Page found at {potential_path}.`
             remediation: "Block access to the EAC based on IP Address. https://social.technet.microsoft.com/wiki/contents/articles/52076.exchange-2016-restrict-access-to-the-eac-in-iis.aspx"
-   		 end if
+   	end if

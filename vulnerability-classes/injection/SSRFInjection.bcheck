@@ -1,0 +1,21 @@
+metadata:
+    language: v1-beta
+    name: "SSRF in each insetpoint"
+    description: "Insert an Collaborator address into each parameter to detect SSRF"
+    author: "xelkomy"
+
+define:
+    ssrfaddress="{generate_collaborator_address()}"
+
+# we will automatically insert into nested insertion points
+given insertion point then
+    send payload:
+        appending: {ssrfaddress}
+		
+	if http interactions then
+        report issue:
+            severity: high
+            confidence: firm
+            detail: "SSRF Discovery by BCheck: Explore the Request Tab to Observe the Payload and Attempt Self-Capture"
+            remediation: "Implement SSRF remediation measures to mitigate the vulnerability."
+    end if

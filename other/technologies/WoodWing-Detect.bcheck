@@ -1,0 +1,21 @@
+metadata:
+    language: v1-beta
+    name: "Detect WoodWing Studio Server Panel"
+    description: "Default creds: username: woodwing password: ww"
+    author: "xelkomy"
+
+define:
+    potential_path = "/StudioServer/server/apps/login.php"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if "WoodWing Studio Server" in {check.response.body} then
+        report issue:
+            severity: info
+            confidence: certain
+            detail: `WoodWing Studio Server Panel at {potential_path}.`
+            remediation: "Maybe there is defult creds impact Default creds: username: woodwing password: ww."
+    end if

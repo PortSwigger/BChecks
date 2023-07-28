@@ -4,14 +4,14 @@ metadata:
     description: "Blind SSRF with proxy param or url param"
     author: "Jumbo@chinabaiker.com"
 
-
 define:
     proxy_ssrf = `http://{generate_collaborator_address()}/proxy`
     url_ssrf = `https://{generate_collaborator_address()}/url`
+
 given request then
     send request:
         appending queries:
-				  `proxy={proxy_ssrf}`,
+	  `proxy={proxy_ssrf}`,
           `url={url_ssrf}`
     if http interactions then
         report issue:

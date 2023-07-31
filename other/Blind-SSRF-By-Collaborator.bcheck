@@ -1,0 +1,23 @@
+metadata:
+    language: v1-beta
+    name: "Blind SSRF By Collaborator"
+    description: "Blind SSRF with proxy param or url param"
+    author: "Jumbo@chinabaiker.com"
+
+define:
+    proxy_ssrf = `http://{generate_collaborator_address()}/proxy`
+    url_ssrf = `https://{generate_collaborator_address()}/url`
+
+given request then
+    send request:
+        appending queries:
+	  `proxy={proxy_ssrf}`,
+          `url={url_ssrf}`
+    if http interactions then
+        report issue:
+            severity: high
+            confidence: firm
+            detail: "The site request url params or proxy params, There may be ssrf vulnerabilities."
+            remediation: "Ensure that the site does not directly request URLs from the proxy param or url param."
+    end if
+

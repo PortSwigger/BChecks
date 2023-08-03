@@ -1,0 +1,31 @@
+metadata:
+    language: v1-beta
+    name: "SAP authentication bypass check"
+    description: "Tests for Sap authentication bypass SAP Note 2258786 Checking if the public
+    endpoint of sap/admin/public is accessible which would leak the patch management and internal urls"
+    author: "Bob van der Staak"
+    tags: "SAP", "Authentication Bypass"
+
+run for each:
+    potential_path =
+        "/sap/admin/public/index.html"
+
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if "Administration" in {check.response.body} and {check.response.status_code} is "200" then
+        report issue:
+            severity: medium
+            confidence: certain
+            detail: `Sap information leaking found at the following path {potential_path}.`
+            remediation: "Follow the actions which are required in SAP Note 2258786"
+    end if
+
+
+
+
+
+   

@@ -1,0 +1,16 @@
+metadata:
+    language: v1-beta
+    name: "AWS S3 Bucket takeover"
+    description: "Possible sub-domain takeover via AWS S3 bucket."
+    tags: "passive,s3,takeover,cloud"
+    author: "Milad Fadavvi"
+
+
+given response then
+    if "NoSuchBucket" in {latest.response} and "BucketName:" in {latest.response} then
+        report issue:
+            severity: high
+            confidence: firm
+            detail: "https://github.com/EdOverflow/can-i-take-over-xyz/issues/36"
+            remediation: "Delete the related DNS record."
+    end if

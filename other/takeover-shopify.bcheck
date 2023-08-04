@@ -1,0 +1,16 @@
+metadata:
+    language: v1-beta
+    name: "Shopify subdomain takeover"
+    description: "Possible sub-domain takeover | Shopify"
+    tags: "passive,shopify,takeover,cloud"
+    author: "Milad Fadavvi"
+
+
+given response then
+    if ("To finish setting up your new web address, go to your domain settings, click \"Connect existing domain\"" in {latest.response} or "Sorry, this shop is currently unavailable." in {latest.response}) and "shop-not-found" in {latest.response} then
+        report issue:
+            severity: high
+            confidence: firm
+            detail: "info --> https://github.com/EdOverflow/can-i-take-over-xyz/issues/46"
+            remediation: "Delete the related DNS record."
+end if

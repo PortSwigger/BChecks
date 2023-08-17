@@ -9,10 +9,10 @@ run for each:
     potential_path = 
 		"/..;/manager/html",
 		"/..;/..;/manager/html;/",
-		"/..;/hostmanager/html",
-		"/..;/..;/hostmanager/html;/",
+		"/..;/host-manager/html",
+		"/..;/..;/host-manager/html;/",
 		"/bchecktest/..;/manager/html",
-		"/bchecktest/..;/hostmanager/html"
+		"/bchecktest/..;/host-manager/html"
 	
 
 given host then

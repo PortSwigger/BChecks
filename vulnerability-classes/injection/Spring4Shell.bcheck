@@ -1,0 +1,24 @@
+metadata:
+    language: v1-beta
+    name: "Spring4Shell (Response)"
+    description: "Checks for the Spring4Shell vulnerability"
+    author: "Giriraj R (cipherlover)"
+    tags: "Srping4Shell", "CVE-2022-22965", "cve"
+
+define:
+    spring4shell_payload = `class.module.classLoader.URLs%5B0%5D=0`
+    issueDetail = `The server has returned a response status code as "400" and along with "java.lang.IllegalArgumentException" error on the response body denoting that there is possibility for Spring4shell vulnerability`
+    issueRemediation = "Make sure you are up to date with patches and follow the remediation steps for CVE-2022-22965."
+
+given request then
+    send request called check :
+        appending queries: `{spring4shell_payload}`
+
+    if {check.response.status_code} is "400" and "java.lang.IllegalArgumentException" in {check.response.body} then
+         report issue:
+             severity: high
+             confidence: firm
+             detail: `{issueDetail}`
+             remediation: `{issueRemediation}`
+    end if
+

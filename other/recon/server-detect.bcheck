@@ -1,4 +1,3 @@
-#Detect the server that is being used by extracting the values from the HTTP response headers "X-Powered-By" and "Server"
 #Verified: Yes
 
 metadata:

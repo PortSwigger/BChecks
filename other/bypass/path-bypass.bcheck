@@ -1,4 +1,3 @@
-#Test different types of techniques to access restricted endpoints.
 #Verified: Yes
 
 metadata:
@@ -40,19 +39,18 @@ given request then
 
         #Extension bypass technique:
         else if "__EXT_PAYLOAD__" in {payload} then
-
-        #Check if the path end with a forward slash:
-        if {latest.request.url.path} matches "^.*\/$" then
-            send request:
-                method: "GET"
-                path: `{regex_replace({latest.response.url.path}, "\/$", {regex_replace({payload}, "__EXT_PAYLOAD__", "")})}`
-                replacing headers: `{trackHeader}`:`{trackValue}`
-        else then
-            send request:
-                method: "GET"
-                path: `{latest.response.url.path}{regex_replace({payload}, "__EXT_PAYLOAD__", "")}`
-                replacing headers: `{trackHeader}`:`{trackValue}`
-        end if
+            #Check if the path end with a forward slash:
+            if {latest.request.url.path} matches "^.*\/$" then
+                send request:
+                    method: "GET"
+                    path: `{regex_replace({latest.response.url.path}, "\/$", {regex_replace({payload}, "__EXT_PAYLOAD__", "")})}`
+                    replacing headers: `{trackHeader}`:`{trackValue}`
+            else then
+                send request:
+                    method: "GET"
+                    path: `{latest.response.url.path}{regex_replace({payload}, "__EXT_PAYLOAD__", "")}`
+                    replacing headers: `{trackHeader}`:`{trackValue}`
+            end if
 
         #Use full URL in path technique:
         else if "__FULL_URL__" in {payload} then

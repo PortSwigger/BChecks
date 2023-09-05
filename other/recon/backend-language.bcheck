@@ -1,4 +1,3 @@
-#This BCheck uses regex patterns to detect which programming language the application is using
 #Verified: Yes
 metadata:
     language: v1-beta
@@ -9,7 +8,7 @@ metadata:
 
 define:
     desc = "The programming language of the application has been discovered"
-    reme = ""
+    #reme = ""
 
 given response then
     if {latest.response} matches "href(| )=(| )[\"'](?!((http[s]?:)?\/\/))[^\"'\r\n]+\.(php|asp(|x)|jsp|cfm|java|rb|py|go|erlang)([?#;&][^\"'\r\n]+|)[\"']" then
@@ -17,5 +16,5 @@ given response then
             severity: info
             confidence: firm
             detail: {desc}
-            remediation: {reme}
+            #remediation: {reme}
     end if

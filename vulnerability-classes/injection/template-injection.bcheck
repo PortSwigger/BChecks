@@ -1,0 +1,48 @@
+#Verified: Yes
+
+metadata:
+    language: v1-beta
+    name: "Template-injection"
+    description: "Scan for template injection vulnerabilities with a small amount of payloads (also supports detection of basic blind-based template injection)"
+    author: "Brumens"
+    tags: "active", "injection", "template", "template injection", "scan"
+
+#Use prefixes and suffixes with unusual letter combinations for better accuracy
+#Note : (The variables 'sum' and 'calc' need to be synchronized.)
+define:
+    desc = "Possible blind template injection"
+    reme = "Manual investigation is advised."
+    prefix = {random_str(6)}
+    suffix = {random_str(6)}
+    calc = `8846*9231`
+    sum = `81657426`
+
+run for each:
+    payload =
+        "${__calc__}",
+        "${{__calc__}}",
+        "<%__calc__%>",
+        "<%=__calc__%>"
+
+given query or body insertion point then
+    send payload:
+        appending: `{prefix}{regex_replace({payload}, "__calc__", {calc})}{suffix}`
+
+    if not({prefix} in {base.response} and {suffix} in {base.response}) then
+        #Check for the result
+        if `{sum}` in {latest.response} then
+            report issue:
+                severity: high
+                confidence: firm
+                detail: `Appears to be vulnerable to a template injection vulnerability. When the {payload} payload was inserted into the insertion point. The calculation specified in the payload "{calc}" was calculated and the result "{sum}" was given.`
+                remediation: "Manual investigation is advised."
+
+        #Check for basic blind template injection behavior:
+        else if `{prefix}{suffix}` in {latest.response} then
+            report issue:
+                severity: high
+                confidence: firm
+                detail: {desc}
+                remediation: {reme}
+        end if
+    end if

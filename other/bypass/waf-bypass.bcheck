@@ -17,7 +17,7 @@ run for each:
         "<image/src/\"=\"\"/onerror=!byp4asst//\"=",
         "<sometag/x=\"\"/onmouseover=!byp4asst"
 
-given request then
+given host then
     if {base.response.headers} matches "(?i)(waf|firewall|protect|mechanism|cloudflare|akamai|cloudfront|azure|airlock|imperva|f5-)" then
         send request:
             method: "GET"

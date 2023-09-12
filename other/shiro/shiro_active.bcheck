@@ -1,0 +1,24 @@
+metadata:
+  language: v1-beta
+  name: "Shiro Cookie Check Active"
+  description: "Detects Shiro Vulnerability by Manipulating Cookie"
+  author: "timeshatter"
+  tags: "Shiro,active"
+
+define:
+    shiroExploit = "rememberMe=1"
+    issueDetail = "Shiro Cookie Exploit Detected: rememberMe=deleteMe"
+    issueRemediation = "Immediately investigate and fix the Shiro vulnerability."
+
+given request then
+    send request called check:
+        replacing headers:
+            "Cookie": {shiroExploit}
+    
+    if "rememberMe=deleteMe" in {check.response} then
+        report issue:
+            severity: high
+            confidence: firm
+            detail: {issueDetail}
+            remediation: {issueRemediation}
+    end if

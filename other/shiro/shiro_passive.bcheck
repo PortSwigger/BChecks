@@ -1,0 +1,15 @@
+metadata:
+  language: v1-beta
+  name: "Shiro Cookie Check Passive"
+  description: "Check for Shiro Vulnerability in Response"
+  author: "timeshatter"
+  tags: "Shiro,passive"
+
+given response then
+    if "rememberMe=deleteMe" in {latest.response} then
+        report issue:
+            severity: high
+            confidence: firm
+            detail: "Shiro Vulnerability Detected: rememberMe=deleteMe"
+            remediation: "Investigate and fix the Shiro vulnerability immediately."
+    end if

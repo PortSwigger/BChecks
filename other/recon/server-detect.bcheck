@@ -4,7 +4,7 @@ metadata:
     language: v1-beta
     name: "server-detect"
     description: "Identify the server/proxy running on the application"
-    tags: "passive", "recon", "discovery", "header", "headers", "technology", "backend", "server", "proxy"
+    tags: "recon", "discovery", "header", "headers", "technology", "backend", "server", "proxy"
     author: "Brumens"
 
 define:

@@ -3,7 +3,7 @@ metadata:
   name: "Swagger endpoint found"
   description: "Tests for an exposed SwaggerUI endpoint"
   author: "254 Labs, Org."
-  tags: "open-api", "passive", "swagger", "swagger-ui", "exposure", "informative"
+  tags: "open-api", "swagger", "swagger-ui", "exposure", "informative"
 
 run for each:
   potential_path = 

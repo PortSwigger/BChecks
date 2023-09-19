@@ -2,7 +2,7 @@ metadata:
 	language: v1-beta
 	name: "Response-level"
 	description: "Checking GCP Service Account Access Token via SSRF"
-	tags: "passive"
+	tags: "GCP", "SSRF"
 	author: "Joe Thiha"
 
 define:

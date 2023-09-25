@@ -2,6 +2,7 @@ metadata:
     language: v1-beta
     name: "Response-level (passive)"
     description: "Looks in responses to see if there are leaked AWS Access Key IDs"
+    author: "Carlos Montoya"
     tags: "passive"
 
 given response then

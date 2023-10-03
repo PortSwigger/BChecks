@@ -1,9 +1,9 @@
 metadata:
-  language: v1-beta
-  name: "SameSite attribute was set to None"
-  description: "Detect when a cookie set the SameSite attribute to None."
-  author: "Dominique Righetto"
-  tags: "passive","informative"
+    language: v1-beta
+    name: "SameSite attribute was set to None"
+    description: "Detect when a cookie set the SameSite attribute to None."
+    author: "Dominique Righetto"
+    tags: "passive","informative"
    
  given response then
     # Source: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value
@@ -11,6 +11,6 @@ metadata:
         report issue:
             severity: info
             confidence: firm
-            detail: `The SameSite security attribute is set to None so the protection is disabled.`
-            remediation: `It is recommended to use the value Lax or Strict for the SameSite attribute to leverage the protection provided.`
+            detail: "The SameSite security attribute is set to None so the protection is disabled."
+            remediation: "It is recommended to use the value Lax or Strict for the SameSite attribute to leverage the protection provided."
     end if

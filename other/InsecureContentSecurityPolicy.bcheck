@@ -1,0 +1,115 @@
+metadata:
+    language: v1-beta
+    name: "Insecure Content-Security-Policy"
+    description: "This BCheck checks for 'insecure', 'outdated', or 'missing' Content-Security-Policy header values."
+    author: "Kyle Gilligan"
+
+run for each:
+
+    # Looped array of known insecure Content-Security-Policy header values.
+    insecure_value =
+        "default-src 'unsafe-inline'",
+        "script-src 'unsafe-inline'",
+        "style-src 'unsafe-inline'",
+        "default-src 'unsafe-eval'",
+        "script-src 'unsafe-eval'",
+        "default-src *",
+        "script-src *",
+        "connect-src *",
+        "img-src *",
+        "style-src *",
+        "font-src *",
+        "media-src *",
+        "object-src *",
+        "frame-src *",
+        "worker-src *",
+        "manifest-src *",
+        "prefetch-src *",
+        "child-src *",
+        "form-action *",
+        "frame-ancestors *",
+        "plugin-types *",
+        "sandbox *",
+        "plugin-types",
+        "prefetch-src",
+        "report-uri",
+        "block-all-mixed-content"
+        # Note: The deprecated "referrer" value was removed from insecure_value due to causing false positives from the Referrer-Policy header.
+
+define:
+
+    # Interchangable regex.
+    csp = "Content-Security-Policy"
+    cspVal = `Content-Security-Policy: {insecure_value}`
+    newLine = `\n`
+
+    # Issue details as individual string texts.
+    issueDetailMissing = `The {csp} header appears to be missing from this webpage's HTTP response.`
+    issueDetailFound = `A {insecure_value} value was found in the {csp} header.`
+    issueDetailInline = `\nNote that '{cspVal}' permits client-controlled scripting like XSS (CWE 87).`
+    issueDetailEval = `\nNote that '{cspVal}' permits client-controllable usage of the insecure eval() function (CWE 95).`
+    issueDetailWildcard = `\nNote that using {insecure_value} values in a {csp} header risks use of overly-permissive whitelisting (CWE 942).`
+    issueDetailDeprecated = `\nNote that the {cspVal} is considered a deprecated functionality.`
+
+    # Issue remediations as individual string texts.
+    issueRemediationMissing01 = `Verify if this webpage's HTTP response should provide a {csp} header.\nPlease ensure only safe values become used.`
+    issueRemediationMissing02 = `\nNote that static file types will not need a {csp} header, so ensure this finding is not a false positive.`
+
+    issueRemediationFound = `Inspect the {csp} header value of your response to ensure permissions appear safe.`
+    issueRemediationInlineEval = `\nBest practice recommends deleting or replacing '{insecure_value}' in a Content-Security-Policy with nonces or hashes to ensure script safety.`
+    issueRemediationWildcard = `\nTo deter attacker-controlled sources, best practice suggests whitelisting individual trusted sources rather than using {insecure_value} characters.`
+    issueRemediationDeprecated01 = `You may wish to remove the {insecure_value} from this {csp} header.`
+    issueRemediationDeprecated02 = `\nEnsure parallel functionalities remain maintained by the web application (or client web browsers).`
+
+given response then
+
+    # Ensures static file types irrelevant to the Content-Security-Policy header do not get checked.
+    if not({latest.response.url.file} matches "(\.apk|\.bmp|\.css|\.csv|\.db|\.dmg|\.doc|\.ico|\.ipa|
+\.eot|\.exe|\.gif|\.gz|\.jpg|\.jpeg|\.js|\.json|\.mp3|\.mp4|\.otf|\.pdf|\.png|\.ppt|\.rar|\.sqlite|
+\.svg|\.tar|\.tsv|\.ttf|\.txt|\.wav|\.webm|\.webp|\.woff|\.xls|\.xml|\.zip)") then
+
+        # Creates an info-level finding to signify a missing Content-Security-Policy header & terminate the test.
+        if not({csp} in {latest.response.headers}) then
+            report issue:
+                severity: info
+                confidence: certain
+                detail: `{issueDetailMissing}`
+                remediation: `{issueRemediationMissing01}{issueRemediationMissing02}`
+    
+        # Creates a low-level finding to signify an insecure value on a Content-Security-Policy header.
+        else if ({csp} in {latest.response.headers}) and ({insecure_value} in {to_lower(latest.response.headers)}) then
+    
+            # Specified remediations for a Content-Security-Header using an 'unsafe-inline' value.
+            if "unsafe-inline" in {insecure_value} then
+                report issue:
+                    severity: low
+                    confidence: certain
+                    detail: `{issueDetailFound}{issueDetailInline}`
+                    remediation: `{issueRemediationFound}{issueRemediationInlineEval}`
+    
+            # Specified remediations for a Content-Security-Header using an 'unsafe-eval' value.
+            else if "unsafe-eval" in {insecure_value} then
+                report issue:
+                    severity: low
+                    confidence: certain
+                    detail: `{issueDetailFound}\n{issueDetailEval}`
+                    remediation: `{issueRemediationFound}{issueRemediationInlineEval}`
+    
+            # Specified remediations for a Content-Security-Header using a potentially permissive '*' value.
+            else if "*" in {insecure_value} then
+                report issue:
+                    severity: low
+                    confidence: certain
+                    detail: `{issueDetailFound}{issueDetailWildcard}`
+                    remediation: `{issueRemediationFound}{issueRemediationWildcard}`
+    
+            # Specified remediations for a Content-Security-Header using a deprecated value.
+            else then
+                report issue:
+                    severity: low
+                    confidence: certain
+                    detail: `{issueDetailFound}{issueDetailDeprecated}`
+                    remediation: `{issueRemediationDeprecated01}{issueRemediationDeprecated02}`
+            end if
+        end if
+    end if

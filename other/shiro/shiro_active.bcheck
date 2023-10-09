@@ -1,9 +1,9 @@
 metadata:
-  language: v1-beta
-  name: "Shiro Cookie Check Active"
-  description: "Detects Shiro Vulnerability by Manipulating Cookie"
-  author: "timeshatter"
-  tags: "Shiro,active"
+    language: v1-beta
+    name: "Shiro Cookie Check Active"
+    description: "Detects Shiro Vulnerability by Manipulating Cookie"
+    author: "timeshatter"
+    tags: "Shiro,active"
 
 define:
     shiroExploit = "rememberMe=1"
@@ -17,8 +17,9 @@ given request then
     
     if "rememberMe=deleteMe" in {check.response} then
         report issue:
-            severity: high
-            confidence: firm
+            severity: info
+            confidence: certain
             detail: {issueDetail}
             remediation: {issueRemediation}
     end if
+    

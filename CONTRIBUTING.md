@@ -8,7 +8,7 @@ Please note that we have a code of conduct. Please follow it in all your interac
 
 1. Place your BCheck in the appropriate folder. For example, BChecks referencing CVEs should be placed in the `vulnerabilities-CVEd` folder.
 2. Include a description of the BCheck you are adding in the pull request.
-3. Make sure the BCheck follows our [Submission Guidelines](https://github.com/PortSwigger/BChecks/blob/main/CONTRIBUTING.md#submission-guidelines).
+3. Make sure the BCheck follows our [Submission Guidelines](#submission-guidelines).
 4. Engage with any comments and feedback given in the review.
 5. If your pull request contains multiple BChecks, please be aware that you may be asked to split your PR. This would happen if some BChecks require further feedback while others are ready to merge.
 
@@ -16,7 +16,7 @@ Please note that we have a code of conduct. Please follow it in all your interac
 
 1. Where possible, please ONLY link to the primary research.
 2. Please make sure all metadata fields are completed.
-3. Please make sure the BCheck is syntactically valid (see [BCheckChecker](https://github.com/PortSwigger/BChecks/blob/main/CONTRIBUTING.md#bcheckchecker)).
+3. Please make sure the BCheck is syntactically valid (see [BCheckChecker](#bcheckchecker)).
 4. Please make sure the BCheck is formatted correctly.
    - Indentation is four spaces, not tabs.
 5. Please make sure the BCheck is optimized.

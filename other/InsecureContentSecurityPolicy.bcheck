@@ -5,7 +5,6 @@ metadata:
     author: "Kyle Gilligan"
 
 run for each:
-
     # Looped array of known insecure Content-Security-Policy header values.
     insecure_value =
         "default-src 'unsafe-inline'",
@@ -37,9 +36,9 @@ run for each:
         # Note: The deprecated "referrer" value was removed from insecure_value due to causing false positives from the Referrer-Policy header.
 
 define:
-
     # Interchangable regex.
     csp = "Content-Security-Policy"
+    cspCol = "Content-Security-Policy:"
     cspVal = `Content-Security-Policy: {insecure_value}`
     newLine = `\n`
 
@@ -54,7 +53,6 @@ define:
     # Issue remediations as individual string texts.
     issueRemediationMissing01 = `Verify if this webpage's HTTP response should provide a {csp} header.\nPlease ensure only safe values become used.`
     issueRemediationMissing02 = `\nNote that static file types will not need a {csp} header, so ensure this finding is not a false positive.`
-
     issueRemediationFound = `Inspect the {csp} header value of your response to ensure permissions appear safe.`
     issueRemediationInlineEval = `\nBest practice recommends deleting or replacing '{insecure_value}' in a Content-Security-Policy with nonces or hashes to ensure script safety.`
     issueRemediationWildcard = `\nTo deter attacker-controlled sources, best practice suggests whitelisting individual trusted sources rather than using {insecure_value} characters.`
@@ -62,22 +60,21 @@ define:
     issueRemediationDeprecated02 = `\nEnsure parallel functionalities remain maintained by the web application (or client web browsers).`
 
 given response then
-
     # Ensures static file types irrelevant to the Content-Security-Policy header do not get checked.
-    if not({latest.response.url.file} matches "(\.apk|\.bmp|\.css|\.csv|\.db|\.dmg|\.doc|\.ico|\.ipa|
+    if not({latest.response.url.file} matches "(\.apk|\.bmp|\.cgi|\.css|\.csv|\.db|\.dmg|\.doc|\.ico|\.ipa|
 \.eot|\.exe|\.gif|\.gz|\.jpg|\.jpeg|\.js|\.json|\.mp3|\.mp4|\.otf|\.pdf|\.png|\.ppt|\.rar|\.sqlite|
 \.svg|\.tar|\.tsv|\.ttf|\.txt|\.wav|\.webm|\.webp|\.woff|\.xls|\.xml|\.zip)") then
 
         # Creates an info-level finding to signify a missing Content-Security-Policy header & terminate the test.
-        if not({csp} in {latest.response.headers}) then
+        if not({cspCol} in {latest.response.headers}) then
             report issue:
                 severity: info
-                confidence: certain
+                confidence: firm
                 detail: `{issueDetailMissing}`
                 remediation: `{issueRemediationMissing01}{issueRemediationMissing02}`
     
         # Creates a low-level finding to signify an insecure value on a Content-Security-Policy header.
-        else if ({csp} in {latest.response.headers}) and ({insecure_value} in {to_lower(latest.response.headers)}) then
+        else if ({cspCol} in {latest.response.headers}) and ({insecure_value} in {to_lower(latest.response.headers)}) then
     
             # Specified remediations for a Content-Security-Header using an 'unsafe-inline' value.
             if "unsafe-inline" in {insecure_value} then

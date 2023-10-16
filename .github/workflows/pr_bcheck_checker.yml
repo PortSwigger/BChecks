@@ -16,4 +16,4 @@ jobs:
           distribution: 'oracle'
 
       - name: Validate BChecks
-        run: java -jar BCheckChecker-1.3.jar
+        run: java -jar BCheckChecker-1.5.jar

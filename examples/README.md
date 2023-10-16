@@ -4,6 +4,10 @@
 
 Uses collaborator dynamically to detect server side request forgery.
 
+## Exposed backup file
+
+Identifies if backup files are exposed.
+
 ## Exposed git directory
 
 Identifies if a git directory is present under the web root.

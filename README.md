@@ -41,5 +41,3 @@ BChecks for specific vulnerability classes as opposed to discrete vulnerabilitie
 Other BChecks doing all the wonderful things which we didn't imagine
 
 [/other](/other/)
-
-hi

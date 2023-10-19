@@ -1,0 +1,23 @@
+metadata:
+    language: v1-beta
+    name: "Apache mod_info"
+    description: "Check for Apache's mod_info pages"
+    author: "pyllyukko"
+
+run for each:
+    potential_path =
+        "/server-status",
+        "/server-info"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if {check.response.status_code} is "200" and "Apache Server" in {check.response.body} then
+        report issue:
+            severity: info
+            confidence: certain
+            detail: `Apache's mod_info page found at {potential_path}.`
+            remediation: "Disable Apache's mod_info module."
+    end if

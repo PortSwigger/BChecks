@@ -1,7 +1,7 @@
 metadata:
     language: v1-beta
     name: "UUID detected"
-    description: "This bcheck template passively identifies and reports the use of various UUID versions within application requests."
+    description: "This bcheck template passively identifies and reports the use of various UUID versions within application."
     author: "vavkamil"
     tags: "passive", "guid", "uuid"
 

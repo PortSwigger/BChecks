@@ -17,7 +17,7 @@ define:
 - https://portswigger.net/bappstore/65f32f209a72480ea5f1a0dac4f38248
 - https://datatracker.ietf.org/doc/html/rfc4122"
     ####################################################################################################
-    issueDetail_uuid_v1 = `The request contains GUID Version 1 at
+    issueDetail_uuid_v1 = `The request/response contains GUID Version 1 at
 
 {latest.request.url}
 
@@ -28,7 +28,7 @@ The GUID is generated using
 
 {references}`
     ####################################################################################################
-    issueDetail_uuid_v3 = `The request contains GUID Version 3 at
+    issueDetail_uuid_v3 = `The request/response contains GUID Version 3 at
 
 {latest.request.url}
 
@@ -36,7 +36,7 @@ The GUID is generated using the MD5 hash of a name combined with a namespace ID.
 
 {references}`
     ####################################################################################################
-    issueDetail_uuid_v4 = `The request contains GUID Version 4 at
+    issueDetail_uuid_v4 = `The request/response contains GUID Version 4 at
 
 {latest.request.url}
 
@@ -46,7 +46,7 @@ It's considered safer for most use-cases compared to other versions, although it
 
 {references}`
     ####################################################################################################
-    issueDetail_uuid_v5 = `The request contains GUID Version 5 at
+    issueDetail_uuid_v5 = `The request/response contains GUID Version 5 at
 
 {latest.request.url}
 

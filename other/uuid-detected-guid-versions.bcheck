@@ -1,0 +1,210 @@
+metadata:
+    language: v1-beta
+    name: "UUID detected"
+    description: "This bcheck template passively identifies and reports the use of various UUID versions within application."
+    author: "vavkamil"
+    tags: "passive", "guid", "uuid"
+
+define:
+    # Modify config based on the application you are testing :)
+    config_check_request  = "False" # It will return a lot of noise, like cookies
+    config_check_response = "True"  # It will return a lot of noise, like response headers
+    config_request_url    = "False" # It will identify GET/POST/PUT/PATCH requests from Frontend with no UUID in response
+    config_request_body   = "False" # It will identify POST/PUT/PATCH requests from Frontend with no UUID in response
+    ####################################################################################################
+    references = "References
+- https://www.intruder.io/research/in-guid-we-trust
+- https://portswigger.net/bappstore/65f32f209a72480ea5f1a0dac4f38248
+- https://datatracker.ietf.org/doc/html/rfc4122"
+    ####################################################################################################
+    issueDetail_uuid_v1 = `The request/response contains GUID Version 1 at
+
+{latest.request.url}
+
+The GUID is generated using
+    - Current timestamp
+    - A clock sequence that remains static for the duration of the system's uptime
+    - A node ID, often based on the system's MAC address (if accessible).
+
+{references}`
+    ####################################################################################################
+    issueDetail_uuid_v3 = `The request/response contains GUID Version 3 at
+
+{latest.request.url}
+
+The GUID is generated using the MD5 hash of a name combined with a namespace ID.
+
+{references}`
+    ####################################################################################################
+    issueDetail_uuid_v4 = `The request/response contains GUID Version 4 at
+
+{latest.request.url}
+
+The GUID is generated randomly, making it unpredictable and more complicated to reproduce.
+
+It's considered safer for most use-cases compared to other versions, although its entropy should be checked.
+
+{references}`
+    ####################################################################################################
+    issueDetail_uuid_v5 = `The request/response contains GUID Version 5 at
+
+{latest.request.url}
+
+The GUID is generated using the SHA-1 hash of a name combined with a namespace ID.
+
+{references}`
+    ####################################################################################################
+    issueRemediation = "The application should use GUID v4, which is randomly generated.
+
+An attacker might be able to generate UUID using predictable data."
+    ####################################################################################################
+    issueRemediation_ok = "The application is using GUID v4, which is randomly generated."
+
+given response then
+    # Check UUID anywhere in response
+    if {config_check_response} matches "True" then
+        # UUID v1 - RFC 4122 variant
+        # Example: 0f9a9c50-79b9-11ee-b962-0242ac120002
+        if {base.response} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue:
+                severity: high
+                confidence: firm
+                detail: `{issueDetail_uuid_v1}`
+                remediation: `{issueRemediation}`
+        # UUID v3 - RFC 4122 variant
+        # Example: 3d813cbb-47fb-32ba-91df-831e1593ac29
+        else if {base.response} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[3][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue:
+                severity: low
+                confidence: firm
+                detail: `{issueDetail_uuid_v3}`
+                remediation: `{issueRemediation}`
+        # UUID v4 - RFC 4122 variant
+        # Example: 9f1e379d-e839-4d3a-9c2a-1d4dde67f75c
+        else if {base.response} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[4][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue:
+                severity: info
+                confidence: firm
+                detail: `{issueDetail_uuid_v4}`
+                remediation: `{issueRemediation_ok}`
+        # UUID v5 - RFC 4122 variant
+        # Example: 74738ff5-5367-5958-9aee-98fffdcd1876
+        else if {base.response} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue:
+                severity: low
+                confidence: firm
+                detail: `{issueDetail_uuid_v5}`
+                remediation: `{issueRemediation}`
+        end if
+    end if
+
+    # Check UUID anywhere in request
+    if {config_check_request} matches "True" then
+        # UUID v1 - RFC 4122 variant
+        # Example: 0f9a9c50-79b9-11ee-b962-0242ac120002
+        if {base.request} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue:
+                severity: high
+                confidence: firm
+                detail: `{issueDetail_uuid_v1}`
+                remediation: `{issueRemediation}`
+        # UUID v3 - RFC 4122 variant
+        # Example: 3d813cbb-47fb-32ba-91df-831e1593ac29
+        else if {base.request} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[3][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue:
+                severity: low
+                confidence: firm
+                detail: `{issueDetail_uuid_v3}`
+                remediation: `{issueRemediation}`
+        # UUID v4 - RFC 4122 variant
+        # Example: 9f1e379d-e839-4d3a-9c2a-1d4dde67f75c
+        else if {base.request} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[4][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue:
+                severity: info
+                confidence: firm
+                detail: `{issueDetail_uuid_v4}`
+                remediation: `{issueRemediation_ok}`
+        # UUID v5 - RFC 4122 variant
+        # Example: 74738ff5-5367-5958-9aee-98fffdcd1876
+        else if {base.request} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue:
+                severity: low
+                confidence: firm
+                detail: `{issueDetail_uuid_v5}`
+                remediation: `{issueRemediation}`
+        end if
+    end if
+
+    # Check UUID in request URL
+    if {config_request_url} matches "True" then
+        # UUID v1 - RFC 4122 variant
+        # Example: 0f9a9c50-79b9-11ee-b962-0242ac120002
+        if {base.request.url} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue:
+                severity: high
+                confidence: firm
+                detail: `{issueDetail_uuid_v1}`
+                remediation: `{issueRemediation}`
+        # UUID v3 - RFC 4122 variant
+        # Example: 3d813cbb-47fb-32ba-91df-831e1593ac29
+        else if {base.request.url} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[3][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue:
+                severity: low
+                confidence: firm
+                detail: `{issueDetail_uuid_v3}`
+                remediation: `{issueRemediation}`
+        # UUID v4 - RFC 4122 variant
+        # Example: 9f1e379d-e839-4d3a-9c2a-1d4dde67f75c
+        else if {base.request.url} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[4][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue:
+                severity: info
+                confidence: firm
+                detail: `{issueDetail_uuid_v4}`
+                remediation: `{issueRemediation_ok}`
+        # UUID v5 - RFC 4122 variant
+        # Example: 74738ff5-5367-5958-9aee-98fffdcd1876
+        else if {base.request.url} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue:
+                severity: low
+                confidence: firm
+                detail: `{issueDetail_uuid_v5}`
+                remediation: `{issueRemediation}`
+        end if
+    end if
+
+    # Check UUID in request URL
+    if {config_request_body} matches "True" then
+        # UUID v1 - RFC 4122 variant
+        # Example: 0f9a9c50-79b9-11ee-b962-0242ac120002
+        if {base.request.body} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue:
+                severity: high
+                confidence: firm
+                detail: `{issueDetail_uuid_v1}`
+                remediation: `{issueRemediation}`
+        # UUID v3 - RFC 4122 variant
+        # Example: 3d813cbb-47fb-32ba-91df-831e1593ac29
+        else if {base.request.body} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[3][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue:
+                severity: low
+                confidence: firm
+                detail: `{issueDetail_uuid_v3}`
+                remediation: `{issueRemediation}`
+        # UUID v4 - RFC 4122 variant
+        # Example: 9f1e379d-e839-4d3a-9c2a-1d4dde67f75c
+        else if {base.request.body} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[4][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue:
+                severity: info
+                confidence: firm
+                detail: `{issueDetail_uuid_v4}`
+                remediation: `{issueRemediation_ok}`
+        # UUID v5 - RFC 4122 variant
+        # Example: 74738ff5-5367-5958-9aee-98fffdcd1876
+        else if {base.request.body} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue:
+                severity: low
+                confidence: firm
+                detail: `{issueDetail_uuid_v5}`
+                remediation: `{issueRemediation}`
+        end if
+    end if

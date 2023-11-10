@@ -1,7 +1,7 @@
 metadata:
     language: v2-beta
     name: "PathSuffix-Bypass-4ProxyOrWAF"
-    description: "Accessing paths blocked by proxies or WAFs by adding meaningful suffixes."
+    description: "Accessing paths blocked by proxies or WAFs by adding special suffixes."
     author: "Soroush Dalili"
     tags: "bypass", "path", "waf", "proxy", "access"
 

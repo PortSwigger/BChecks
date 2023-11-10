@@ -1,0 +1,19 @@
+metadata:
+    language: v1-beta
+    name: "Missing Authorization (Token Based Session Handling)"
+    description: "[This works only for application using Header based Authentication] The missing authorization checks template is a predefined set of rules and configurations utilized in security assessments to identify vulnerabilities related to insufficient or missing authorization controls. This template helps security researchers, penetration testers, and bug bounty hunters automate the process of testing web applications or APIs for instances where user access rights are not properly enforced, potentially allowing unauthorized users to access sensitive data or perform unauthorized actions. By employing the missing authorization checks template, security professionals can efficiently assess the security posture of the target system, identify potential access control flaws, and recommend appropriate remediation measures to enhance overall system security."
+    author: "Vinay A (Viny)"
+
+define:
+    LowPrivilegedAccessToken="Bearer <Token Value>"
+given request then
+    send request:
+        replacing headers:
+            "Authorization": {LowPrivilegedAccessToken}
+    if {latest.response.body} is {base.response.body} or {latest.response.status_code} is {base.response.status_code} then
+            report issue:
+                severity: high
+                confidence: tentative
+                detail: "This application lacks in access control checks"
+                remediation: "Manual investigation is advised."
+        end if

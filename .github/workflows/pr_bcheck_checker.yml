@@ -16,4 +16,7 @@ jobs:
           distribution: 'oracle'
 
       - name: Validate BChecks
-        run: java -jar BCheckChecker-1.5.jar
+        run: |
+          [ $(sha256sum BCheckChecker-1.5.jar | awk '{ print $1 }') = '6fba62e4fe2984ef60668f2d6455738a4d35f2ac1db8c32fdc5c1098034cc436' ]
+          java -jar BCheckChecker-1.5.jar
+

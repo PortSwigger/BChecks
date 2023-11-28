@@ -5,12 +5,11 @@ metadata:
     author: "Carlos Montoya"
 
 define:
-    calculation="{{1337*1337}}"
-    answer="1787569"
+    calculation = "{{1337*1337}}"
+    answer = "1787569"
 
 # we will automatically insert into nested insertion points
 given insertion point then
-
     # prevent false positives by checking answer isn't
     # already in base response
     if not({answer} in {base.response}) then

@@ -23,7 +23,8 @@ given request then
             method: "POST"
             body: "{,}"
 
-        if {latest.response.body} matches "\"statusCode\":510" or {latest.response.status_code} is "510" then
+        if {latest.response.body} matches "\"statusCode\":510" or
+            {latest.response.status_code} is "510" then
             send request called clean_sspp:
                 method: "POST"
                 body: {regex_replace({base.request.body}, "[}]$", {nullify})}
@@ -32,7 +33,8 @@ given request then
                 method: "POST"
                 body: "{,}"
 
-            if not({followup_check_sspp.response.body} matches "\"statusCode\":510" or {followup_check_sspp.response.status_code} is "510") then
+            if not({followup_check_sspp.response.body} matches "\"statusCode\":510" or
+                {followup_check_sspp.response.status_code} is "510") then
                 report issue:
                     severity: high
                     confidence: firm

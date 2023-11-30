@@ -46,7 +46,7 @@ Requirements: Java 17+
 
 In the top level directory of the folder containing your BChecks, run the following command:
 ```
-java -jar BCheckChecker-1.3.jar
+java -jar BCheckChecker-1.5.jar
 ```
 
 Verify the output. To do this quickly, check the exit code is 0 for a valid run.

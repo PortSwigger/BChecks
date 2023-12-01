@@ -1,0 +1,24 @@
+metadata:
+    language: v2-beta
+    name: "GraphQL CSRF GET / Method Enabled"
+    description: "Cross Site Request Forgery happens when an external website gains ability to make API calls impersonating an user if he visits the website while being authenticated to your API.
+    Allowing API calls through GET requests can lead to CSRF attacks, because cookies are added automatically to GET requests by the browser."
+    author: "Dolev Farhi"
+
+run for each:
+    potential_path =
+         "/graphql?query={__typename}",
+         "/api/graphql?query={__typename}"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if "query" in {check.response.body} and "data" in {check.response.body} and "__typename" in {check.response.body} and "application/json" in {check.response.headers} then
+        report issue:
+            severity: info
+            confidence: certain
+            detail: `GraphQL CSRF GET Method enabled on {potential_path}.`
+            remediation: "Disable GET Method"
+    end if

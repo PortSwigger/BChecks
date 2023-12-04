@@ -1,0 +1,23 @@
+metadata:
+    language: v2-beta
+    name: "Dockerrun AWS Configuration Page Exposed"
+    description: "Dockerrun AWS configuration page was detected"
+    author: "Nithissh"
+
+run for each:
+    # you could add more values to this list to make the check repeat
+    potential_path =
+        "/Dockerrun.aws.json"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if "AWSEBDockerrunVersion" in {latest.response} and "containerDefinitions" in {latest.response} then
+        report issue:
+            severity: medium
+            confidence: certain
+            detail: `Dockerrun AWS configuration page exposed on {potential_path}.`
+            remediation: "Make sure to disable the configuration page to public"
+    end if

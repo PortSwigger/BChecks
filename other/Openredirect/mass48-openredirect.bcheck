@@ -55,7 +55,7 @@ run for each:
        "/?image=https://oastify.com/",
        "/?requestTokenAndRedirect=https://oastify.com/",
        "/?retURL=https://oastify.com/",
-       "/?next_url=https://oastify.com/"
+       "/?next_url=https://oastify.com/",
        "/project/switch/1?targetPath=https://oastify.com/"
 
 given host then

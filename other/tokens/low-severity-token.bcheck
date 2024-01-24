@@ -2,7 +2,7 @@ metadata:
  language: v1-beta
  name: "Information Disclosure"
  description: "Detects secret patterns in responses."
- author: "bugswagger"
+ author: "bugswagger, xelkomy, juba0x00"
  tags: "secret, bugswagger"
 
 given response then

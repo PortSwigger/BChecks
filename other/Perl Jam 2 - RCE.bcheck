@@ -32,4 +32,4 @@ given request then
            detail: "The application is vulnerable to Perl Remote Code Execution. For more information, check https://www.blackhat.com/docs/asia-16/materials/asia-16-Rubin-The-Perl-Jam-2-The-Camel-Strikes-Back.pdf. All credit goes to Netanel Rubin @na7irub."
            remediation: "Stop using Perl."
     end if
-    end if
+end if

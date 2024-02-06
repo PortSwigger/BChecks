@@ -78,7 +78,8 @@ run for each:
     "v2/swagger.json",
     "v2/api-docs",
     "v3/swagger.json",
-    "v3/api-docs"
+    "v3/api-docs",
+    "swagger-ui.html#/"
 
 given host then
   send request called checkSwagger:
@@ -89,7 +90,8 @@ given host then
 
   if {checkSwagger.response.status_code} is "200" then
     if {checkSwagger.response.body} matches "Swagger UI"
-    or {checkSwagger.response.body} matches "swagger-ui" 
+    or {checkSwagger.response.body} matches "swagger-ui"
+    or {checkSwagger.response.body} matches "swagger" 
     or {checkSwagger.response.body} matches "swagger-section"
     or {checkSwagger.response.body} matches "swagger-ui-wrap"
     or {checkSwagger.response.body} matches "id=\"swagger-ui"

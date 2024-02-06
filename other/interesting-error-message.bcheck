@@ -1,0 +1,149 @@
+metadata:
+    language: v1-beta
+    name: "Interesting Error In Response"
+    description: "Intriguing error response that error worth checking out"
+    author: "j3ssie"
+    tags: "passive", "error"
+
+# References:
+# List of rule taking from: https://github.com/PortSwigger/error-message-checks
+# https://raw.githubusercontent.com/PortSwigger/error-message-checks/master/src/main/resources/burp/match-rules.tab
+define:
+    references = "https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html"
+    issueRemediation = `Ensure clear, descriptive error messages with guidance on resolution steps
+    Reference: {references}`
+    issueDetail = `Intriguing error response that error worth checking out at {latest.request.url}`
+
+given response then
+    # Apache Server
+    if {base.response.body} matches "AH[0-9]{5}" or
+        {base.response.body} matches "mod_[\w]+:" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: `{issueDetail}`
+            remediation: `{issueRemediation}`
+    end if
+
+    # ASP
+    if {base.response.body} matches "([A-Za-z]{1,32}\.)+[A-Za-z]{0,32}\(([A-Za-z0-9]+\s+[A-Za-z0-9]+[,\s]*)*\)\s+\+{1}\d+" or
+        {base.response.body} matches "Message\":\"Invalid web service call" or
+        {base.response.body} matches "Exception of type" or
+        {base.response.body} matches "Server Error in '" or
+        {base.response.body} matches "Server Error in Application" or
+        {base.response.body} matches "--- End of inner exception stack trace ---" or
+        {base.response.body} matches "Microsoft OLE DB Provider" or
+        {base.response.body} matches "Error ([\d-]+) \([\dA-Fa-f]+\)" or
+        {base.response.body} matches "in [A-Za-z]:\\([A-Za-z0-9_]+\\)+[A-Za-z0-9_\-]+(\.aspx)?\.cs:line [\d]+" or
+        {base.response.body} matches "in [A-Za-z]:\\([A-Za-z0-9_]+\\)+[A-Za-z0-9_\-]+(\.aspx)?\.cs:line [\d]+" or
+        {base.response.body} matches "[A-Za-z\.]+\(([A-Za-z0-9, ]+)?\) \+[0-9]+" or
+        {base.response.body} matches "Syntax error in string in query expression" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: `ASP Error: {issueDetail}`
+            remediation: `{issueRemediation}`
+    end if
+
+    # Java
+    if {base.response.body} matches "\.java:[0-9]+" or
+        {base.response.body} matches "\.java\((Inlined )?Compiled Code\)" or
+        {base.response.body} matches "\.invoke\(Unknown Source\)" or
+        {base.response.body} matches "nested exception" or
+        {base.response.body} matches "java\.lang\.([A-Za-z0-9_]*)Exception" or
+        {base.response.body} matches "java.io.FileNotFoundException:" or
+        {base.response.body} matches "Error ([\d-]+) \([\dA-Fa-f]+\)" or
+        {base.response.body} matches "in [A-Za-z]:\\([A-Za-z0-9_]+\\)+[A-Za-z0-9_\-]+(\.aspx)?\.cs:line [\d]+" or
+        {base.response.body} matches "\bORA-[0-9]{5}" or
+        {base.response.body} matches "Oracle.*Driver]" or
+        {base.response.body} matches "quoted string not properly terminated" or
+        {base.response.body} matches "Warning.*\Woci_.*" or
+        {base.response.body} matches "Warning.*\Wora_.*" or
+        {base.response.body} matches "Warning: oci_parse()" or
+        {base.response.body} matches "JBWEB[0-9]{6}:" or
+        {base.response.body} matches "Syntax error in string in query expression" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: `Java Error: {issueDetail}`
+            remediation: `{issueRemediation}`
+    end if
+
+    # Generic
+    if {base.response.body} matches "NameError:" or
+        {base.response.body} matches "ImportError:" or
+        {base.response.body} matches "IndentationError:" or
+        {base.response.body} matches "Traceback \(most recent call last\):" or
+        {base.response.body} matches "File \"[A-Za-z0-9\-_\./]*\", line [0-9]+" or
+        {base.response.body} matches "Fatal error:" or
+        {base.response.body} matches "\.php on line [0-9]+" or
+        {base.response.body} matches "\.php</b> on line <b>[0-9]+" or
+        {base.response.body} matches "at (\/[A-Za-z0-9\.]+)*\.pm line [0-9]+" or
+        {base.response.body} matches "\.groovy:[0-9]+" or
+        {base.response.body} matches "\.rb:[0-9]+:in" or
+        {base.response.body} matches "\.scala:[0-9]+" or
+        {base.response.body} matches "client intended to address" or
+        {base.response.body} matches "could not build optimal proxy_headers_hash" or
+        {base.response.body} matches "at (\/[A-Za-z0-9\.]+)*\.pm line [0-9]+" or
+        {base.response.body} matches "UnhandledPromiseRejectionWarning:" or
+        {base.response.body} matches "TypeError:" or
+        {base.response.body} matches "runtime error:.*invalid" or
+        {base.response.body} matches "ReferenceError:" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: `Generic Error: {issueDetail}`
+            remediation: `{issueRemediation}`
+    end if
+
+
+    # SQL error
+    if {base.response.body} matches "You have an error in your SQL syntax" or
+        {base.response.body} matches "Error: Unknown column" or
+        {base.response.body} matches "MySqlClient\." or
+        {base.response.body} matches "com\.mysql\.jdbc\.exceptions" or
+        {base.response.body} matches "Illegal mix of collations \([\w\s\,]+\) and \([\w\s\,]+\) for operation" or
+        {base.response.body} matches "valid MySQL result" or
+        {base.response.body} matches "warning mysql_" or
+        {base.response.body} matches "CLI Driver.*DB2" or
+        {base.response.body} matches "db2_\w+\(" or
+        {base.response.body} matches "DB2 SQL error" or
+        {base.response.body} matches "\bdb2_\w+\(" or
+        {base.response.body} matches "\[(ODBC SQL Server Driver|SQL Server|ODBC Driver Manager)\]" or
+        {base.response.body} matches "Unclosed quotation mark" or
+        {base.response.body} matches "warning.*mssql_.*" or
+        {base.response.body} matches "Driver.* SQL[-_]*Server" or
+        {base.response.body} matches "(\W|\A)SQL Server.*Driver" or
+        {base.response.body} matches "Conversion failed when converting the" or
+        {base.response.body} matches "Cannot initialize the data source object of OLE DB provider" or
+        {base.response.body} matches "QUERY\s+\[thread1\] SyntaxError:" or
+        {base.response.body} matches "uncaught exception:" or
+        {base.response.body} matches "PostgreSQL.*ERROR" or
+        {base.response.body} matches "Warning.*\Wpg_.*" or
+        {base.response.body} matches "Wvalid PostgreSQL result" or
+        {base.response.body} matches "Npgsql\." or
+        {base.response.body} matches "org\.postgresql\.util\.PSQLException" or
+        {base.response.body} matches "SQLite/JDBCDriver" or
+        {base.response.body} matches "SQLite.Exception" or
+        {base.response.body} matches "System.Data.SQLite.SQLiteException" or
+        {base.response.body} matches "Warning.*sqlite_.*" or
+        {base.response.body} matches "Warning.*SQLite3::" or
+        {base.response.body} matches "Warning.*sqlite_.*" or
+        {base.response.body} matches "\[SQLITE_ERROR\]" or
+        {base.response.body} matches "org\.hsqldb\.jdbc" or
+        {base.response.body} matches "Dynamic SQL Error" or
+        {base.response.body} matches "\[function.ibase.query\]" or
+        {base.response.body} matches "Warning.*maxdb.*" or
+        {base.response.body} matches "Warning.*ingre_" or
+        {base.response.body} matches "Warning.*ibase_.*" or
+        {base.response.body} matches "(?i)Warning.*sybase.*" or
+        {base.response.body} matches "SQL error.*POS([0-9]+).*" or
+        {base.response.body} matches "Ingres SQLSTATE" or
+        {base.response.body} matches "Ingres\W.*Driver" or
+        {base.response.body} matches "DB Error:" then
+        report issue:
+            severity: low
+            confidence: firm
+            detail: `SQL Error: {issueDetail}`
+            remediation: `{issueRemediation}`
+    end if

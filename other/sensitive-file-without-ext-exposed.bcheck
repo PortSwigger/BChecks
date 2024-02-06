@@ -1,0 +1,189 @@
+metadata:
+    language: v2-beta
+    name: "Sensitive File Without Extension Exposed"
+    description: "Tests for exposed Sensitive File Without Extension in current path and at the root directory of site"
+    author: "j3ssie"
+    tags: "exposure", "sensitive", "no-ext"
+
+define:
+    garbage_path = `/hopefullyget404.log`
+    issueName = `Sensitive File Without Extension`
+
+run for each:
+    # you could add more values to this list to make the check repeat
+    sensitive_path =
+        "cloud/.credentials",
+        "cloud/.s3cfg",
+        "cloud/.tugboat",
+        "db/.pgpass",
+        "BUILD",
+        "Berksfile",
+        "Cakefile",
+        "Capfile",
+        "Cartfile",
+        "Dockerfile",
+        "Doxyfile",
+        "Entries",
+        "GNUmakefile",
+        "Gemfile",
+        "Guardfile",
+        "Gulpfile",
+        "HEAD",
+        "Jenkinsfile",
+        "Makefile",
+        "Manifest",
+        "Modulefile",
+        "NAMESPACE",
+        "PKG-INFO",
+        "PKGBUILD",
+        "Podfile",
+        "Procfile",
+        "Puppetfile",
+        "Rakefile",
+        "Repository",
+        "Root",
+        "SConscript",
+        "Thorfile",
+        "Vagrantfile",
+        "__debug__",
+        "_debug",
+        "_index",
+        "_search",
+        "debug",
+        "aliases",
+        "all",
+        "api/v1/label/version/values",
+        "api/v1/labels",
+        "api/v1/pods",
+        "api/v1/targets",
+        "app-stats",
+        "artisan",
+        "bashrc",
+        "bootstrap",
+        "build",
+        "bundle",
+        "certs",
+        "check_deploy",
+        "chefignore",
+        "cibuild",
+        "clean",
+        "clusters",
+        "cmdline",
+        "compat",
+        "compile",
+        "conf",
+        "config",
+        "config_dump",
+        "configure",
+        "console",
+        "control",
+        "default",
+        "depcomp",
+        "deploy",
+        "description",
+        "destroy",
+        "dirs",
+        "docs",
+        "empty",
+        "env",
+        "events",
+        "export",
+        "format",
+        "functions",
+        "generate",
+        "gitconfig",
+        "gitignore",
+        "gradlew",
+        "heapdump",
+        "hosts",
+        "hub",
+        "init",
+        "input",
+        "inventory",
+        "io",
+        "jkstatus",
+        "main",
+        "makefile",
+        "manifest",
+        "master",
+        "metrics",
+        "missing",
+        "mvnw",
+        "oom_score",
+        "options",
+        "out",
+        "output",
+        "package-list",
+        "postinst",
+        "pre-commit",
+        "profiler",
+        "proftpdpasswd",
+        "pylintrc",
+        "rails",
+        "rails/info",
+        "rake",
+        "rebar",
+        "release",
+        "routes",
+        "rspec",
+        "rules",
+        "run",
+        "runtime",
+        "series",
+        "server",
+        "server_info",
+        "setup",
+        "sidekiq",
+        "smaps",
+        "spec",
+        "spring",
+        "start",
+        "stat",
+        "status",
+        "symfony_requirements",
+        "tags",
+        "tg",
+        "type",
+        "unit_masks",
+        "update",
+        "version",
+        "vimrc",
+        "watch",
+        "workers",
+        "wscript",
+        "www",
+        "yii",
+        "zshrc",
+        "_private",
+        "iiasdmpwd",
+        "iisadmin"
+
+given request then
+    # replace the potential path with the last path
+    send request called check:
+        method: "GET"
+        replacing path: `{regex_replace({regex_replace({base.request.url}, "^.*?\/.*?\/.*?\/", "/")}, "([^/]+)$", "")}{sensitive_path}`
+
+    # send a random request in the hopes of effectively filtering out false positives
+    send request called garbage:
+        replacing path: `{garbage_path}`
+
+    if {check.response.status_code} is "200" and
+        ({check.response.headers} matches "text/plain" or
+        {check.response.headers} matches ".*octet-stream.*") then
+        if not({garbage.response.headers} matches "text/plain") and
+            not({garbage.response.headers} matches ".*octet-stream.*") then
+            # actually check the differs in the response
+            if {garbage.response.body} differs from {check.response.body} then
+                # make sure some HTML is not present in the response
+                if not({check.response.body} matches "(?i)(\<\!doctype|\<html|\<head|\<body)") and
+                    not({check.response.body} matches "(?i)(Oops!|Whoops!|AutodiscoverService|not\sfound|Request\sRejected|Access\sDenied|a\sbad\sURL|has\sbeen\slocked)") then
+                    report issue and continue:
+                        severity: low
+                        confidence: tentative
+                        detail: `{issueName} found at {check.request.url}. Manual investigation is advised`
+                        remediation: `Ensure the file {sensitive_path} are not exposed from your webroot`
+                end if
+            end if
+        end if
+    end if

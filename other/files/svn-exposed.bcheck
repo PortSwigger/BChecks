@@ -1,19 +1,23 @@
 metadata:
-    language: v1-beta
+    language: v2-beta
     name: "SVN Configuration File Exposed"
     description: "Tests for exposed svn config in current path and at the root directory of site"
     author: "j3ssie"
     tags: "exposure", "svn", "config", "file"
 
 run for each:
-    potential_path = ".svn/entries", ".svn/text", ".svn/all-wcprops", "CVS/Entries"
+    potential_path = ".svn/entries", ".svn/text", ".svn/all-wcprops"
 
-given request then
+given path then
     # replace the potential path with the last path
-    send request called check:
-        method: "GET"
-        replacing path: `{regex_replace({regex_replace({base.request.url}, "^.*?\/.*?\/.*?\/", "/")}, "([^/]+)$", "")}{potential_path}`
+    # like if the path is `/v1/settings/public`. it will be convert to  `/v1/settings/{potential_path}`
+    if not({base.request.url.path} is "/") then
+        send request called check:
+            method: "GET"
+            replacing path: `{regex_replace({regex_replace({base.request.url}, "^.*?\/.*?\/.*?\/", "/")}, "([^/]+)$", "")}{potential_path}`
 
+    end if
+    
     # replace the potential path with entire URI
     send request called check1:
         method: "GET"

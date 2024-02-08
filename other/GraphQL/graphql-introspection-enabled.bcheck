@@ -21,7 +21,7 @@ run for each:
         "/v1/explorer",
         "/v1/graphiql"
 
-given request then
+given host then
     send request called check:
         method: "POST"
         path: `{potential_path}`

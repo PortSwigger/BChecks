@@ -1,0 +1,35 @@
+metadata:
+    language: v2-beta
+    name: "SVN Configuration File Exposed"
+    description: "Tests for exposed svn config in current path and at the root directory of site"
+    author: "j3ssie"
+    tags: "exposure", "svn", "config", "file"
+
+run for each:
+    potential_path = ".svn/entries", ".svn/text", ".svn/all-wcprops"
+
+given path then
+    if {base.request.url.path} is "/" then
+        # replace the potential path with entire URI
+        send request called check:
+            method: "GET"
+            replacing path: `{regex_replace({base.request.url}, "^.*", "")}/{potential_path}`
+    else then
+        # replace the potential path with the last path
+        # like if the path is `/v1/settings/public`. it will be convert to  `/v1/settings/{potential_path}`
+        send request called check1:
+            method: "GET"
+            replacing path: `{regex_replace({regex_replace({base.request.url}, "^.*?\/.*?\/.*?\/", "/")}, "([^/]+)$", "")}{potential_path}`
+    end if
+
+    if {latest.response.status_code} is "200" then
+        if ("END" in {latest.response.body} and
+            "svn:" in {latest.response.body}) or
+            ("dir" in {latest.response.body} and
+            "<entry:" in {latest.response.body}) then
+            report issue:
+                severity: low
+                confidence: tentative
+                detail: `SVN configuration found at {potential_path}.`
+        end if
+    end if

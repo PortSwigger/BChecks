@@ -1,0 +1,36 @@
+metadata:
+    language: v2-beta
+    name: ".DS_Store Configuration Check"
+    description: "Tests for exposed svn config in current path and at the root directory of site"
+    author: "j3ssie"
+    tags: "exposure", "ds_store", "config", "file"
+
+run for each:
+    potential_path = ".DS_Store"
+
+given path then
+    # replace the potential path with the last path
+    # like if the path is `/v1/settings/public`. it will be convert to  `/v1/settings/{potential_path}`
+    if not({base.request.url.path} is "/") then
+        send request called check:
+            method: "GET"
+            replacing path: `{regex_replace({regex_replace({base.request.url}, "^.*?\/.*?\/.*?\/", "/")}, "([^/]+)$", "")}{potential_path}`
+
+    end if
+
+    # replace the potential path with entire URI
+    send request called check1:
+        method: "GET"
+        replacing path: `{regex_replace({base.request.url}, "^.*", "")}/{potential_path}`
+
+    if {latest.response.status_code} is "200" and
+        "Bud1" in {latest.response.body} and
+        "DSDB" in {latest.response.body} then
+        if {latest.response.headers} matches "Accept-Ranges: bytes" or
+            {latest.response.headers} matches "octet-stream" then
+            report issue:
+                severity: low
+                confidence: certain
+                detail: `.DS_Store configuration found at {potential_path}.`
+        end if
+    end if

@@ -6,9 +6,7 @@ metadata:
 
 run for each:
     # you could add more values to this list to make the check repeat
-    potential_path =
-        "/.git/config",
-        "/.git/config~"
+    potential_path = "/.git/config", "/.git/config~"
 
 given host then
     send request called check:

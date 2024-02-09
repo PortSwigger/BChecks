@@ -1,0 +1,66 @@
+metadata:
+    language: v2-beta
+    name: "PathSuffix-Bypass-4ProxyOrWAF"
+    description: "Accessing paths blocked by proxies or WAFs by adding special suffixes."
+    author: "Soroush Dalili @irsdl"
+    tags: "bypass", "path", "waf", "proxy", "access"
+
+# Important Notes:
+# For some of these two work such as \xA0 on Nginx, HTTP/1 needs to be used.
+# HTTP/2 needs to be disabled in Settings>Network>HTTP>HTTP/2
+# 
+# References:
+# Nignx/Flask: https://book.hacktricks.xyz/pentesting-web/proxy-waf-protections-bypass
+# Path sheet: https://github.com/irsdl/httpninja/blob/master/Results_v0.1.xlsx
+# Matrix Variables: https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-methods/matrix-variables.html
+
+run for each:
+    suffix =
+        "/", #slash
+        ".", #dot
+        ";", #semi-colon
+        "#", #hash-sign
+        "%", #percent
+        "/", #backslash
+        "%00", #null
+        "%09", #tab
+        "%0a", #new line
+        "%20", #space
+        "%23", #hash-sign
+        "%3b", #semi-colon
+        "%3f", #question-mark 
+        `{base64_decode("DA==")}`, #\x0C
+        `{base64_decode("oA==")}`, #\xA0
+        `{base64_decode("hQ==")}`, #\x85
+        "/style.css",
+        ";style.css",
+        ";jsessionid=style.css",
+        "%23style.css",
+        "%3fstyle.css",
+        "%00style.css"
+
+given path then
+    if not ({base.response.status_code} is "200") then
+        send request called check:
+            appending path: {suffix}
+
+        if not({check.response.status_code} is {base.response.status_code}) then
+            send request called garbage:
+                appending path: `{random_str(10)}{suffix}`
+            if {garbage} differs from {check} then
+                if {base.response.status_code} matches "40(1|3)" and {check.response.status_code} is "200" then
+                    report issue and continue:
+                        severity: high
+                        confidence: firm
+                        detail: `Path access control bypass at {check.request.url}`
+                        remediation: "Ensure that the requested endpoint is only accessible to authorized users."
+                else if {check.response.status_code} matches "[12]0[0-9]" or {check.response.status_code} is "500" then
+                    report issue and continue:
+                        severity: high
+                        confidence: tentative
+                        detail: `Potential path access control bypass at {check.request.url}`
+                        remediation: "Manual review is required to confirm this issue. If there is a bypass, ensure that the requested endpoint is only accessible to authorized users."
+                end if
+            end if
+        end if
+    end if

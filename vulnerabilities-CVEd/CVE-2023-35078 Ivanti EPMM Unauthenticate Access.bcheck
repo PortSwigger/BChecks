@@ -1,0 +1,26 @@
+metadata:
+    language: v1-beta
+    name: "Ivanti API Unauthenticated Access"
+    description: "Ivanti Endpoint Manager Mobile (EPMM) - Unauthenticated Access"
+    author: "Dolph Flynn"
+    tags: "Ivanti", "Unauthenticated Access", "CVE-2023-35078"
+
+
+given host then
+    send request called check:
+        method: "GET"
+        path: "/mifs/aad/api/v2/admins/users"
+
+    if {check.response.status_code} is "200" and
+        {check.response.headers} matches "application/json" and
+        "name" in {check.response.body} and
+        "results" in {check.response.body} and
+        "userId" in {check.response.body}
+    then
+        report issue:
+            severity: high
+            confidence: certain
+            detail: "Ivanti EPMM API unauthenticated access (CVE-2023-35078) detected."
+            remediation: "Apply vendor patch to fix vulnerability."
+    end if
+

@@ -1,0 +1,20 @@
+#Verified: Yes
+metadata:
+    language: v1-beta
+    name: "Backend-language"
+    description: "Passive scan for the programming language used by the backend"
+    author: "Brumens"
+    tags: "passive", "live", "backend", "recon", "info", "lang", "language"
+
+define:
+    desc = "The programming language of the application has been discovered"
+    #reme = ""
+
+given response then
+    if {latest.response} matches "href(| )=(| )[\"'](?!((http[s]?:)?\/\/))[^\"'\r\n]+\.(php|asp(|x)|jsp|cfm|java|rb|py|go|erlang)([?#;&][^\"'\r\n]+|)[\"']" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: {desc}
+            #remediation: {reme}
+    end if

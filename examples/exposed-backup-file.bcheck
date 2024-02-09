@@ -1,0 +1,28 @@
+metadata:
+    language: v2-beta
+    name: "Path-level"
+    description: "Tests for exposed backup files"
+    author: "Carlos Montoya"
+
+run for each:
+    # you could add more values to this list to make the check repeat
+    extension = ".bak", ".back", ".backup", ".old"
+
+given path then
+    if not({base.response.status_code} is "404") then
+        send request called check:
+            replacing path: {regex_replace({base.response.url.path}, "(.)/?$", `$1{extension}`)}
+
+        if {check.response.status_code} is {base.response.status_code} then
+            send request called garbage:
+                replacing path: {regex_replace({base.response.url.path}, "(.)/?$", `$1.{random_str(10)}`)}
+
+            if {garbage} differs from {check} then
+                report issue and continue:
+                    severity: info
+                    confidence: firm
+                    detail: `Backup file found at {check.request.url}`
+                    remediation: "Ensure your backup files are not exposed."
+            end if
+        end if
+    end if

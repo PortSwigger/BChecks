@@ -1,0 +1,17 @@
+metadata:
+    language: v1-beta
+    name: "Hidden Input Field Detection at Response Level (Passive)"
+    author: "mrrootsec"
+    description: "This Bcheck identifies hidden input fields in the response for further examination."
+    tags: "passive" , "xss"
+
+given response then
+    if {latest.response} matches "<input type=\"hidden\" id=\"[0-9A-Za-z-_]{0,}\"" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: "A Hidden Input Field has been Detected. It is recommended to manually check this field by appending them in the URL for potential Cross-Site Scripting (XSS) vulnerabilities."
+            remediation: "To prevent potential security risks, In most situations where user-controllable data is copied into application responses, cross-site scripting attacks can be prevented using two layers of defenses:
+a) Input should be validated as strictly as possible on arrival, given the kind of content that it is expected to contain. For example, personal names should consist of alphabetical and a small range of typographical characters, and be relatively short; a year of birth should consist of exactly four numerals; email addresses should match a well-defined regular expression. Input which fails the validation should be rejected, not sanitized.
+b) User input should be HTML-encoded at any point where it is copied into application responses. All HTML metacharacters, including < > \" \' and =, should be replaced with the corresponding HTML entities (&lt; &gt; etc)."
+    end if

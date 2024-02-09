@@ -1,0 +1,48 @@
+#Verified: Yes
+
+metadata:
+    language: v1-beta
+    name: "server-detect"
+    description: "Identify the server/proxy running on the application"
+    tags: "recon", "discovery", "header", "headers", "technology", "backend", "server", "proxy"
+    author: "Brumens"
+
+define:
+    desc = "The service that the application uses was detected"
+    trackHeader = "X-BCheck"
+    trackValue = "server-detect"
+
+run for each:
+    payload =
+        "/",
+        "\"",
+        "badRequest",
+        "/NotFound"
+
+given request then
+    send request called check:
+        method: "GET"
+        path: {payload}
+        replacing headers: `{trackHeader}`:`{trackValue}`
+
+    #Check if the HTTP header "X-Powered-By" is included in the response:
+    if {latest.response.headers} matches "[Xx](-|_)[Pp]owered(-|_)[Bb]y:[^\n]+" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: `{desc} (HTTP X-Powered-By header)`
+
+    #Check if the HTTP header "Server"/"X-Server" is included in the response:
+    else if {latest.response.headers} matches "([Xx](-|_)|)[Ss]erver:[^\n]+" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: `{desc} (HTTP Server header)`
+
+    #Detect possible reverse proxy that is being used from a "bad response" page (400 status code)
+    else if {latest.response.status_code} is "400" and {latest.response.body} matches "center>[NnAa](ginx|pache)" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: `{desc} (detected from 400 status code response)`
+    end if

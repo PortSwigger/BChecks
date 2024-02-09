@@ -16,10 +16,10 @@ given request then
         method: "GET"
         appending queries: `x={log4shell}`
         replacing headers:
-              "Cookie": `{log4shell}={log4shell}`,
-              "Location": {log4shell},
-              "Origin": {log4shell},
-              "Referer": {log4shell}
+            "Cookie": `{log4shell}={log4shell}`,
+            "Location": {log4shell},
+            "Origin": {log4shell},
+            "Referer": {log4shell}
 
     if dns interactions then
         # perform a follow up to reduce false positives
@@ -27,10 +27,10 @@ given request then
             method: "GET"
             appending queries: `x={not4shell}`
             replacing headers:
-                  "Cookie": `{not4shell}={not4shell}`,
-                  "Location": {not4shell},
-                  "Origin": {not4shell},
-                  "Referer": {not4shell}
+                "Cookie": `{not4shell}={not4shell}`,
+                "Location": {not4shell},
+                "Origin": {not4shell},
+                "Referer": {not4shell}
 
         if not(dns interactions) then
             report issue:

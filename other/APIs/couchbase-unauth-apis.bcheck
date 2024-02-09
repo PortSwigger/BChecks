@@ -1,0 +1,27 @@
+metadata:
+    language: v2-beta
+    name: "Couchbase Buckets Unauthenticated REST API - Detect"
+    description: "Couchbase Buckets REST API without authentication was detected"
+    author: "Nithissh"
+
+run for each:
+    # you could add more values to this list to make the check repeat
+    potential_path =
+        "/pools/default/buckets"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if {check.response.status_code} is "200" 
+            and "couchbase" in {check.response.body} 
+            and "bucket" in {check.response.body} 
+            and "data" in {check.response.body} 
+            and "application/json" in {check.response.headers} then
+        report issue:
+            severity: medium
+            confidence: certain
+            remediation: "Public access should be revoked"
+            detail: `Couchbase bucket publicly exposed on {potential_path}.`
+    end if

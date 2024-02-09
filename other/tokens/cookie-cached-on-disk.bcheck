@@ -2,6 +2,7 @@ metadata:
     language: v1-beta
     name: "Cookie cached on disk"
     description: "Checks if cookies are cached on disk"
+    author: "domwhewell-sage"
     tags: "passive"
 
 given response then

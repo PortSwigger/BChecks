@@ -1,0 +1,27 @@
+metadata:
+  language: v1
+  name: "Aris Login Found"
+  description: "Tests for an exposed Aris Login Page"
+  author: "Awais"
+  tags: "Aris", "informative"
+
+run for each:
+  potential_path = 
+    "#default/home"
+
+given host then
+  send request called checkAris:
+    method: "GET"
+    replacing path: `/{potential_path}`
+    headers:
+      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"
+
+  if {checkAris.response.status_code} is "200" then
+    if {checkAris.response.body} matches "ARIS" then
+      report issue:
+        severity: info
+        confidence: certain
+        detail: `Aris Portal found at {potential_path}`
+        remediation: "Detected, if not allowed retsrict thorugh IP address"
+    end if
+  end if

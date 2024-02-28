@@ -14,7 +14,7 @@ Online documentation can be found [here](https://portswigger.net/burp/documentat
 ## Community submissions
 Please issue a pull request and follow the process outlined [here](https://github.com/PortSwigger/BChecks/blob/main/CONTRIBUTING.md)
 
-## the BChecks
+## BChecks
 
 ### Examples
 Example BChecks to help you get started covering
@@ -41,3 +41,6 @@ BChecks for specific vulnerability classes as opposed to discrete vulnerabilitie
 Other BChecks doing all the wonderful things which we didn't imagine
 
 [/other](/other/)
+
+## Disclaimer
+BChecks are written and maintained by third-party users of Burp. We review the pull requests for new community-created scripts before they are added to this repository. However, PortSwigger Web Security makes no warranty about their quality or usefulness for any particular purpose.

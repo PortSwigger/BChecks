@@ -1,0 +1,53 @@
+metadata:
+    language: v1-beta
+    name: "Stack trace was detected"
+    description: "Detect when a response contains a stack trace."
+    author: "Dominique Righetto"
+    tags: "passive","informative"
+
+define:
+    common_detail = "The response contains a stack trace that discloses information about the server-side technology used: "
+    common_remediation = "Add an error handler to ensure any errors that may occur are caught, then return a generic message."
+
+given response then
+    # Source: https://github.com/righettod/burp-piper-custom-scripts/blob/main/detect-response-with-errors-disclosure.py
+    # Java
+    if {latest.response.body} matches "(java\.[\w]+\.[\w]+)" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: `{common_detail} Java.`
+            remediation: `{common_remediation}`
+    end if
+    # .Net
+    if {latest.response.body} matches "(\w+Exception:\s['\"\w\d\s]+)" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: `{common_detail} .NET.`
+            remediation: `{common_remediation}`
+    end if
+    # NodeJS
+    if {latest.response.body} matches "(at\stryModuleLoad\s)" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: `{common_detail} NodeJS.`
+            remediation: `{common_remediation}`
+    end if
+    # PHP
+    if {latest.response.body} matches "(\.php\son\sline\s\d+)" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: `{common_detail} PHP.`
+            remediation: `{common_remediation}`
+    end if
+    # RUBY
+    if {latest.response.body} matches "(\.rb:\d+:in)" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: `{common_detail} Ruby.`
+            remediation: `{common_remediation}`
+    end if

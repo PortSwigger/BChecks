@@ -11,6 +11,8 @@ Online documentation for both Burp Suite Professional and Burp Suite Enterprise 
 
 ## Blogs
 
+[Burp Suite Shorts | BCheck v2-beta language](https://youtu.be/lR04_eN4Uuo)
+
 [What's new with BChecks?](https://portswigger.net/blog/whats-new-with-bchecks)
 
 [Introducing custom scan checks to Burp Suite Enterprise Edition](https://portswigger.net/blog/introducing-custom-scan-checks-to-burp-suite-enterprise-edition)
@@ -21,7 +23,7 @@ Online documentation for both Burp Suite Professional and Burp Suite Enterprise 
 
 [BChecks: Houston, we have a solution!](https://portswigger.net/blog/bchecks-houston-we-have-a-solution)
 
-[Burp Suite Short](https://youtu.be/NaiQMJk4nus)
+[Burp Suite Shorts | BChecks](https://youtu.be/NaiQMJk4nus)
 
 ## Community submissions
 Please issue a pull request and follow the process outlined [here](https://github.com/PortSwigger/BChecks/blob/main/CONTRIBUTING.md)

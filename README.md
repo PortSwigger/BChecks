@@ -5,7 +5,7 @@ BChecks for Burp Suite Professional and Burp Suite Enterprise Edition developed 
 ## Documentation
 **Professional:** If you click the ? Icon in the top right of the BChecks sub tab in the Extensions tab you will be linked to the documentation.
 
-**Enterprise:** Find documentation on how to add your BCheck to Burp Suite Enterprise Edition [here](adding-bchecks-to-burp-suite-enterprise-edition).
+**Enterprise:** Find documentation on how to add your BCheck to Burp Suite Enterprise Edition [here](https://portswigger.net/burp/documentation/enterprise/user-guide/extensions/adding-extensions#adding-bchecks-to-burp-suite-enterprise-edition).
 
 Online documentation for both Burp Suite Professional and Burp Suite Enterprise Edition can be found [here](https://portswigger.net/burp/documentation/scanner/bchecks)
 

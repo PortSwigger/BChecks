@@ -1,0 +1,27 @@
+metadata:
+    language: v2-beta
+    name: "CSRF-Magic backdoor detected"
+    description: "Tests if code for the CSRF-Magic backdoor is triggered. "
+    author: "MOGWAI LABS GmbH"
+
+given path then
+    send request called check:
+        method: "GET"
+        replacing headers:
+            "Cookie": "a=ab;b=;c=ZWNobyAiY3NyZi1tYWdpYyI7Ly8=;d=;"
+
+    if "<c123>csrf-magic</c123>" in {check.response.body} then
+        report issue:
+            severity: high
+            confidence: firm
+            detail: `CSRF-Magic cookie backdoor was discovered.
+
+This backdoor was present in old versions of the CSRF-magic library
+and allows an unauthenticated attacker to evaluate arbitrary PHP code by setting malicious cookies.
+
+* The vulnerable code can be found here: https://web.archive.org/web/20220325023755/https://github.com/csrf-magic/csrf-magic/blob/master/csrf-magic.php
+* A writeup for the vulnerabilty can be found here: https://www.labs.greynoise.io/grimoire/2024-02-what-is-this-old-ivanti-exploit/index.html
+* A real-world example where this backdoor was expliotable: https://forums.ivanti.com/s/article/SA-2021-12-02?language=en_US
+`
+            remediation: "Ensure you remove the backdoored code from the csrf-magic.php file and investigate the server for indicators of compromise."
+    end if

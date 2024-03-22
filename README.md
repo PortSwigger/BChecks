@@ -58,3 +58,4 @@ Other BChecks doing all the wonderful things that we didn't imagine
 
 ## Disclaimer
 BChecks are written and maintained by third-party users of Burp. We review the pull requests for new community-created scripts before they are added to this repository. However, PortSwigger Web Security makes no warranty about their quality or usefulness for any particular purpose.
+

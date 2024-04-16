@@ -12,5 +12,4 @@ given response then
             severity: info
             confidence: tentative
             detail: "Investigate the response if you have not stumbled upon a file operation which could be used to obtain RCE, or used to rewrite some files on the server."
-    #remediation:
     end if

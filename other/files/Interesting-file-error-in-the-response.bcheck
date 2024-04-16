@@ -1,0 +1,16 @@
+metadata:
+    language: v2-beta
+    name: "Interesting file error in the response"
+    description: "Interesting file error in the response"
+    author: "Andrej Šimko @ Accenture"
+    tags: "file", "error", "passive"
+
+#note that in time, when BChecks will support tuples I will rewrite this rule to be prettier
+given response then
+    if {latest.response.body} matches "(The system cannot find the path specified|No such file or directory|Cannot read file|Path not found|Disk full|Illegal file name|Unable to create directory|Directory not empty|Input/output error|Cannot find the device specified|Is a directory|Resource temporarily unavailable|File exists|Read-only file system|Filename too long|Too many open files|Failed to mount filesystem|Extension point not found|Unsupported extension)" then
+        report issue:
+            severity: info
+            confidence: tentative
+            detail: "Investigate the response if you have not stumbled upon a file operation which could be used to obtain RCE, or used to rewrite some files on the server."
+    #remediation:
+    end if

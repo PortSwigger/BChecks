@@ -1,13 +1,13 @@
 # BChecks
 
-BChecks for Burp Suite Professional and Burp Suite Enterprise Edition developed both by PortSwigger and the community with 🧡
+BChecks for Burp Suite Professional and Burp Suite Enterprise Edition, developed by PortSwigger and the community with 🧡
 
 ## Documentation
-**Professional:** If you click the ? Icon in the top right of the BChecks sub tab in the Extensions tab you will be linked to the documentation.
+**Burp Suite Professional:** To view the documentation, go to **Extensions > BChecks** and click the **?** icon in the top-right corner of the window. 
 
-**Enterprise:** Find documentation on how to add your BCheck to Burp Suite Enterprise Edition [here](https://portswigger.net/burp/documentation/enterprise/user-guide/extensions/adding-extensions#adding-bchecks-to-burp-suite-enterprise-edition).
+**Burp Suite Enterprise Edition:** To learn more about BChecks, see [Adding BChecks to Burp Suite Enterprise Edition](https://portswigger.net/burp/documentation/enterprise/user-guide/extensions/adding-extensions#adding-bchecks-to-burp-suite-enterprise-edition).
 
-Online documentation for both Burp Suite Professional and Burp Suite Enterprise Edition can be found [here](https://portswigger.net/burp/documentation/scanner/bchecks)
+To see all of our documentation on BChecks for both Burp Suite Professional and Burp Suite Enterprise Edition, see [BCheck definitions](https://portswigger.net/burp/documentation/scanner/bchecks).
 
 ## Blogs
 
@@ -26,12 +26,12 @@ Online documentation for both Burp Suite Professional and Burp Suite Enterprise 
 [Burp Suite Shorts | BChecks](https://youtu.be/NaiQMJk4nus)
 
 ## Community submissions
-Please issue a pull request and follow the process outlined [here](https://github.com/PortSwigger/BChecks/blob/main/CONTRIBUTING.md)
+To learn about the process for submitting your own BChecks, see [Contributing](https://github.com/PortSwigger/BChecks/blob/main/CONTRIBUTING.md).
 
 ## BChecks
 
 ### Examples
-Example BChecks to help you get started covering
+We've put together some example BChecks, to help you get started:
 * Blind SSRF via out-of-band detection
 * Exposed git directory
 * Leaked AWS Tokens
@@ -42,17 +42,17 @@ Example BChecks to help you get started covering
 [/examples](/examples/)
 
 ### Vulnerabilities CVEd
-BChecks for specific vulnerabilities which have a CVE
+The following BChecks look for specific vulnerabilities which have a CVE:
 
 [/vulnerabilities-CVEd](/vulnerabilities-CVEd/)
 
 ### Vulnerability classes
-BChecks for specific vulnerability classes as opposed to discrete vulnerabilities. 
+These BChecks look for specific vulnerability classes as opposed to discrete vulnerabilities:
 
 [/vulnerability-classes](/vulnerability-classes/)
 
 ### Other
-Other BChecks doing all the wonderful things that we didn't imagine
+You can see other BChecks that have been created by the community, doing wonderful things that we didn't imagine:
 
 [/other](/other/)
 

@@ -12,11 +12,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'oracle'
 
       - name: Validate BChecks
         run: |
-          [ $(sha256sum BCheckChecker-1.5.jar | awk '{ print $1 }') = '6fba62e4fe2984ef60668f2d6455738a4d35f2ac1db8c32fdc5c1098034cc436' ]
-          java -jar BCheckChecker-1.5.jar
-
+          [ $(sha256sum BCheckChecker-1.9.jar | awk '{ print $1 }') = 'a4e1ebffc0dabcea7e93778b86ab053b406a15782e4ffb0da48e3638a23f077d' ]
+          java -jar BCheckChecker-1.9.jar

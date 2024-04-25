@@ -42,11 +42,11 @@ This is a standalone Java program that is run as part of the pull request proces
 
 ### How to run manually
 
-Requirements: Java 17+
+Requirements: Java 21+
 
 In the top level directory of the folder containing your BChecks, run the following command:
 ```
-java -jar BCheckChecker-1.5.jar
+java -jar BCheckChecker-1.9.jar
 ```
 
 Verify the output. To do this quickly, check the exit code is 0 for a valid run.

@@ -1,0 +1,18 @@
+metadata:
+    language: v1-beta
+    name: "HTTP Methods Available (passive)"
+    description: "Send HTTP OPTIONS method to site to check what methods are avialable via the response"
+    author: "Ceramicskate0"
+    tags: "passive"
+
+given request then
+    send request called check:
+        method: "OPTIONS"
+
+    if {check.response.headers} matches "[Aa]llow:[^\n]+" then
+        report issue:
+            severity: info
+            confidence: tentative
+            detail: `Check the 'Allow:' Header value(s)\n\n{check.response.headers}`
+            remediation: "N/A"
+    end if

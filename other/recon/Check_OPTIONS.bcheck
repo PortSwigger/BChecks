@@ -5,7 +5,7 @@ metadata:
     author: "Ceramicskate0"
     tags: "passive"
 
-given request then
+given path then
     send request called check:
         method: "OPTIONS"
 

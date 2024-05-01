@@ -1,5 +1,5 @@
 metadata:
-    language: v1-beta
+    language: v2-beta
     name: "HTTP Methods Available (passive)"
     description: "Send HTTP OPTIONS method to site to check what methods are avialable via the response"
     author: "Ceramicskate0"

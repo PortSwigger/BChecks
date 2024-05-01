@@ -3,7 +3,6 @@ metadata:
     name: "HTTP Methods Available (passive)"
     description: "Send HTTP OPTIONS method to site to check what methods are available via the response"
     author: "Ceramicskate0"
-    tags: "passive"
 
 given path then
     send request called check:

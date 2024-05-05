@@ -56,5 +56,10 @@ You can see other BChecks that have been created by the community, doing wonderf
 
 [/other](/other/)
 
+### Archive
+You can see archived BChecks that have been preserved for users with older versions of Burp Suite:
+
+[/archived](/archived/)
+
 ## Disclaimer
 BChecks are written and maintained by third-party users of Burp. We review the pull requests for new community-created scripts before they are added to this repository. However, PortSwigger Web Security makes no warranty about their quality or usefulness for any particular purpose.

@@ -1,8 +1,9 @@
 metadata:
-    language: v1-beta
+    language: v2-beta
     name: "Use of Unencrypted URI Schemes"
     description: "This BCheck looks for unencrypted URI schemes ('http', 'ftp', 'ldap', 'smtp') within HTTP responses' bodies."
     author: "Kyle Gilligan"
+    tags: "http", "ftp", "ldap", "smtp"
 
 # Commented-Out Regex:
     # Recorded list of whitelisted variables to reduce known false positives.

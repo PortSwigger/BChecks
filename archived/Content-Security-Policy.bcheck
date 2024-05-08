@@ -94,7 +94,7 @@ given response then
 
         # Creates an info-level finding to signify a missing Content-Security-Policy header & terminate the test.
         # Note: Deleted due to reconsiderations regarding this BCheck to report on insecure CSP values rather than missing CSP headers.
-        #if not({cspCol} in {latest.response.headers}) then
+        # if not({cspCol} in {latest.response.headers}) then
         #    report issue:
         #        severity: info
         #        confidence: firm

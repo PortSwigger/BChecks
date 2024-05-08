@@ -1,8 +1,9 @@
 metadata:
-    language: v1-beta
+    language: v2-beta
     name: "Insecure Content-Security-Policy"
     description: "This BCheck checks for 'insecure', 'outdated', or 'missing' Content-Security-Policy header values."
     author: "Kyle Gilligan"
+    tags: "Content-Security-Policy"
 
 run for each:
     # Looped array of known insecure Content-Security-Policy header values.
@@ -93,7 +94,7 @@ given response then
 
         # Creates an info-level finding to signify a missing Content-Security-Policy header & terminate the test.
         # Note: Deleted due to reconsiderations regarding this BCheck to report on insecure CSP values rather than missing CSP headers.
-        # if not({cspCol} in {latest.response.headers}) then
+        #if not({cspCol} in {latest.response.headers}) then
         #    report issue:
         #        severity: info
         #        confidence: firm

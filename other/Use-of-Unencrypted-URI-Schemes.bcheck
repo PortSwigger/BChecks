@@ -1,0 +1,101 @@
+metadata:
+    language: v1-beta
+    name: "Use of Unencrypted URI Schemes"
+    description: "This BCheck looks for unencrypted URI schemes ('http', 'ftp', 'ldap', 'smtp') within HTTP responses' bodies."
+    author: "Kyle Gilligan"
+
+# Commented-Out Regex:
+    # Recorded list of whitelisted variables to reduce known false positives.
+    # Blacklisted_FileExtensions_01: `\.bmp|\.cgi|\.dtd|\.ico|\.ipa|\.gif|\.gz|\.jpg|\.jpeg|\.mp3|\.mp4|\.png|`
+    # Blacklisted_FileExtensions_02: `\.rar|\.svg|\.tar|\.wav|\.webm|\.webp|\.woff|\.xhtml|\.xml|\.zip`
+    # Blacklisted_FileTypes: `.(svg|xhtml|ico)`
+    # Blacklisted_Hosts_01 = `adobe|adobedtm|bing|duckduckgo|forms\.office|google|googleads|googleapis|`
+    # Blacklisted_Hosts_02 = `googletagmanager|gstatic|jquery|jqueryui|microsoft|microsoftonline|momentjs`
+    # Blacklisted_Ports = `:(443|587|636|989|990)`
+    # Blacklisted_URISchemes: `(http|ftp|ldap|smtp)://`
+    # Blacklisted_URLs_01 = `www\.w3|www\.example|example\.com|www\.apache|schema|purl|127\.0\.|bit\.ly|g\.co|maps\.gstatic|`
+    # Blacklisted_URLs_02 = `polymer\.github|localhost|s3\.amazonaws|jquery|jqueryui|sizzlejs|momentjs|feross|`
+    # Blacklisted_URLs_02 = `tools.ietf|google\.com|`
+
+define:
+    # Issue details (for discovery of insecure URL schemes) as individual string texts.
+    issueDetail_01 = `An insecure URL scheme has been detected to be hard-coded within this HTTP response.`
+    issueDetail_02 = `Note that this URI scheme is considered insecure due to `
+    issueDetail_02a = `lacking inherent support for encryption via the SSL/TLS Handshake crytography process.`
+    issueDetail_03 = `Its associated Internet Protocol does NOT initialize the SSL/TLS Handshake crytography process`
+    issueDetail_03a = `to encrypt plaintext when establishing client/server connections.`
+    issueDetail_04 = `For reference, the SSL/TLS Handshake crytography process uses encryption methodologies to`
+    issueDetail_04a = `obfuscate text in a way wherein only the intended recipitants can read them.`
+    issueDetail_05 = `This action deters unauthorized external users (Man-In-The-Middle attackers) from being `
+    issueDetail_05a = `able to read information present in intercepted HTTP requests/responses.`
+    issueDetail_06 = `Failure to encrypt client/server communications risks exposing sensitive information within HTTP`
+    issueDetail_06a = `requests (*such as credentials during login or sign-up services*) to Man-In-The-Middle attacks.`
+    issueDetail_FULL01 = `{issueDetail_01} {issueDetail_02} {issueDetail_02a} {issueDetail_03} {issueDetail_03a} {issueDetail_04}`
+    issueDetail_FULL02 = `{issueDetail_04a} {issueDetail_05} {issueDetail_05a} {issueDetail_06a} {issueDetail_06a}`
+    issueDetail_FULL = `{issueDetail_FULL01} {issueDetail_FULL02}`
+
+    # Issue remediations (for discovery of insecure URL schemes) as individual string texts.
+    issueRemediation_01 = `To reduce risks of sensitive information disclosure from resulting in plaintext exposure,`
+    issueRemediation_01a = `it remain vital that only secure URI schemes which inherently support`
+    issueRemediation_01b = `the SSL/TLS encryption process appear used whenever capable for hard-coded URLs.`
+    issueRemediation_02 = `Before making changes however, you should first confirm whether usage of hard-coded URLs`
+    issueRemediation_02a = `(which possess the reported URL scheme) appears confirmed as intentional`
+    issueRemediation_02b = `(wherein alternative SSL/TLS encryption URI schemes cannot or should not be used).`
+    issueRemediation_03 = `If an unencrypted URI scheme must be used, you may mark this finding under the "False Positive" status.`
+    issueRemediation_04 = `Otherwise, it becomes vital for developers to replace the unencrypted URL scheme with an`
+    issueRemediation_04a = `encrypted counterpart.`
+    issueRemediation_FULL01 = `{issueRemediation_01} {issueRemediation_01a} {issueRemediation_01b}`
+    issueRemediation_FULL02 = `{issueRemediation_02} {issueRemediation_02a} {issueRemediation_02b}`
+    issueRemediation_FULL03 = `{issueRemediation_03} {issueRemediation_04} {issueRemediation_04a}`
+    issueRemediation_FULL = `{issueRemediation_FULL01} {issueRemediation_FULL02} {issueRemediation_FULL03}`
+
+    # Issue advice (for discovery of insecure URL schemes) as individual string texts.
+    issueAdvice_00 = `\n\nInstance-specific remediation details include:`
+    issueAdvice_01 = `\n   • Use of the 'HTTP' URI scheme should be set to 'https://' (Port 443; encrypted)`
+    issueAdvice_01a = `rather than 'http://' (Port 80; plaintext).`
+    issueAdvice_01b = `For example, you may wish to set the 'http://example.com' URL as 'https://example.com' instead.`
+    issueAdvice_02 = `\n   • The encrypted 'SFTP' (Port 22; SSH) or 'FTPS (989 & 990) Internet Protocols`
+    issueAdvice_02a = `should be used to transfer files instead of the default 'FTP' URI scheme (Port 21; plaintext).`
+    issueAdvice_02b = `For example, the 'sftp://' & 'ftps://' URI schemes can be used as encrypted alternatives to 'ftp://'.`
+    issueAdvice_02c = `The 'SCP' (Port 22; SSH) Internet Protocol may also be used to replace FTP (as 'scp://').`
+    issueAdvice_03 = `\n   • The 'LDAP' URI scheme (Port 389; plaintext & encryption) must either be used with STARTTLS`
+    issueAdvice_03a = `or should be replaced with the 'LDAPS' Internet Protocol (Port 636; encryption).`
+    issueAdvice_03b = `For example, the 'ldaps://example.com:636' URL may be used instead of the 'ldap://example.com:389' URL.`
+    issueAdvice_04 = `\n   • The 'SMTP' URI scheme should be used over 'Port 587' (encrypted) rather than 'Port 25' (plaintext).`
+    issueAdvice_04a = `For example, you may wish to set the 'smtp://example.com:25' URL as 'smtp://example.com:587' instead.`
+    issueAdvice_FULL01 = `{issueAdvice_00}{issueAdvice_01} {issueAdvice_01a} {issueAdvice_01b}`
+    issueAdvice_FULL02 = `{issueAdvice_02} {issueAdvice_02a} {issueAdvice_02b} {issueAdvice_02c}`
+    issueAdvice_FULL03 = `{issueAdvice_03} {issueAdvice_03a} {issueAdvice_03b}`
+    issueAdvice_FULL04 = `{issueAdvice_04} {issueAdvice_04a}`
+    issueAdvice_FULL = `{issueAdvice_FULL01} {issueAdvice_FULL02} {issueAdvice_FULL03} {issueAdvice_FULL04}`
+
+given response then
+    # Nesting several if statements becomes necessary to quickly reduce checks for FPs.
+
+    # This check ensures that only notable 200s HTTP responses appear present in the HTTP response.
+    if ({latest.response.status_code} matches "(200|204|206)") then
+
+        # This check ensures static file types commonly acceptable for known insecure URI schemes do not get checked.
+        if not({latest.response.url.file} matches "(\.bmp|\.cgi|\.dtd|\.ico|\.ipa|\.gif|\.gz|\.jpg|\.jpeg|\.mp3|\.mp4|\.png|\.rar|\.svg|\.tar|\.wav|\.webm|\.webp|\.woff|\.xhtml|\.xml|\.zip)") then
+
+            # This check ensures that unacceptable MIME types get ignored to reduce false positives.
+            if not({latest.response.headers} matches "(Content-Type: image/)") then
+
+                 # This check ensures common `Host' domains/subdomains get ignored to reduce false positives.
+                if not({latest.response.url.host} matches "(\b(?:(\w+):\/\/)?(?:www\.)?(adobe|adobedtm|bing|duckduckgo|forms\.office|google|googleads|googleapis|googletagmanager|gstatic|jquery|jqueryui|microsoft|microsoftonline|momentjs)(\.[a-zA-Z]{2,})?\b)") then
+
+                    # This check aims to ensure that entire URLs are being captured rather than single lines.
+                    # This regex includes way to ignore /* unless */ is present within 100 character.
+                    # This regex will unfortunately still match if: /* */ /* http://target.com
+                    # This regex unfortunately needs to be placed on a SINGLE line (or else will bypass attributes to ignore FPs).
+                    if ({latest.response} matches "((?<!/\*[\s\S]{0,98}(?<!\*/[\s\S]{0,98}))(\b((http|ftp|ldap|smtp)://)(?!www\.w3|www\.example|example\.com|www\.apache|schema|purl|127\.0\.|bit\.ly|g\.co|maps\.gstatic|polymer\.github|localhost|s3\.amazonaws|jquery|jqueryui|ns\.adobe\.com|sizzlejs|momentjs|feross|tools.ietf|google\.com|.*:(443|587|636|989|990)|.*\.(svg|xhtml|ico))[^\s\"'`{}]{3,}))") then
+                        report issue:
+                            severity: low
+                            confidence: certain
+                            detail: `{issueDetail_FULL}`
+                            remediation: `{issueRemediation_FULL}{issueAdvice_FULL}`
+                    end if
+                end if
+            end if
+        end if
+    end if

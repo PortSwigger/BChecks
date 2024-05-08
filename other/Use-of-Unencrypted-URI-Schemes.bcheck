@@ -22,11 +22,11 @@ define:
     # Issue details (for discovery of insecure URL schemes) as individual string texts.
     issueDetail_01 = `An insecure URL scheme has been detected to be hard-coded within this HTTP response.`
     issueDetail_02 = `Note that this URI scheme is considered insecure due to `
-    issueDetail_02a = `lacking inherent support for encryption via the SSL/TLS Handshake crytography process.`
-    issueDetail_03 = `Its associated Internet Protocol does NOT initialize the SSL/TLS Handshake crytography process`
+    issueDetail_02a = `lacking inherent support for encryption via the SSL/TLS Handshake cryptography process.`
+    issueDetail_03 = `Its associated Internet Protocol does NOT initialize the SSL/TLS Handshake cryptography process`
     issueDetail_03a = `to encrypt plaintext when establishing client/server connections.`
-    issueDetail_04 = `For reference, the SSL/TLS Handshake crytography process uses encryption methodologies to`
-    issueDetail_04a = `obfuscate text in a way wherein only the intended recipitants can read them.`
+    issueDetail_04 = `For reference, the SSL/TLS Handshake cryptography process uses encryption methodologies to`
+    issueDetail_04a = `obfuscate text in a way wherein only the intended recipients can read them.`
     issueDetail_05 = `This action deters unauthorized external users (Man-In-The-Middle attackers) from being `
     issueDetail_05a = `able to read information present in intercepted HTTP requests/responses.`
     issueDetail_06 = `Failure to encrypt client/server communications risks exposing sensitive information within HTTP`

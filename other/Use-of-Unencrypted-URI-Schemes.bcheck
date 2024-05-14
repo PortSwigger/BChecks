@@ -5,18 +5,18 @@ metadata:
     author: "Kyle Gilligan"
     tags: "passive", "http", "ftp", "ldap", "smtp"
 
-# Commented-Out Regex:
+# False Positive Indicators:
     # Recorded list of whitelisted variables to reduce known false positives.
-    # Blacklisted_FileExtensions_01: `\.bmp|\.cgi|\.dtd|\.ico|\.ipa|\.gif|\.gz|\.jpg|\.jpeg|\.mp3|\.mp4|\.png|`
-    # Blacklisted_FileExtensions_02: `\.rar|\.svg|\.tar|\.wav|\.webm|\.webp|\.woff|\.xhtml|\.xml|\.zip`
-    # Blacklisted_FileTypes: `.(svg|xhtml|ico)`
-    # Blacklisted_Hosts_01 = `adobe|adobedtm|bing|duckduckgo|forms\.office|google|googleads|googleapis|`
-    # Blacklisted_Hosts_02 = `googletagmanager|gstatic|jquery|jqueryui|microsoft|microsoftonline|momentjs`
-    # Blacklisted_Ports = `:(443|587|636|989|990)`
-    # Blacklisted_URISchemes: `(http|ftp|ldap|smtp)://`
-    # Blacklisted_URLs_01 = `www\.w3|www\.example|example\.com|www\.apache|schema|purl|127\.0\.|bit\.ly|g\.co|maps\.gstatic|`
-    # Blacklisted_URLs_02 = `polymer\.github|localhost|s3\.amazonaws|jquery|jqueryui|sizzlejs|momentjs|feross|`
-    # Blacklisted_URLs_02 = `tools.ietf|google\.com|`
+    # Blacklisted File Extensions 01: .bmp, .cgi, .dtd, .ico, .ipa, .gif, .gz, .jpg, .jpeg, .mp3, .mp4, .png
+    # Blacklisted File Extensions 02: .rar, .svg, .tar, .wav, .webm, .webp, .woff, .xhtml, .xml, .zip
+    # Blacklisted File Types: .svg, .xhtml, .ico
+    # Blacklisted_Hosts_01: adobe, adobedtm, bing, duckduckgo, forms.office, google, googleads, googleapis
+    # Blacklisted Hosts_02: `googletagmanager, gstatic, jquery, jqueryui, microsoft, microsoftonline, momentjs
+    # Blacklisted Ports: 443, 587, 636, 989, 990
+    # Blacklisted URI Schemes: http://, ftp://, ldap://, smtp://
+    # Blacklisted URLs 01: www.w3, www.example, example.com, www.apache, schema, purl, 127.0., bit.ly, g.co, maps.gstatic
+    # Blacklisted URLs 02: polymer.github, localhost, s3.amazonaws, jquery, jqueryui, sizzlejs, momentjs, feross
+    # Blacklisted URLs 03: tools.ietf. google.com
 
 define:
     # Issue details (for discovery of insecure URL schemes) as individual string texts.

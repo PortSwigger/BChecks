@@ -1,8 +1,9 @@
 metadata:
-    language: v1-beta
+    language: v2-beta
     name: "Insecure Content-Security-Policy"
     description: "This BCheck checks for 'insecure', 'outdated', or 'missing' Content-Security-Policy header values."
     author: "Kyle Gilligan"
+    tags: "Content-Security-Policy"
 
 run for each:
     # Looped array of known insecure Content-Security-Policy header values.

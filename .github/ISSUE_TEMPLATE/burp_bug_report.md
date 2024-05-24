@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a bug report to help us improve BChecks
+about: Create a bug report to help us improve BChecks within Burp Suite
 title: "[BUG]"
 labels: bug
 assignees: ''
@@ -15,15 +15,11 @@ assignees: ''
 
 
 
-### Motivation for change
-
-
-
 ### Environment details
 
   - Burp version:
   - BCheck language version:
-  - Operating System:
+  - Operating system:
 
 
 ### Additional details

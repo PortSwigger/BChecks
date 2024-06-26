@@ -2,7 +2,8 @@ metadata:
     language: v2-beta
     name: "Malicious Polyfill CDN In Use"
     description: "Look in responses to see if there are malicious Polyfill CDNs is in use"
-    tags: "passive"
+    author: "KnugiHK"
+    tags: "passive","javascript"
 
 given response then
     if {latest.response} matches "<script.*?src=\"(https?:)?//(cdn.)?polyfill.io/v[0-9]/polyfill\.min\.js.*?\".*?>" then

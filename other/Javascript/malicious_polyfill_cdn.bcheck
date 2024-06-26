@@ -1,0 +1,14 @@
+metadata:
+    language: v2-beta
+    name: "Malicious Polyfill CDN In Use"
+    description: "Look in responses to see if there are malicious Polyfill CDNs is in use"
+    tags: "passive"
+
+given response then
+    if {latest.response} matches "<script.*?src=\"(https?:)?//(cdn.)?polyfill.io/v[0-9]/polyfill\.min\.js.*?\".*?>" then
+        report issue:
+            severity: high
+            confidence: firm
+            detail: "The malicious Polyfill CDN polyfill.io is used on the website."
+            remediation: "Self-host a Polyfill service or use a more reliable CDN."
+    end if

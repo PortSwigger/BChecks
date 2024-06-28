@@ -15,9 +15,9 @@ metadata:
     # Blacklisted Hosts_03: momentjs, underscorejs
     # Blacklisted Ports: 443, 587, 636, 989, 990
     # Blacklisted URI Schemes: http://, ftp://, ldap://, smtp://
-    # Blacklisted URLs 01: 127.0., bit.ly, example.com, feross, g.co, google.com, jquery, jqueryui, localhost, 
-    # Blacklisted URLs 02: maps.gstatic, momentjs, polymer.github, purl, s3.amazonaws, schema, sizzlejs, 
-    # Blacklisted URLs 03: tools.ietf. underscorejs, www.apache, www.day, www.example, www.w3
+    # Blacklisted URLs 01: 127.0., bit.ly, example.com, feross, g.co, google.com, iptc, jquery, jqueryui
+    # Blacklisted URLs 02: localhost, maps.gstatic, momentjs, polymer.github, purl, s3.amazonaws, schema
+    # Blacklisted URLs 03: sizzlejs, tools.ietf. underscorejs, www.apache, www.day, www.example, www.w3
 
 define:
     # Issue details (for discovery of insecure URL schemes) as individual string texts.
@@ -90,7 +90,7 @@ given response then
                     # This regex includes way to ignore /* unless */ is present within 100 character.
                     # This regex will unfortunately still match if: /* */ /* http://target.com
                     # This regex unfortunately needs to be placed on a SINGLE line (or else will bypass attributes to ignore FPs).
-                    if ({latest.response} matches "((?<!/\*[\s\S]{0,98}(?<!\*/[\s\S]{0,98}))(\b((http|ftp|ldap|smtp)://)(?!www\.w3|www\.example|example\.com|www\.apache|schema|purl|127\.0\.|bit\.ly|g\.co|maps\.gstatic|polymer\.github|localhost|s3\.amazonaws|jquery|jqueryui|ns\.adobe\.com|sizzlejs|momentjs|feross|tools.ietf|google\.com|underscorejs|www\.day|.*:(443|587|636|989|990)|.*\.(svg|xhtml|ico))[^\s\"'`{}]{3,}))") then
+                    if ({latest.response} matches "((?<!/\*[\s\S]{0,98}(?<!\*/[\s\S]{0,98}))(\b((http|ftp|ldap|smtp)://)(?!www\.w3|www\.example|example\.com|www\.apache|schema|purl|127\.0\.|bit\.ly|g\.co|maps\.gstatic|polymer\.github|localhost|s3\.amazonaws|jquery|jqueryui|ns\.adobe\.com|sizzlejs|momentjs|feross|tools.ietf|google\.com|underscorejs|www\.day|iptc|.*:(443|587|636|989|990)|.*\.(svg|xhtml|ico))[^\s\"'`{}]{3,}))") then
                         report issue:
                             severity: low
                             confidence: certain

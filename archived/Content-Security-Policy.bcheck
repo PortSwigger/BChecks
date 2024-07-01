@@ -3,7 +3,7 @@ metadata:
     name: "Insecure Content-Security-Policy"
     description: "This BCheck checks for 'insecure', 'outdated', or 'missing' Content-Security-Policy header values."
     author: "Kyle Gilligan"
-    tags: "Content-Security-Policy"
+    tags: "passive", "Content-Security-Policy"
 
 run for each:
     # Looped array of known insecure Content-Security-Policy header values.
@@ -33,7 +33,6 @@ define:
     requireTrustedTypesFor = `require-trusted-types-for`
 
     # Issue details as individual string texts.
-    issueDetailMissingHeader = `A {csp} header appears to be missing from this webpage's HTTP response.`
     issueDetailFound = `A {insecure_value} value was found in the {csp} header.`
     issueDetailMissingDirective_defaultSrc = `The '{defaultSrc}' CSP directive has not been declared in the {csp} header.`
     issueDetailMissingDirective_scriptSrc = `The '{scriptSrc}' CSP directive has not been declared in the {csp} header.`
@@ -53,10 +52,6 @@ define:
     issueNote_Deprecated = `\nNote that {cspVal} is considered a deprecated functionality (CWE 477).`
     issueNote_Src = `\nNote that not explicitly setting a '-src' CSP directive equates to usage of a wildcard value (CWE 942).`
     issueNote_RequireTrustedTypesFor = `\nThis CSP directive helps limit what user input can be injected into a webpage's Document Object Model (DOM).`
-
-    # Issue remediations (for a missing 'Content-Security-Policy' header) as individual string texts.
-    issueRemediationMissingHeader01 = `Verify if this webpage's HTTP response should provide a {csp} header.\nPlease ensure only safe values become used.`
-    issueRemediationMissingHeader02 = `\nNote that static file types will not need a {csp} header, so ensure this finding is not a false positive.`
 
     # Issue remediations (for discovery of insecure directives/values) as individual string texts.
     issueRemediationFound = `Inspect the {csp} header value of your response to ensure permissions appear safe.`
@@ -92,137 +87,132 @@ given response then
 \.ipa|\.env|\.eot|\.exe|\.gif|\.gz|\.jpg|\.jpeg|\.js|\.json|\.mp3|\.mp4|\.otf|\.pdf|\.png|\.ppt|\.rar|
 \.sqlite|\.svg|\.tar|\.tsv|\.ttf|\.txt|\.wav|\.webm|\.webp|\.woff|\.xls|\.xml|\.zip)") then
 
-        # Creates an info-level finding to signify a missing Content-Security-Policy header & terminate the test.
-        # Note: Deleted due to reconsiderations regarding this BCheck to report on insecure CSP values rather than missing CSP headers.
-        # if not({cspCol} in {latest.response.headers}) then
-        #    report issue:
-        #        severity: info
-        #        confidence: firm
-        #        detail: `{issueDetailMissingHeader}`
-        #        remediation: `{issueRemediationMissingHeader01}{issueRemediationMissingHeader02}{issueAdviceCspCalculator}`
-    
-        # Creates a relative-level finding to signify an insecure value on a Content-Security-Policy header.
-        if ({cspCol} in {latest.response.headers}) and ({insecure_value} in {to_lower(latest.response.headers)}) then
-    
-            # Specified remediations for a Content-Security-Header using an 'unsafe-inline' value.
-            if (" 'unsafe-inline'" in {insecure_value}) and ({to_lower(latest.response.headers)} matches "(default-src|script-src|style-src)") then
-                report issue:
-                    severity: low
-                    confidence: certain
-                    detail: `{issueDetailFound}{issueNote_Inline}`
-                    remediation: `{issueRemediationFound}{issueRemediationInlineEval}{issueAdviceCspCalculator}`
-            end if
+        # Ensures a Content-Security-Policy header appears in the target HTTP response.
+        if ({cspCol} in {latest.response.headers}) then
 
-            # Specified remediations for a Content-Security-Header using an 'unsafe-eval' value.
-            if (" 'unsafe-eval'" in {insecure_value}) and ({to_lower(latest.response.headers)} matches "(default-src|script-src)") then
-                report issue:
-                    severity: low
-                    confidence: certain
-                    detail: `{issueDetailFound}\n{issueNote_Eval}`
-                    remediation: `{issueRemediationFound}{issueRemediationInlineEval}{issueAdviceCspCalculator}`
-            end if
-    
-            # Specified remediations for a Content-Security-Header using a potentially permissive '*' value.
-            if (" *" in {insecure_value}) and ({to_lower(latest.response.headers)} matches "(default-src|script-src|connect-src|img-src|
-style-src|font-src|media-src|object-src|frame-src|worker-src|manifest-src|prefetch-src|child-src|form-action|frame-ancestors|plugin-types|sandbox)") then
-                report issue:
-                    severity: low
-                    confidence: certain
-                    detail: `{issueDetailFound}{issueNote_Wildcard}`
-                    remediation: `{issueRemediationFound}{issueRemediationWildcard}{issueAdviceCspCalculator}`
-            end if
+            # Creates a relative-level finding to signify an insecure value on a Content-Security-Policy header.
+            if ({insecure_value} in {to_lower(latest.response.headers)}) then
+        
+                # Specified remediations for a Content-Security-Header using an 'unsafe-inline' value.
+                if (" 'unsafe-inline'" in {insecure_value}) and ({to_lower(latest.response.headers)} matches "(default-src|script-src|style-src)") then
+                    report issue:
+                        severity: low
+                        confidence: certain
+                        detail: `{issueDetailFound}{issueNote_Inline}`
+                        remediation: `{issueRemediationFound}{issueRemediationInlineEval}{issueAdviceCspCalculator}`
+                end if
 
-            # Specified remediations for a Content-Security-Header using a 'data:' URI scheme.
-            if " data:" in {insecure_value} then
-                report issue:
-                    severity: low
-                    confidence: certain
-                    detail: `{issueDetailFound}{issueNote_Data}`
-                    remediation: `{issueRemediationFound}{issueRemediationHTTPSNotEnforced}{issueAdviceCspCalculator}`
-            end if
+                # Specified remediations for a Content-Security-Header using an 'unsafe-eval' value.
+                if (" 'unsafe-eval'" in {insecure_value}) and ({to_lower(latest.response.headers)} matches "(default-src|script-src)") then
+                    report issue:
+                        severity: low
+                        confidence: certain
+                        detail: `{issueDetailFound}\n{issueNote_Eval}`
+                        remediation: `{issueRemediationFound}{issueRemediationInlineEval}{issueAdviceCspCalculator}`
+                end if
+        
+                # Specified remediations for a Content-Security-Header using a potentially permissive '*' value.
+                if (" *" in {insecure_value}) and ({to_lower(latest.response.headers)} matches "(default-src|script-src|connect-src|img-src|
+    style-src|font-src|media-src|object-src|frame-src|worker-src|manifest-src|prefetch-src|child-src|form-action|frame-ancestors|plugin-types|sandbox)") then
+                    report issue:
+                        severity: low
+                        confidence: certain
+                        detail: `{issueDetailFound}{issueNote_Wildcard}`
+                        remediation: `{issueRemediationFound}{issueRemediationWildcard}{issueAdviceCspCalculator}`
+                end if
 
-            # Specified remediations for a Content-Security-Header using an 'http:' URI scheme.
-            if " http:" in {insecure_value} then
-                report issue:
-                    severity: low
-                    confidence: certain
-                    detail: `{issueDetailFound}{issueNote_Http}`
-                    remediation: `{issueRemediationFound}{issueRemediationHTTPSNotEnforced}{issueAdviceCspCalculator}`
-            end if
+                # Specified remediations for a Content-Security-Header using a 'data:' URI scheme.
+                if " data:" in {insecure_value} then
+                    report issue:
+                        severity: low
+                        confidence: certain
+                        detail: `{issueDetailFound}{issueNote_Data}`
+                        remediation: `{issueRemediationFound}{issueRemediationHTTPSNotEnforced}{issueAdviceCspCalculator}`
+                end if
 
-            # Specified remediations for a Content-Security-Header using an 'https:' URI scheme without a complete URL domain.
-            if " https:;" in {insecure_value} then
-                report issue:
-                    severity: low
-                    confidence: certain
-                    detail: `{issueDetailFound}{issueNote_HttpsWildcard}`
-                    remediation: `{issueRemediationFound}{issueRemediationWildcard}{issueAdviceCspCalculator}`
-            end if
+                # Specified remediations for a Content-Security-Header using an 'http:' URI scheme.
+                if " http:" in {insecure_value} then
+                    report issue:
+                        severity: low
+                        confidence: certain
+                        detail: `{issueDetailFound}{issueNote_Http}`
+                        remediation: `{issueRemediationFound}{issueRemediationHTTPSNotEnforced}{issueAdviceCspCalculator}`
+                end if
 
-            # Specified remediations for a Content-Security-Header which whitelists the 'www.google.com' URL domain.
-            if "//www.google.com" in {insecure_value} then
-                report issue:
-                    severity: low
-                    confidence: certain
-                    detail: `{issueDetailFound}{issueNote_googledotcom}`
-                    remediation: `{issueRemediationFound}{issueRemediationSearchEngineURLs}{issueAdviceCspCalculator}`
-            end if
+                # Specified remediations for a Content-Security-Header using an 'https:' URI scheme without a complete URL domain.
+                if " https:;" in {insecure_value} then
+                    report issue:
+                        severity: low
+                        confidence: certain
+                        detail: `{issueDetailFound}{issueNote_HttpsWildcard}`
+                        remediation: `{issueRemediationFound}{issueRemediationWildcard}{issueAdviceCspCalculator}`
+                end if
 
-            # Specified remediations for a Content-Security-Header which whitelists the 'ajax.googleapis.com' URL domain.
-            if "//ajax.googleapis.com" in {insecure_value} then
-                report issue:
-                    severity: low
-                    confidence: certain
-                    detail: `{issueDetailFound}{issueNote_ajaxgoogledotcom}`
-                    remediation: `{issueRemediationFound}{issueRemediationSearchEngineURLs}{issueAdviceCspCalculator}`
-            end if
+                # Specified remediations for a Content-Security-Header which whitelists the 'www.google.com' URL domain.
+                if "//www.google.com" in {insecure_value} then
+                    report issue:
+                        severity: low
+                        confidence: certain
+                        detail: `{issueDetailFound}{issueNote_googledotcom}`
+                        remediation: `{issueRemediationFound}{issueRemediationSearchEngineURLs}{issueAdviceCspCalculator}`
+                end if
 
-            # Specified remediations for a Content-Security-Header using a deprecated value.
-            if ({insecure_value} matches "(plugin-types|prefetch-src|report-uri|block-all-mixed-content)") then
-                report issue:
-                    severity: low
-                    confidence: certain
-                    detail: `{issueDetailFound}{issueNote_Deprecated}`
-                    remediation: `{issueRemediationDeprecated01}{issueRemediationDeprecated02}{issueAdviceCspCalculator}`
-            end if
+                # Specified remediations for a Content-Security-Header which whitelists the 'ajax.googleapis.com' URL domain.
+                if "//ajax.googleapis.com" in {insecure_value} then
+                    report issue:
+                        severity: low
+                        confidence: certain
+                        detail: `{issueDetailFound}{issueNote_ajaxgoogledotcom}`
+                        remediation: `{issueRemediationFound}{issueRemediationSearchEngineURLs}{issueAdviceCspCalculator}`
+                end if
 
-        # Creates a relative-level finding to signify an important directive is not set on a Content-Security-Policy header.
-        else if ({cspCol} in {latest.response.headers}) and not({to_lower(latest.response.headers)} matches "(default-src|script-src|object-src|require-trusted-types-for)") then
+                # Specified remediations for a Content-Security-Header using a deprecated value.
+                if ({insecure_value} matches "(plugin-types|prefetch-src|report-uri|block-all-mixed-content)") then
+                    report issue:
+                        severity: low
+                        confidence: certain
+                        detail: `{issueDetailFound}{issueNote_Deprecated}`
+                        remediation: `{issueRemediationDeprecated01}{issueRemediationDeprecated02}{issueAdviceCspCalculator}`
+                end if
 
-            # Specified remediations for a Content-Security-Header missing a 'default-src' directive.
-            if not("default-src" in {to_lower(latest.response.headers)}) then
-                report issue:
-                    severity: low
-                    confidence: certain
-                    detail: `{issueDetailMissingDirective_defaultSrc}{issueNote_Src}`
-                    remediation: `{issueRemediationFound}{issueRemediationMissingDirective_defaultSrc}{issueAdviceCspCalculator}`
-            end if
+            # Creates a relative-level finding to signify an important directive is not set on a Content-Security-Policy header.
+            else if not({to_lower(latest.response.headers)} matches "(default-src|script-src|object-src|require-trusted-types-for)") then
 
-            # Specified remediations for a Content-Security-Header missing a 'script-src' directive.
-            if not("script-src" in {to_lower(latest.response.headers)}) then
-                report issue:
-                    severity: low
-                    confidence: certain
-                    detail: `{issueDetailMissingDirective_scriptSrc}{issueNote_Src}`
-                    remediation: `{issueRemediationFound}{issueRemediationMissingDirective_scriptSrc}{issueAdviceCspCalculator}`
-            end if
+                # Specified remediations for a Content-Security-Header missing a 'default-src' directive.
+                if not("default-src" in {to_lower(latest.response.headers)}) then
+                    report issue:
+                        severity: low
+                        confidence: certain
+                        detail: `{issueDetailMissingDirective_defaultSrc}{issueNote_Src}`
+                        remediation: `{issueRemediationFound}{issueRemediationMissingDirective_defaultSrc}{issueAdviceCspCalculator}`
+                end if
 
-            # Specified remediations for a Content-Security-Header missing a 'object-src' directive.
-            if not("object-src" in {to_lower(latest.response.headers)}) then
-                report issue:
-                    severity: low
-                    confidence: certain
-                    detail: `{issueDetailMissingDirective_objectSrc}{issueNote_Src}`
-                    remediation: `{issueRemediationFound}{issueRemediationMissingDirective_objectSrc}{issueAdviceCspCalculator}`
-            end if
+                # Specified remediations for a Content-Security-Header missing a 'script-src' directive.
+                if not("script-src" in {to_lower(latest.response.headers)}) then
+                    report issue:
+                        severity: low
+                        confidence: certain
+                        detail: `{issueDetailMissingDirective_scriptSrc}{issueNote_Src}`
+                        remediation: `{issueRemediationFound}{issueRemediationMissingDirective_scriptSrc}{issueAdviceCspCalculator}`
+                end if
 
-            # Specified remediations for a Content-Security-Header missing a 'require-trusted-types-for' directive.
-            if not("require-trusted-types-for" in {to_lower(latest.response.headers)}) then
-                report issue:
-                    severity: info
-                    confidence: certain
-                    detail: `{issueDetailMissingDirective_requireTrustedTypesFor}{issueNote_RequireTrustedTypesFor}`
-                    remediation: `{issueRemediationFound}{issueRemediationMissingDirective_trustedTypes}{issueAdviceCspCalculator}`
+                # Specified remediations for a Content-Security-Header missing a 'object-src' directive.
+                if not("object-src" in {to_lower(latest.response.headers)}) then
+                    report issue:
+                        severity: low
+                        confidence: certain
+                        detail: `{issueDetailMissingDirective_objectSrc}{issueNote_Src}`
+                        remediation: `{issueRemediationFound}{issueRemediationMissingDirective_objectSrc}{issueAdviceCspCalculator}`
+                end if
+
+                # Specified remediations for a Content-Security-Header missing a 'require-trusted-types-for' directive.
+                if not("require-trusted-types-for" in {to_lower(latest.response.headers)}) then
+                    report issue:
+                        severity: info
+                        confidence: certain
+                        detail: `{issueDetailMissingDirective_requireTrustedTypesFor}{issueNote_RequireTrustedTypesFor}`
+                        remediation: `{issueRemediationFound}{issueRemediationMissingDirective_trustedTypes}{issueAdviceCspCalculator}`
+                end if
             end if
         end if
     end if

@@ -1,0 +1,65 @@
+metadata:
+    language: v2-beta
+    name: "Forwarded requests collaborator interaction detected"
+    description: "Checks for any interaction with a host added into an forwarded requests related HTTP request headers."
+    author: "Dominique Righetto"
+    tags: "active"
+
+define:
+    collaborator_address = {generate_collaborator_address()}
+
+# Source for headers: https://github.com/PortSwigger/param-miner/blob/master/resources/headers
+run for each:
+    xff_headers =
+        "bae-env-addr-sql-ip",
+        "cf-connecting-ip",
+        "cf-ipcountry",
+        "client-ip",
+        "clientip",
+        "fastly-client-ip",
+        "forwarded",
+        "forwarded-for",
+        "forwarded-for-ip",
+        "incap-client-ip",
+        "ipresolve-any",
+        "ipresolve-v4",
+        "real-ip",
+        "realip",
+        "true-client-ip",
+        "x-cisco-bbsm-clientip",
+        "x-client-ip",
+        "x-clientip",
+        "x-cluster-client-ip",
+        "x-forward-for",
+        "x-forwarded",
+        "x-forwarded-by",
+        "x-forwarded-for",
+        "x-forwarded-for-original",
+        "x-forwarded-host",
+        "x-forwarded-server",
+        "x-forwarder-for",
+        "x-geoip-country",
+        "x-ip",
+        "x-ip-trail",
+        "x-nokia-ipaddress",
+        "x-originally-forwarded-for",
+        "x-originating-ip",
+        "x-real-ip",
+        "x-remote-ip",
+        "x-sakura-forwarded-for",
+        "x-wap-network-client-ip"
+
+given host then
+    send request:
+        method: "GET"
+        path: "/"
+        headers:
+            {xff_headers}: `{xff_headers}.{collaborator_address}`
+
+    if any interactions then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: `Sending "{xff_headers}" request header resulting in an interaction with the collaborator listener.`
+            remediation: "Verify the behavior against the header sent."
+    end if

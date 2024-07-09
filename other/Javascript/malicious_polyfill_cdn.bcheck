@@ -6,7 +6,7 @@ metadata:
     tags: "passive","javascript"
 
 given response then
-    if {latest.response} matches "<script.*?src=\"(https?:)?//(cdn.)?polyfill.io/v[0-9]/polyfill\.min\.js.*?\".*?>" then
+    if {latest.response.body} matches "<script.*?src=\"(https?:)?//(cdn\.)?polyfill\.io/v[0-9]/polyfill\.min\.js.*?\".*?>" then
         report issue:
             severity: high
             confidence: firm

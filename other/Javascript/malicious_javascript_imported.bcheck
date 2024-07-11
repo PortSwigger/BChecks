@@ -1,0 +1,20 @@
+# Inspired by KnugiHK's 'Malicious Polyfill CDN In Use' BCheck
+# Uses domains highlighted by https://sansec.io/research/polyfill-supply-chain-attack:
+#       polyfill.io, bootcdn.net, bootcss.com, staticfile.net, staticfile.org, unionadjs.com, xhsbpza.com, union.macoms.la, newcrbpc.com
+
+metadata:
+    language: v2-beta
+    name: "Malicious JavaScript import in use"
+    description: "Inspects HTML responses for script tags that reference domains known to serve malware"
+    author: "Dolph Flynn"
+    tags: "passive", "javascript"
+
+given response then
+
+    if {latest.response.headers} matches "text/html" and
+        {latest.response.body} matches "<script\s+.*?src=\"(?:https?:)?//(cdn\.)?(?:polyfill\.io|bootcdn\.net|bootcss\.com|staticfile\.net|staticfile\.org|unionadjs\.com|xhsbpza\.com|union\.macoms\.la|newcrbpc\.com)/.*?\".*?>" then
+        report issue:
+            severity: high
+            confidence: firm
+            detail: "JavaScript loaded from malicious domain."
+    end if

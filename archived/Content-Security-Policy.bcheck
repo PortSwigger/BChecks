@@ -83,8 +83,8 @@ define:
 
 given response then
     # Ensures static file types irrelevant to the Content-Security-Policy header do not get checked.
-    if not({latest.response.url.file} matches "(\.apk|\.bmp|\.cgi|\.css|\.csv|\.db|\.dmg|\.do|\.doc|\.ico|
-\.ipa|\.env|\.eot|\.exe|\.gif|\.gz|\.jpg|\.jpeg|\.js|\.json|\.mp3|\.mp4|\.otf|\.pdf|\.png|\.ppt|\.rar|
+    if not({latest.response.url.file} matches "(\.apk|\.bmp|\.cgi|\.csv|\.db|\.dmg|\.do|\.doc|\.ico|
+\.ipa|\.env|\.eot|\.exe|\.gif|\.gz|\.jpg|\.jpeg|\.json|\.mp3|\.mp4|\.otf|\.pdf|\.png|\.ppt|\.rar|
 \.sqlite|\.svg|\.tar|\.tsv|\.ttf|\.txt|\.wav|\.webm|\.webp|\.woff|\.xls|\.xml|\.zip)") then
 
         # Ensures a Content-Security-Policy header appears in the target HTTP response.

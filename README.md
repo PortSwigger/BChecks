@@ -26,7 +26,9 @@ To see all of our documentation on BChecks for both Burp Suite Professional and 
 [Burp Suite Shorts | BChecks](https://youtu.be/NaiQMJk4nus)
 
 ## Community submissions
-To learn about the process for submitting your own BChecks, see [Contributing](https://github.com/PortSwigger/BChecks/blob/main/CONTRIBUTING.md).
+BChecks are a community-driven effort and as such we encourage you to share your own BChecks and improve upon the existing ones.
+
+To learn about the process of contributing to the repository, see [Contributing](https://github.com/PortSwigger/BChecks/blob/main/CONTRIBUTING.md).
 
 ## BChecks
 

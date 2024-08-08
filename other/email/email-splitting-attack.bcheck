@@ -4,6 +4,7 @@
 metadata:
     language: v2-beta
     name: "Email splitting attack"
+    description: "Tries to trick the server to sending an email to a collaborator address, instead of the actual target, by confusing email address validation logic"
     author: "Peter Wiener"
     tags: "active", "email"
 

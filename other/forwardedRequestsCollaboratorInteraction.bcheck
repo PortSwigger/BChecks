@@ -11,6 +11,7 @@ define:
 # Source for headers: https://github.com/PortSwigger/param-miner/blob/master/resources/headers
 run for each:
     xff_headers =
+        "akamai-client-ip",
         "bae-env-addr-sql-ip",
         "cf-connecting-ip",
         "cf-ipcountry",

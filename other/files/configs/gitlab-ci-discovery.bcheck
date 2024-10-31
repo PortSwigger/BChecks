@@ -1,0 +1,22 @@
+metadata:
+    language: v2-beta
+    name: "GitLab CI Exposure"
+    description: "Tests for exposed GitLab CI files"
+    author: "Patrick Harrison"
+    tags: "exposure", "gitlab", "config", "file"
+
+run for each:
+     potential_path =  "/.gitlab-ci.yml"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if "stage" in {check.response.body} then
+        report issue:
+                    severity: low
+                    confidence: firm
+                    detail: `GitLab CI file found at {check.request.url}`
+                    remediation: "Ensure your configuration files are not exposed."
+    end if

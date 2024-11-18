@@ -28,24 +28,20 @@ define:
 given response then
 # Nesting several if statements becomes necessary to quickly reduce checks for FPs.
 
-    # This check ignores HTTP requests which enforce TLS/SSL encryption through secure Internet Protocols.
-    if not ({base.request.url.protocol} matches "(?i)(https?|ftps|imaps|smtp|ldaps|xmpp|sip|nntp)") then
+    # This check ignores HTTP requests which contain ports that secure Internet Protocols enforce TLS/SSL encryption through.
+    if not ({base.request.url.port} matches "(443|832|5986|8243|8403|8448)") then
 
-        # This check ignores HTTP requests which contain ports that secure Internet Protocols enforce TLS/SSL encryption through.
-        if not ({base.request.url.port} matches "(443|989|990|993|587|465|636|5223|5061|563)") then
+        # This check ignores HTTP requests with URLs which possess indicators of `login/sign-up/password-reset` functionalities.
+        if not ({base.request.url.file} matches "(?i)(log[-_]?in|sign[-_]?in|sign[-_]?up|registration|register|access|auth|cdsso|forgot|reset)") then
 
-            # This check ignores HTTP requests with URLs which possess indicators of `login/sign-up/password-reset` functionalities.
-            if not ({base.request.url.file} matches "(?i)(log[-_]?in|sign[-_]?in|sign[-_]?up|registration|register|access|auth|cdsso|forgot|reset)") then
+            # This check detects for deployment of the `Authorization` HTTP request header using the `Basic` attribute.
+            if ({base.request.headers} matches "(?i)(Authorization:\s*Basic)") then
+                report issue:
+                    severity: low
+                    confidence: firm
+                    detail: `{issueDetail_FULL}`
+                    remediation: `{issueRemediation_FULL}`
 
-                # This check detects for deployment of the `Authorization` HTTP request header using the `Basic` attribute.
-                if ({base.request.headers} matches "(?i)(Authorization:\s*Basic)") then
-                    report issue:
-                        severity: low
-                        confidence: firm
-                        detail: `{issueDetail_FULL}`
-                        remediation: `{issueRemediation_FULL}`
-
-                end if
             end if
         end if
     end if

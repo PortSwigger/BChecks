@@ -1,0 +1,128 @@
+metadata:
+    language: v2-beta
+    name: "Insecure HTTP Methods Allowed [Passive]"
+    description: "This BCheck detects for usage of dangerous, cautionary, & arbitrary HTTP methods beyond 'GET' & 'POST'."
+    author: "Kyle Gilligan"
+    tags: "passive", "http methods", "http verbs"
+
+define:
+    # Issue Detail:
+    ## A. Introduction Issue Detail:
+    id_A_01 = `- This application was discovered to permit usage of HTTP methods beyond the recommended 'GET' & 'POST' verbs.`
+    ## B. Dangerous Issue Detail:
+    id_B_01 = `\n    >> The 'CONNECT', 'TRACE', & 'TRACK' HTTP methods remain considered as dangerous HTTP verbs due to easily`
+    id_B_02 = ` permitting 'Authentication Bypass' & 'Sensitive Information Disclosure' exploits.`
+    ### B.1. CONNECT Dangerous Issue Detail:
+    id_B1_01 = `\n        >>>> The 'CONNECT' HTTP method permits client users to establish direct TCP tunnels into a target web server,`
+    id_B1_02 = ` which helps permit threat actors to bypass servers' network firewalls, proxy filters, & monitoring systems.`
+    ### B.2. TRACE Dangerous Issue Detail:
+    id_B2_01 = `\n        >>>> The 'TRACE' HTTP method has its HTTP responses reflect content from the source HTTP request, which - if triggered`
+    id_B2_02 = ` a victim user triggers a 'XSS Injection' on a webpage with sensitive information, that 'XSS Injection' may activate a script`
+    id_B2_03 = ` which sends an HTTP request containing the sensitive data within this HTTP response back to the attacker's web server.`
+    ### B.3. TRACK Dangerous Issue Detail:
+    id_B3_01 = `\n        >>>> The 'TRACK' HTTP method acts similarly to the 'TRACE' verb for IIS servers; it is disabled for IIS Version 6 & newer.`
+    ## C. Cautionary Issue Detail:
+    id_C_01 = `\n    >> The 'DELETE' & 'PUT' HTTP methods remain considered as situationally-insecure HTTP verbs due to being remaining relevant`
+    id_C_02 = ` for certain business logic functionalities while also being tied to potential functionality abuse & web server vulnerabilities.`
+    ### C.1. DELETE Dangerous Issue Detail:
+    id_C1_01 = `\n        >>>> The 'DELETE' HTTP method permits resources to be removed from a web server from the client-side HTTP request,`
+    id_C1_02 = ` which becomes dangerous if security controls do not limit what resources can be deleted nor why appears allowed to delete them.`
+    ### C.2. PUT Dangerous Issue Detail:
+    id_C2_01 = `\n        >>>> The 'PUT' HTTP method updates an existing resource by replacing its entire entity with the data sent in the`
+    id_C2_02 = ` request, which the "POST" HTTP method can already perform without being tied to resource creation.`
+    ## D. Arbitrary Issue Detail:
+    id_D_01 = `\n    >> The 'HEAD', 'PATCH', & 'OPTIONS' HTTP methods remain considered as arbitrary HTTP verbs due to providing unnecessary`
+    id_D_02 = ` metadata or limitedly-overlaping with other HTTP verbs.`
+    ### D.1. HEAD Dangerous Issue Detail:
+    id_D1_01 = `\n        >>>> The 'HEAD' HTTP method simply retrieves an HTTP response's headers without this the body text, which is made`
+    id_D1_02 = ` arbitrary by the 'GET' HTTP method.`
+    ### D.2. OPTIONS Dangerous Issue Detail:
+    id_D2_01 = `\n        >>>> The 'OPTIONS' HTTP method returns a list of HTTP methods available for web server or its target web server,`
+    id_D2_02 = ` commonly used in CORS preflight checks.`
+    ### D.3. PATCH Dangerous Issue Detail:
+    id_D3_01 = `\n        >>>> The 'PATCH' HTTP method updates partial resources, which the POST HTTP method makes arbitrary by allowing both`
+    id_D3_02 = ` creation & modification of resources, potentially overlapping with PATCH's functionality.`
+    issueDetail_FULL_HIGH = `{id_A_01}{id_B_01}{id_B_02}{id_B1_01}{id_B1_02}{id_B2_01}{id_B2_02}{id_B2_03}{id_B3_01}`
+    issueDetail_FULL_LOW = `{id_A_01}{id_C_01}{id_C_02}{id_C1_01}{id_C1_02}{id_C2_01}{id_C2_02}`
+    issueDetail_FULL_INFO = `{id_A_01}{id_D_01}{id_D_02}{id_D1_01}{id_D1_02}{id_D2_01}{id_D2_02}{id_D3_01}{id_D3_02}`
+
+    # Issue Remediation:
+    ir_01 = `- Developers must consider what HTTP methods they permit onto a web application, evaluate why these verbs appear allowed, decide if`
+    ir_02 = ` these keywords can cause future harm, & conclude whether or not it would be possible to remove/replace them altogether.`
+    ir_03 = `\n    >> HTTP methods considered dangerous ('CONNECT' & 'TRACE/TRACE') should be removed immediately without exception.`
+    ir_04 = `\n    >> HTTP methods considered cautionary ('DELETE' & 'PUT') should be evaluated regarding potential risk/consequence in retention`
+    ir_05 = ` & efforts to replace if-warrented.`
+    ir_06 = `\n    >> HTTP methods considered cautionary ('HEAD', 'OPTIONS', & 'PATCH') should additionally be evaluated regarding upkeep in webpage.`
+    ir_07 = ` interaction consistency & whether these verbs pose any actual use-cases within applications' business logic functionalities.`
+    ir_08 = `\n- Regardless of any case, if any particular HTTP method is not actively being deployed by a web application, it may remain.`
+    ir_09 = ` recommended to simply disallow its usage out of caution.`
+    issueRemediation_FULL_HIGH = `{ir_01}{ir_02}{ir_03}{ir_08}{ir_09}`
+    issueRemediation_FULL_LOW = `{ir_01}{ir_02}{ir_04}{ir_05}{ir_08}{ir_09}`
+    issueRemediation_FULL_INFO = `{ir_01}{ir_02}{ir_06}{ir_07}{ir_08}{ir_09}`
+
+given response then
+# Nesting several if statements becomes necessary to quickly reduce checks for FPs.
+
+    # This check looks for non-erroneous HTTP requests which use HTTP methods beyond 'GET' & 'POST'.
+    if not ({base.request.method} matches "(GET|POST)") and not ({base.response.status_code} matches "([45]\d{2}\s.*$)") then
+
+        # This check specifies a 'High' criticality should be generated for this finding.
+        if ({base.request.method} matches "(CONNECT|TRACE|TRACK)") then
+            report issue and continue:
+                severity: high
+                confidence: certain
+                detail: `{issueDetail_FULL_HIGH}`
+                remediation: `{issueRemediation_FULL_HIGH}`
+        end if
+
+        # This check specifies a 'Low' criticality should be generated for this finding.
+        if ({base.request.method} matches "(DELETE|PUT)") then
+            report issue and continue:
+                severity: low
+                confidence: certain
+                detail: `{issueDetail_FULL_LOW}`
+                remediation: `{issueRemediation_FULL_LOW}`
+        end if
+
+        # This check specifies an 'Info' criticality should be generated for this finding.
+        if ({base.request.method} matches "(HEAD|OPTIONS|PATCH)") then
+            report issue and continue:
+                severity: info
+                confidence: certain
+                detail: `{issueDetail_FULL_INFO}`
+                remediation: `{issueRemediation_FULL_INFO}`
+        end if
+
+    end if
+
+    # This check searches for HTTP responses which possess the 'Access-Control-Allow-Methods" HTTP response header.
+    if ({base.response.headers} matches "(Access-Control-Allow-Methods:)") then
+
+        # This check specifies a 'High' criticality should be generated for this finding.
+        if ({base.response.headers} matches "((?i)Access-Control-Allow-Methods:.*(CONNECT|TRACE|TRACK).*)") then
+            report issue and continue:
+                severity: high
+                confidence: certain
+                detail: `{issueDetail_FULL_HIGH}`
+                remediation: `{issueRemediation_FULL_HIGH}`
+        end if
+
+        # This check specifies a 'Low' criticality should be generated for this finding.
+        if ({base.response.headers} matches "((?i)Access-Control-Allow-Methods:.*(DELETE|PUT).*)") then
+            report issue and continue:
+                severity: low
+                confidence: certain
+                detail: `{issueDetail_FULL_LOW}`
+                remediation: `{issueRemediation_FULL_LOW}`
+        end if
+
+        # This check specifies an 'Info' criticality should be generated for this finding.
+        if ({base.response.headers} matches "((?i)Access-Control-Allow-Methods:.*(HEAD|OPTIONS|PATCH).*)") then
+            report issue and continue:
+                severity: info
+                confidence: certain
+                detail: `{issueDetail_FULL_INFO}`
+                remediation: `{issueRemediation_FULL_INFO}`
+        end if
+
+    end if

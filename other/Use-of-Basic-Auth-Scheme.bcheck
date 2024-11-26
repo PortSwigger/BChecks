@@ -1,0 +1,47 @@
+metadata:
+    language: v2-beta
+    name: "Use of Basic Auth Scheme"
+    author: "Kyle Gilligan"
+    description: "This test looks for indicators of 'Authorization: Basic' within unencrypted webpages."
+    tags: "passive", "basic", "http", "authorization"
+
+# `Indicators of `Basic Auth`-Acceptable Webpages` Keywords #1: `login`, `log-in`, `log_in`, `signin`, `sign-in`, `sign_in`, `signup`, `sign-up`, `sign_up`.
+# `Indicators of `Basic Auth`-Acceptable Webpages` Keywords: `registration`, `register`, `access`, `auth`, `cdsso`, `forgot`, `reset`.
+
+define:
+    # Issue Detail:
+    id_01 = `- This web application appears configured to use the "Basic" HTTP authentication scheme for authenticating HTTP requests.`
+    id_02 = `\n- Use of the "Basic" authentication scheme involves directly sending user credentials over an HTTP request in plaintext.`
+    id_03 = `\n- Because the "Basic" scheme type requires clients to send credentials over an HTTP request in plaintext, it becomes highly-suggested to avoid its use whenever possible.`
+    id_04 = `\n- Utilization of the "Basic" HTTP Authorization scheme (if necessary) should only be restricted for when users must directly send credentials to servers (such as "Login" or "Sign-Up" webpages).`
+    id_05 = `\n- Deployment of the "Authorization: Basic" HTTP request header must otherwise require Internet Protocols which enforce SSL/TLS encryption to be used.`
+    id_06 = `\n    >> Alternatives to the "Basic" HTTP Authorization scheme include: Bearer via OAuth-Generated Tokens.`
+    issueDetail_FULL = `{id_01}{id_02}{id_03}{id_04}{id_05}{id_06}`
+
+    # Issue Remediation:
+    ir_01 = `- Plaintext disclosure of credentials in an HTTP request should only be acceptable during "Login", "Sign-Up", or "Password Reset" web processes.`
+    ir_02 = `\n- Usage of credentials must otherwise be avoided whenever possible to avoid potential breach attacks (via MITM) from arising.`
+    ir_03 = `\n- Rather, best practice suggests recommends involving processes which allow the web server to first perform internal encryption & gain approval with the intended server using this ciphertext.`
+    ir_04 = `\n    >> Bearer Authentication Scheme: Used for sending credentials over customized token methodology (often via the OAuth 2.0 & OpenID Connect frameworks).`
+    issueRemediation_FULL = `{ir_01}{ir_02}{ir_03}{ir_04}`
+
+given response then
+# Nesting several if statements becomes necessary to quickly reduce checks for FPs.
+
+    # This check ignores HTTP requests which contain ports that secure Internet Protocols enforce TLS/SSL encryption through.
+    if not ({base.request.url.port} matches "(443|832|5986|8243|8403|8448)") then
+
+        # This check ignores HTTP requests with URLs which possess indicators of `login/sign-up/password-reset` functionalities.
+        if not ({base.request.url.file} matches "(?i)(log[-_]?in|sign[-_]?in|sign[-_]?up|registration|register|access|auth|cdsso|forgot|reset)") then
+
+            # This check detects for deployment of the `Authorization` HTTP request header using the `Basic` attribute.
+            if ({base.request.headers} matches "(?i)(Authorization:\s*Basic)") then
+                report issue:
+                    severity: low
+                    confidence: firm
+                    detail: `{issueDetail_FULL}`
+                    remediation: `{issueRemediation_FULL}`
+
+            end if
+        end if
+    end if

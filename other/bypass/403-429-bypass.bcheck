@@ -1,0 +1,44 @@
+metadata:
+    language: v2-beta
+    name: "403/429 bypass using HTTP Header"
+    description: "Attempts to bypass 403/429 using the HTTP headers with local IP address"
+    author: "Shadow Surface"
+    tags: "bypass"
+
+define:
+    bypass_ip = "127.0.0.1"
+
+run for each:
+    bypass_header =
+        "Forwarded",
+        "Via",
+        "X-Client-IP",
+        "X-Forwarded-For",
+        "X-Forwarded-Host",
+        "X-Forwarded-Proto",
+        "X-Forwarded-Server",
+        "X-Forward-For",
+        "X-Forwared-Host",
+        "X-Host",
+        "X-Originating-IP",
+        "X-Real-IP",
+        "X-Remote-Addr",
+        "X-Remote-IP",
+        "X-Requested-By",
+        "X-Requested-For",
+        "X-Trusted-IP"
+    
+given request then
+    if {base.response.status_code} matches "(403|429)" then
+        send request:
+            replacing headers:
+                {bypass_header}: {bypass_ip}
+
+        if not( {latest.response.status_code} is {base.response.status_code} ) then
+            report issue:
+                severity: high
+                confidence: tentative
+                detail: `Potential {base.response.status_code} bypass using {bypass_header} header.`
+                remediation: `Avoid using {bypass_header} for authorization or rate limiting.`
+        end if
+    end if

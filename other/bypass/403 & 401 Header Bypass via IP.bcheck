@@ -1,0 +1,128 @@
+metadata:
+    language: v2-beta
+    name: "403 & 401 Header Bypass via IP"
+    description: "Attempts potential bypass methods to access responses originally returning 403 or 401 status codes by replacing specific headers with various IP payloads."
+    author: "alp1n3.eth"
+    tags: "401 bypass", "403 bypass", "header bypass", "401", "403", "ip bypass"
+# Reference 1: https://github.com/intrudir/BypassFuzzer
+# IP Payloads: https://github.com/intrudir/BypassFuzzer/blob/main/core/payloads/ip_payloads.txt
+# Header Payload Templates: https://github.com/intrudir/BypassFuzzer/blob/main/core/payloads/header_payload_templates.txt
+# ^ Thanks to intrudir ^
+
+# Refer to other BChecks for the checks for 403/401 bypass via other methods such as URL, whitespace, or OOB connections.
+
+define:
+    detailMsg = "A header bypass technique that utilized IP-related payloads elicited a 200 OK response from a request that was previously receiving a 401 or 403 response. Further manual investigation is required."
+    remediationMsg = "Manually investigate the issue. Ensure there are no access control or bypass issues regarding the usage of specific header and value pairs."
+
+run for each:
+    headerArray =
+        "Base-Url",
+        "CF-Connecting-IP",
+        "CF-Connecting_IP",
+        "Cf-Connecting-Ip",
+        "Cf-Ipcountry",
+        "Client-IP",
+        "Client-Ip",
+        "Clientip",
+        "Cluster-Client-IP",
+        "Destination",
+        "Fastly-Client-Ip",
+        "Forwarded-For-Ip",
+        "Forwarded-For",
+        "From",
+        "Host",
+        "Http-Phone-Number",
+        "Http-Referer",
+        "Http-Url",
+        "Http-User-Agent",
+        "Incap-Client-Ip",
+        "Proxy-Host",
+        "Proxy-Url",
+        "Proxy",
+        "Real-Ip",
+        "Redirect",
+        "Referer",
+        "Referrer",
+        "Refferer",
+        "Remote-Addr",
+        "Remote-Host",
+        "Request-Uri",
+        "True-Client-IP",
+        "Uri",
+        "Url",
+        "X-Client-Host",
+        "X-Client-IP",
+        "X-Client-Ip",
+        "X-Clientip",
+        "X-Cluster-Client-Ip",
+        "X-Custom-IP-Authorization..;/",
+        "X-Custom-IP-Authorization..;",
+        "X-Custom-IP-Authorization",
+        "X-Forward-For",
+        "X-Forward-Proto",
+        "X-Forwarded-By",
+        "X-Forwarded-For-Original",
+        "X-Forwarded-For",
+        "X-Forwarded-Host",
+        "X-Forwarded-Proto",
+        "X-Forwarded-Protocol",
+        "X-Forwarded-Scheme",
+        "X-Forwarded-Server",
+        "X-Forwarded-Ssl",
+        "X-Forwarded",
+        "X-Forwarder-For",
+        "X-Host",
+        "X-Http-Destinationurl",
+        "X-Http-Host-Override",
+        "X-Original-Remote-Addr",
+        "X-Original-URL",
+        "X-Original-Url",
+        "X-Originally-Forwarded-For",
+        "X-Originating-IP",
+        "X-Originating-Ip",
+        "X-Override-Url",
+        "X-Proxy-Url",
+        "X-ProxyUser-Ip",
+        "X-Real-Ip",
+        "X-Referrer",
+        "X-Remote-Addr",
+        "X-Remote-IP",
+        "X-Rewrite-URL",
+        "X-Rewrite-Url",
+        "X-True-IP",
+        "X-WAP-Profile"
+
+    ipPayloadArray =
+        "127.0.0.1",
+        "0000::1",
+        "127.1",
+        "0177.0.0.01",
+        "0x7f.0x0.0x0.0x1",
+        "0x7f000001",
+        "0x885aed3a587f000001",
+        "281472812449793",
+        "0x7f.0.0.0x1",
+        "::ffff:7f00:0001",
+        "127.000.000.001",
+        "localhost",
+        "0.0.0.0"
+
+given request then
+    # Checks for 401 or 403 status code in the response. Will attempt to then bypass them via header + IP payload manipulation.
+    if {base.response.status_code} matches "40(3|1)" then
+        send request called requestCheck:
+            path: {base.request.url.path}
+            method: {base.request.method}
+            replacing headers:
+                {headerArray}: {ipPayloadArray}
+
+        # Relatively restrictive to reduce false positives. Could be expanded to include more status codes / detections.
+        if {requestCheck.response.status_code} matches "200" then
+            report issue and continue:
+                severity: high
+                confidence: tentative
+                detail: {detailMsg}
+                remediation: {remediationMsg}
+        end if
+    end if

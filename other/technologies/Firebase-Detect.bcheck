@@ -1,0 +1,14 @@
+metadata:
+    language: v2-beta
+    name: "Firebase Information Found"
+    description: "Detect potentially exposed Firebase instances"
+    tags: "passive, firebase"
+
+given response then
+    if {latest.response.body} matches ".*\.firebaseapp\.com.*" then
+        report issue:
+            severity: low
+            confidence: firm
+            detail: "Potentially exposed Firebase instance detected in response."
+            remediation: "Review the Firebase instance to ensure it does not allow unautohrized users to read/write to database."
+    end if

@@ -1,0 +1,39 @@
+metadata:
+    language: v2-beta
+    name: "Rate limiter detected"
+    description: "Check response to detect the presence of different forms of rate limiter."
+    author: "Dominique Righetto"
+    tags: "passive","informative"
+
+define:
+    remediation_text = "It is a good point from a defensive perspective. A bypass will be needed from a offensive perspective."
+
+# References used:
+# https://www.cloudflare.com/learning/bots/what-is-rate-limiting/
+# https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429
+# https://www.ietf.org/archive/id/draft-polli-ratelimit-headers-02.html
+# https://redis.io/glossary/rate-limiting/
+# https://docs.cloud.f5.com/docs-v2/multi-cloud-app-connect/how-to/adv-security/js-challenge
+# https://f5cloud.zendesk.com/hc/en-us/articles/6016485381783-What-cookies-are-injected-by-F5-Distributed-Cloud-WAAP
+given response then
+    if {latest.response.status_code} is "429" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: "A rate limiter feature was detected via the HTTP response code (HTTP 429)."
+            remediation: `{remediation_text}`
+    end if
+    if {latest.response.headers} matches "(?i)(x-volterra-js-chl|x-volterra-recaptcha|ratelimit-|x-rate-limit-)"  then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: "A rate limiter feature was detected via the presence of dedicated HTTP response headers."
+            remediation: `{remediation_text}`
+    end if
+    if {latest.response.body} matches "(?i)(js-challenge-form)" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: "A rate limiter feature was detected via the presence of markers into the HTTP response body."
+            remediation: `{remediation_text}`
+    end if

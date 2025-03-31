@@ -6,15 +6,11 @@ metadata:
     tags: "passive", "jwt", "hmac", "hashcat"
 
 given response then
-    if {latest.response} matches "(eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9|eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9|eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9|eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9|eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9|eyJhbGciOiJIUzI1NiJ9|eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9|eyJhbGciOiJIUzM4NCJ9|eyJhbGciOiJIUzUxMiJ9)" then
+    if {latest.response} matches "(eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9|eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9|eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9|eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9|eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9|eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9|eyJhbGciOiJIUzI1NiJ9|eyJhbGciOiJIUzM4NCJ9|eyJhbGciOiJIUzUxMiJ9)" then
         report issue:
             severity: info
             confidence: certain
             detail: "JWT using HMAC (HS256 / HS384 / HS512) detected in response. You can submit this JWT to hashcat for cracking using `hashcat -a 0 -m 16500 <JWT> <wordfile>`"
             remediation: "Avoid using HMAC (symmetric) signing algorithms for JWTs in security-sensitive applications."
-    end if
-              extra:
-                    hashcat_format: "JWT Hash for cracking: $jwt"
-        end if
     end if
 

@@ -17,6 +17,6 @@ given host then
         report issue:
             severity: high
             confidence: certain
-            detail: "The OpenID Connect configuration endpoint (/.well-known/openid-configuration) is accessible and includes a 'registration_endpoint' field, indicating support for dynamic client registration, potential SSRF."
+            detail: "The OpenID Connect configuration endpoint (/.well-known/openid-configuration) is accessible and includes a 'registration_endpoint' field, indicating support for dynamic client registration, potential SSRF, check https://portswigger.net/research/hidden-oauth-attack-vectors."
             remediation: "Review the dynamic registration implementation for SSRF vulnerabilities and patch it."
     end if

@@ -1,0 +1,22 @@
+metadata:
+    language: v2-beta
+    name: "OpenID Connect Dynamic Registration Endpoint Detected"
+    author: "Machiavelli"
+    description: "Actively checks if the OpenID Connect configuration endpoint (/.well-known/openid-configuration) exists and exposes a 'registration_endpoint', indicating dynamic client registration support."
+    tags: "OpenID Connect", "active"
+
+define:
+    config_endpoint = "/.well-known/openid-configuration"
+
+given host then
+    send request called config_check:
+        method: "GET"
+        path: {config_endpoint}
+    if {config_check.response.status_code} is "200" 
+    and "\"registration_endpoint\":" in {config_check.response.body} then
+        report issue:
+            severity: high
+            confidence: certain
+            detail: "The OpenID Connect configuration endpoint (/.well-known/openid-configuration) is accessible and includes a 'registration_endpoint' field, indicating support for dynamic client registration, potential SSRF, check https://portswigger.net/research/hidden-oauth-attack-vectors."
+            remediation: "Review the dynamic registration implementation for SSRF vulnerabilities and patch it."
+    end if

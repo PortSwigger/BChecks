@@ -1,0 +1,57 @@
+metadata:
+  language: v2-beta
+  name: "CONNECT port scan"
+  description: "Port Scanning using CONNECT request method appears to be possible. For more information, check https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/CONNECT"
+  author: "Mehul Panchal @ Accenture, Fedrick Sequeira @ Accenture, Andrej Simko @ Accenture"
+  tags: "connect", "port", "scan", "port-scan"
+
+run for each:
+  new_port = "80", "443"
+
+given host then
+  send request called originalRequest:
+    method: "CONNECT"
+    path: `{base.request.url.host}:{base.request.url.port}`
+
+  send request called randomPort:
+    method: "CONNECT"
+    path: `{base.request.url.host}:1337`
+
+  send request called check1:
+    method: "CONNECT"
+    path: `{base.request.url.host}:{new_port}`
+
+  send request called check2:
+    method: "CONNECT"
+    path: `localhost:{new_port}`
+
+  send request called check3:
+    method: "CONNECT"
+    path: `127.0.0.1:{new_port}`
+
+  if {originalRequest.response.status_code} is "200" then
+    if ({randomPort.response.status_code} is {check1.response.status_code}) and
+    ({randomPort.response.body} in {check1.response.body}) then
+      report issue and continue:
+        severity: high
+        confidence: certain
+        detail: `The server allows HTTP CONNECT method to {base.request.url.host} port {new_port}, which may enable port scanning or proxying to internal services.`
+        remediation: "Consider disabling OPTIONS entirely."
+    end if
+
+    if {check2.response.status_code} is "200" then
+      report issue and continue:
+        severity: high
+        confidence: certain
+        detail: `The server allows HTTP CONNECT method to localhost port {new_port}, which may enable port scanning or proxying to internal services.`
+        remediation: "Consider disabling OPTIONS entirely."
+    end if
+
+    if {check3.response.status_code} is "200" then
+      report issue:
+        severity: high
+        confidence: certain
+        detail: `The server allows HTTP CONNECT method to 127.0.0.1 port {new_port}, which may enable port scanning or proxying to internal services.`
+        remediation: "Consider disabling OPTIONS entirely."
+    end if
+  end if

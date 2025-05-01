@@ -1,13 +1,13 @@
 # BChecks
 
-BChecks for Burp Suite Professional and Burp Suite Enterprise Edition, developed by PortSwigger and the community with 🧡
+BChecks for Burp Suite Professional and Burp Suite DAST, developed by PortSwigger and the community with 🧡
 
 ## Documentation
 **Burp Suite Professional:** To view the documentation, go to **Extensions > BChecks** and click the **?** icon in the top-right corner of the window. 
 
-**Burp Suite Enterprise Edition:** To learn more about BChecks, see [Adding BChecks to Burp Suite Enterprise Edition](https://portswigger.net/burp/documentation/enterprise/user-guide/extensions/adding-extensions#adding-bchecks-to-burp-suite-enterprise-edition).
+**Burp Suite DAST:** To learn more about BChecks, see [Adding BChecks to Burp Suite DAST](https://portswigger.net/burp/documentation/enterprise/user-guide/extensions/adding-extensions#adding-bchecks-to-burp-suite-enterprise-edition).
 
-To see all of our documentation on BChecks for both Burp Suite Professional and Burp Suite Enterprise Edition, see [BCheck definitions](https://portswigger.net/burp/documentation/scanner/bchecks).
+To see all of our documentation on BChecks for both Burp Suite Professional and Burp Suite DAST, see [BCheck definitions](https://portswigger.net/burp/documentation/scanner/bchecks).
 
 ## Blogs
 
@@ -15,7 +15,7 @@ To see all of our documentation on BChecks for both Burp Suite Professional and 
 
 [What's new with BChecks?](https://portswigger.net/blog/whats-new-with-bchecks)
 
-[Introducing custom scan checks to Burp Suite Enterprise Edition](https://portswigger.net/blog/introducing-custom-scan-checks-to-burp-suite-enterprise-edition)
+[Introducing custom scan checks to Burp Suite DAST](https://portswigger.net/blog/introducing-custom-scan-checks-to-burp-suite-enterprise-edition)
 
 [Supporting Sprocket Security's offensive security testing with BChecks](https://portswigger.net/blog/supporting-sprocket-securitys-offensive-security-testing-with-bchecks-from-burp-suite)
 

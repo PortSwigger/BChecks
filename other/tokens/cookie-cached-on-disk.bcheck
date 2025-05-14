@@ -6,7 +6,7 @@ metadata:
     tags: "passive"
 
 given response then
-    if {latest.response} matches "(?i)Set-Cookie:.+(expires=[\w\d\s:,]+;|max-age=\d+;).*" then
+    if {latest.response} matches "(?i)Set-Cookie:.+(expires=[\w\d\s:,-]+;|max-age=\d+;).*" then
         report issue:
             severity: info
             confidence: certain

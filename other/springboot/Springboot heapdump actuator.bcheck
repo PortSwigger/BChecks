@@ -1,0 +1,26 @@
+metadata:
+    language: v1-beta
+    name: "Springboot heapdump actuator"
+    description: "Springboot heapdump actuator provides a heap dump from the application's JVM"
+    author: "psytester"
+	tags: "actuator", "springboot", "exposure", "informative"
+
+run for each:
+    potential_path =
+        "/heapdump",
+        "/actuator/heapdump",
+        "/api/actuator/heapdump"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {potential_path}
+
+    if {check.response.status_code} is "200" 
+		and "application/octet-stream" in {check.response.headers} then
+				report issue:
+					severity: high
+					confidence: certain
+					detail: `Springboot heapdump actuator found at {potential_path}.`
+					remediation: "Ensure heapdump actuator is not exposed."
+	end if

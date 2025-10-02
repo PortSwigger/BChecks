@@ -1,29 +1,33 @@
 # BChecks
 
-BChecks for Burp Suite Professional and Burp Suite DAST, developed by PortSwigger and the community with 🧡
+Welcome to the official BChecks repository from PortSwigger. This repo contains a collection of custom scan checks written in our BChecks language, developed by both PortSwigger and the community with 🧡
 
-## Documentation
-**Burp Suite Professional:** To view the documentation, go to **Extensions > BChecks** and click the **?** icon in the top-right corner of the window. 
+BChecks can be imported and used in both Burp Suite Professional and Burp Suite DAST. To write and test your own BChecks, we recommend using Burp Suite Professional, which includes a built-in editor with syntax highlighting and testing tools.
 
-**Burp Suite DAST:** To learn more about BChecks, see [Adding BChecks to Burp Suite DAST](https://portswigger.net/burp/documentation/enterprise/user-guide/extensions/adding-extensions#adding-bchecks-to-burp-suite-enterprise-edition).
+>💡 This repository only contains scan checks written in our custom BChecks language. For checks written in Java, see [custom scan checks in the Bambdas repository](https://github.com/PortSwigger/bambdas/tree/main/CustomScanChecks).
 
-To see all of our documentation on BChecks for both Burp Suite Professional and Burp Suite DAST, see [BCheck definitions](https://portswigger.net/burp/documentation/scanner/bchecks).
+## Resources
 
-## Blogs
+### Importing BChecks:
+- [Importing custom scan checks](https://portswigger.net/burp/documentation/desktop/extend-burp/custom-scan-checks/importing) (Burp Suite Professional)
+- [Adding BChecks to Burp Suite DAST](https://portswigger.net/burp/documentation/dast/user-guide/extensions/adding-extensions#adding-bchecks-to-burp-suite-dast)
 
-[Burp Suite Shorts | BCheck v2-beta language](https://youtu.be/lR04_eN4Uuo)
+### Using BChecks in scans:
+  - [Adding custom scan checks to scans](https://portswigger.net/burp/documentation/desktop/running-scans/custom-checks) (Burp Suite Professional)
+  - [Scanning with extensions in Burp Suite DAST](https://portswigger.net/burp/documentation/dast/user-guide/scanning-webapps-and-apis/site-settings/scanning-with-extensions)
 
-[What's new with BChecks?](https://portswigger.net/blog/whats-new-with-bchecks)
+### Creating BChecks:
+If you use Burp Suite Professional, you can write your own BChecks with full editor support:
 
-[Introducing custom scan checks to Burp Suite DAST](https://portswigger.net/blog/introducing-custom-scan-checks-to-burp-suite-enterprise-edition)
+- [Custom scan checks documentation](https://portswigger.net/burp/documentation/desktop/extend-burp/custom-scan-checks) – Detailed information on creating, testing, and managing both Java-based and BCheck-based scan checks (Burp Suite Professional).
+- [Definition reference](https://portswigger.net/burp/documentation/scanner/bchecks/bcheck-definition-reference) – The keywords available when writing a BCheck.
+- [Worked examples](https://portswigger.net/burp/documentation/scanner/bchecks/worked-examples) – Example BCheck definitions that correspond to real-world use cases.
+- [BCheck v2-beta language](https://youtu.be/lR04_eN4Uuo) – Video overview of functionality available in the BCheck language.
 
-[Supporting Sprocket Security's offensive security testing with BChecks](https://portswigger.net/blog/supporting-sprocket-securitys-offensive-security-testing-with-bchecks-from-burp-suite)
-
-[The top 10 community-created BChecks, so far...](https://portswigger.net/blog/the-top-10-community-created-bchecks-so-far)
-
-[BChecks: Houston, we have a solution!](https://portswigger.net/blog/bchecks-houston-we-have-a-solution)
-
-[Burp Suite Shorts | BChecks](https://youtu.be/NaiQMJk4nus)
+### See BChecks in action:
+- [Burp Suite Shorts | BChecks](https://www.youtube.com/watch?v=NaiQMJk4nus) – A quick video introduction to BChecks.
+- [Supporting Sprocket Security's offensive security testing with BChecks](https://portswigger.net/blog/supporting-sprocket-securitys-offensive-security-testing-with-bchecks-from-burp-suite)
+- [The top 10 community-created BChecks, so far ...](https://portswigger.net/blog/the-top-10-community-created-bchecks-so-far)
 
 ## Community submissions
 BChecks are a community-driven effort and as such we encourage you to share your own BChecks and improve upon the existing ones.

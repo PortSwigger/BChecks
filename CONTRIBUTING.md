@@ -4,6 +4,8 @@ When contributing to this repository, please first feel free to raise a pull req
 
 Please note that we have a code of conduct. Please follow it in all your interactions with the project.
 
+> 🔎 This repository is for BCheck-based Bambda scripts. If you want to contribute Java-based scan check scripts, please head to the Bambdas repository instead.
+
 ## Pull Request Process
 
 1. Place your BCheck in the appropriate folder. For example, BChecks referencing CVEs should be placed in the `vulnerabilities-CVEd` folder.

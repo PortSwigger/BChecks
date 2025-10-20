@@ -1,0 +1,92 @@
+name: New BCheck Webhook
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify_new_bchecks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+
+      - name: Check for new BCheck files
+        id: check_bcheck_changes
+        run: |
+          ALL_BCHECK_CHANGES=$(git diff --name-only HEAD~1 HEAD | grep '\.bcheck$' || true)
+
+          if [ -n "$ALL_BCHECK_CHANGES" ]; then
+            echo "bchecks_changed=true" >> $GITHUB_OUTPUT
+
+            NEW_BCHECKS=$(git diff --name-only --diff-filter=A HEAD~1 HEAD | grep '\.bcheck$' || true)
+            if [ -n "$NEW_BCHECKS" ]; then
+              echo "new_bchecks=true" >> $GITHUB_OUTPUT
+              echo "bcheck_files<<EOF" >> $GITHUB_OUTPUT
+              echo "$NEW_BCHECKS" >> $GITHUB_OUTPUT
+              echo "EOF" >> $GITHUB_OUTPUT
+            else
+              echo "new_bchecks=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "bchecks_changed=false" >> $GITHUB_OUTPUT
+            echo "new_bchecks=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send Discord webhooks for new BChecks
+        if: steps.check_bcheck_changes.outputs.new_bchecks == 'true'
+        run: |
+          set -euo pipefail
+
+          BCHECK_LIST="${{ steps.check_bcheck_changes.outputs.bcheck_files }}"
+
+          while IFS= read -r file; do
+            if [ -n "$file" ]; then
+              # Extract metadata from BCheck file
+              BCHECK_NAME=$(grep '^\s*name:' "$file" | head -1 | sed 's/^\s*name:\s*"\?\([^"]*\)"\?/\1/')
+              DESCRIPTION=$(grep '^\s*description:' "$file" | head -1 | sed 's/^\s*description:\s*"\?\([^"]*\)"\?/\1/')
+              AUTHOR=$(grep '^\s*author:' "$file" | head -1 | sed 's/^\s*author:\s*"\?\([^"]*\)"\?/\1/')
+              FILE_URL="https://github.com/${{ github.repository }}/blob/main/$file"
+
+              MSG_TITLE=$(jq -n --arg title ":tada: ${BCHECK_NAME}" '$title')
+
+              MSG_DESC=""
+              if [ -n "$DESCRIPTION" ]; then
+                MSG_DESC="${DESCRIPTION}"
+              fi
+              if [ -n "$AUTHOR" ]; then
+                if [ -n "$MSG_DESC" ]; then
+                  MSG_DESC="${MSG_DESC}"$'\n\n'"**Author:** ${AUTHOR}"
+                else
+                  MSG_DESC="**Author:** ${AUTHOR}"
+                fi
+              fi
+              MSG_DESC=$(jq -n --arg desc "$MSG_DESC" '$desc')
+
+              HTTP_CODE=$(curl -s -w "%{http_code}" -o /dev/null \
+                -H "Content-Type: application/json" \
+                -X POST -d @- "${{ secrets.DISCORD_WEBHOOK_URL }}" <<EOF
+              {
+                "embeds": [
+                  {
+                    "type": "rich",
+                    "title": $MSG_TITLE,
+                    "description": $MSG_DESC,
+                    "color": 2123412,
+                    "url": "$FILE_URL"
+                  }
+                ]
+              }
+          EOF
+              )
+
+              if [ "$HTTP_CODE" -ne 204 ]; then
+                echo "Webhook request failed for $file with response code: $HTTP_CODE"
+              else
+                echo "Webhook request succeeded for $file"
+              fi
+            fi
+          done <<< "$BCHECK_LIST"

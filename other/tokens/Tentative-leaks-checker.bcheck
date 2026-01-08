@@ -695,7 +695,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)access[_-]?key[_-]?secret(=| =|:| :)" then
+ if {latest.response} matches "(?i)access[_-]?key[_-]?secret(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -703,7 +703,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)access[_-]?secret(=| =|:| :)" then
+ if {latest.response} matches "(?i)access[_-]?secret(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -711,7 +711,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)access[_-]?token(=| =|:| :)" then
+ if {latest.response} matches "(?i)access[_-]?token(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -719,7 +719,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)account[_-]?sid(=| =|:| :)" then
+ if {latest.response} matches "(?i)account[_-]?sid(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -727,7 +727,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)admin[_-]?email(=| =|:| :)" then
+ if {latest.response} matches "(?i)admin[_-]?email(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -879,7 +879,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)api[_-]?key(=| =|:| :)" then
+ if {latest.response} matches "(?i)api[_-]?key(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -887,7 +887,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)api[_-]?key[_-]?secret(=| =|:| :)" then
+ if {latest.response} matches "(?i)api[_-]?key[_-]?secret(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -895,7 +895,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)api[_-]?key[_-]?sid(=| =|:| :)" then
+ if {latest.response} matches "(?i)api[_-]?key[_-]?sid(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -903,7 +903,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)api[_-]?secret(=| =|:| :)" then
+ if {latest.response} matches "(?i)api[_-]?secret(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -935,7 +935,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)app[_-]?bucket[_-]?perm(=| =|:| :)" then
+ if {latest.response} matches "(?i)app[_-]?bucket[_-]?perm(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -943,7 +943,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)app[_-]?report[_-]?token[_-]?key(=| =|:| :)" then
+ if {latest.response} matches "(?i)app[_-]?report[_-]?token[_-]?key(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -951,7 +951,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)app[_-]?secrete(=| =|:| :)" then
+ if {latest.response} matches "(?i)app[_-]?secrete(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -959,7 +959,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)app[_-]?token(=| =|:| :)" then
+ if {latest.response} matches "(?i)app[_-]?token(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -967,7 +967,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)appclientsecret(=| =|:| :)" then
+ if {latest.response} matches "(?i)appclientsecret(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -1055,7 +1055,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)auth0[_-]?api[_-]?clientsecret(=| =|:| :)" then
+ if {latest.response} matches "(?i)auth0[_-]?api[_-]?clientsecret(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -1063,7 +1063,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)auth0[_-]?client[_-]?secret(=| =|:| :)" then
+ if {latest.response} matches "(?i)auth0[_-]?client[_-]?secret(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -1071,7 +1071,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)auth[_-]?token(=| =|:| :)" then
+ if {latest.response} matches "(?i)auth[_-]?token(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -1079,7 +1079,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)author[_-]?email[_-]?addr(=| =|:| :)" then
+ if {latest.response} matches "(?i)author[_-]?email[_-]?addr(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -1151,7 +1151,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)aws[_-]?secret(=| =|:| :)" then
+ if {latest.response} matches "(?i)aws[_-]?secret(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative
@@ -1159,7 +1159,7 @@ given response then
         remediation: "Review and remove unnecessary exposure of secrets."
  end if
 
- if {latest.response} matches "(?i)(?i)aws[_-]?secret[_-]?access[_-]?key(=| =|:| :)" then
+ if {latest.response} matches "(?i)aws[_-]?secret[_-]?access[_-]?key(=| =|:| :)" then
       report issue and continue:
         severity: medium
         confidence: tentative

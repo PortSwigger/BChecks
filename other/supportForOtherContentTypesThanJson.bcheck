@@ -1,0 +1,31 @@
+metadata:
+    language: v2-beta
+    name: "Support for other content types than json detected"
+    description: "Check if an endpoint, accepting json data, support other interesting content types."
+    author: "Dominique Righetto"
+    tags: "active"
+
+run for each:
+    # Interesting content types that can bring new attacks vectors
+    content_type = "application/xml", "application/yaml"
+
+# The check only trigger for request containing a header "Content-Type" set to "application/json".
+# Sources:
+# https://portswigger.net/web-security/xxe
+# https://portswigger.net/web-security/ssrf
+# https://www.sourcery.ai/vulnerabilities/python-pyyaml-unsafe-load-rce
+# https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/415
+given path then
+    if {base.request.headers} matches "(?i)Content-Type:\s+application\/json" then
+        send request called checkSupport:
+            replacing headers:
+                "Content-Type": `{content_type}`
+
+         if not( {checkSupport.response.status_code} is "415" ) then
+            report issue:
+                severity: info
+                confidence: firm
+                detail: `Endpoint support other content type than json: {content_type}.`
+                remediation: "Add a constraint on the endpoint to specify that only json content type is supported."
+        end if
+    end if

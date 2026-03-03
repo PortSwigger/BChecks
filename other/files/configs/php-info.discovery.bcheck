@@ -39,6 +39,6 @@ given request then
         report issue:
             severity: low
             confidence: firm 
-			detail: `PHP info page was found at {check.response.url}`
+			detail: `PHP info page was found at {check.request.url}`
             remediation: "Remove PHP Info pages from publicly accessible locations, or restrict access to authorized users only."
 	end if

@@ -5,17 +5,38 @@ on:
     types: [opened, reopened]
 
 jobs:
-  build:
+  webhook:
     runs-on: ubuntu-latest
+    if: github.event.repository.fork == false
 
     steps:
-      - name: Push to webhook
-        run: |
-          echo $AUTHOR $TITLE $LINK 
-          curl "$WEBHOOK" -X POST -H "Authorization: $AUTH_TOKEN" -d "$AUTHOR"$'\n'"$TITLE"$'\n'"$LINK"
-        env:
-          AUTHOR: ${{ github.event.pull_request.user.login }}
-          TITLE: ${{ github.event.pull_request.title }}
-          LINK: ${{ github.event.pull_request.html_url }}
-          WEBHOOK: ${{ secrets.WEBHOOK_URL }}
-          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+      - name: Harden runner
+        uses: portswigger-tim/safer-runner-action@b2208f653b6bf422e08501155f4df82bad008184 # v1.2.2
+        with:
+          mode: enforce
+          allowed-domains: 'integrations.zoom.us'
+          disable-sudo: 'true'
+          disable-docker: 'true'
+          block-risky-github-subdomains: 'true'
+
+      - name: Sanitize inputs
+        id: sanitize
+        uses: PortSwigger/shared-workflows/sanitize-inputs@ff879d3c7b4476af5ed83d7d81438c7258217644 # v1.0.0
+        with:
+          type: bcheck
+          title: ${{ github.event.pull_request.title }}
+          author: ${{ github.event.pull_request.user.login }}
+          url: ${{ github.event.pull_request.html_url }}
+
+      - name: Post to webhook
+        if: steps.sanitize.outputs.error_message == ''
+        uses: fjogeleit/http-request-action@551353b829c3646756b2ec2b3694f819d7957495 # v2.0.0
+        with:
+          url: ${{ secrets.WEBHOOK_URL }}
+          method: POST
+          contentType: text/plain
+          customHeaders: '{"Authorization": "${{ secrets.AUTH_TOKEN }}"}'
+          data: |
+            ${{ steps.sanitize.outputs.author }}
+            ${{ steps.sanitize.outputs.title }}
+            ${{ steps.sanitize.outputs.url }}

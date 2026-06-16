@@ -1,5 +1,5 @@
 metadata:
-    language: v1-beta
+    language: v2-beta
     name: "Cache & CDN Security Monitor"
     description: "Passively flags security-relevant caching: CDN cache hits, long-lived public cache lifetimes, and cacheable responses that set cookies."
     author: "falasi"

@@ -1,0 +1,43 @@
+metadata:
+    language: v2-beta
+    name: "Cache & CDN Security Monitor"
+    description: "Passively flags security-relevant caching: CDN cache hits, long-lived public cache lifetimes, and cacheable responses that set cookies."
+    author: "falasi"
+    tags: "passive", "cache", "cdn"
+
+given response then
+    # 1) Served from a CDN/edge cache -> review for Web Cache Deception / poisoning
+    if {latest.response.headers} matches "(?i)(x-cache|x-cache-status|cf-cache-status):\s*[^\n]*hit" then
+        report issue and continue:
+            name: "CDN Cache Hit Detected"
+            severity: medium
+            confidence: certain
+            detail: "This response was served from an edge/CDN cache (cache-status HIT). If this endpoint returns dynamic, authenticated, or user-specific content, it may be exposed to other users via Web Cache Deception or cache poisoning."
+            remediation: "Confirm only static, non-sensitive content is cached. Ensure dynamic/authenticated paths set Cache-Control: no-store (or private) and that cache keys account for authentication state."
+    end if
+
+    # 2) Long-lived PUBLIC cache lifetime (>= ~27h) without private/no-store
+    if {latest.response.headers} matches "(?i)cache-control:[^\n]*max-age=[1-9]\d{5,}" then
+        if not({latest.response.headers} matches "(?i)cache-control:[^\n]*(private|no-store)") then
+            report issue and continue:
+                name: "Long-Term Public Cache Duration Detected"
+                severity: low
+                confidence: certain
+                detail: "The response sets a very long max-age without a private or no-store directive. If this endpoint serves dynamic or user-specific data, it is vulnerable to persistent exposure through shared/intermediate caches."
+                remediation: "Reserve long max-age values for static, versioned assets. Add the 'private' directive for anything tied to an authenticated session."
+        end if
+    end if
+
+    # 3) Cacheable response that also sets a cookie -> sensitive-data caching risk
+    if {latest.response.headers} matches "(?i)set-cookie:" then
+        if {latest.response.headers} matches "(?i)cache-control:[^\n]*(public|max-age=[1-9])" then
+            if not({latest.response.headers} matches "(?i)cache-control:[^\n]*(no-store|no-cache|private)") then
+                report issue and continue:
+                    name: "Cacheable Response Sets Cookie"
+                    severity: medium
+                    confidence: firm
+                    detail: "The response sets a cookie while being publicly cacheable (public or positive max-age, without no-store/no-cache/private). Shared caches may store and replay this Set-Cookie to other users, leaking session identifiers."
+                    remediation: "Responses that set cookies should be marked Cache-Control: no-store (or at minimum private, no-cache). Never cache responses carrying session or CSRF tokens publicly."
+            end if
+        end if
+    end if

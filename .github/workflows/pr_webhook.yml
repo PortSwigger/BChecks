@@ -14,7 +14,7 @@ jobs:
         uses: portswigger-tim/safer-runner-action@b2208f653b6bf422e08501155f4df82bad008184 # v1.2.2
         with:
           mode: enforce
-          allowed-domains: 'integrations.zoom.us'
+          allowed-domains: 'inbots.zoom.us,integrations.zoom.us'
           disable-sudo: 'true'
           disable-docker: 'true'
           block-risky-github-subdomains: 'true'

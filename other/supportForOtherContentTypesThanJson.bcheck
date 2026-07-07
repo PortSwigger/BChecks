@@ -20,8 +20,10 @@ given path then
         send request called checkSupport:
             replacing headers:
                 "Content-Type": `{content_type}`
-
-         if not( {checkSupport.response.status_code} is "415" ) then
+         # Raise attention point in case of 2xx or 5xx response codes
+         # 2xx: Successful responses   => Is not expected as normally a 415 is returned
+         # 5xx: Server error responses => The request caused an issue on the server side so is not expected
+         if {checkSupport.response.status_code} matches "(2|5)[0-9]{2}" then
             report issue:
                 severity: info
                 confidence: firm

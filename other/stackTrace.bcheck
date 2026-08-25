@@ -15,7 +15,7 @@ define:
 
 given response then
     # Java
-    if {latest.response.body} matches "(java\.[\w]+\.[\w]+)" then
+    if {latest.response.body} matches "(java|javax|jakarta)\.([a-zA-Z0-9\.]+)Exception" then
         report issue:
             severity: info
             confidence: firm
@@ -23,7 +23,7 @@ given response then
             remediation: `{common_remediation}`
     end if
     # .Net
-    if {latest.response.body} matches "Microsoft\.([a-zA-Z0-9\.]+)Exception" then
+    if {latest.response.body} matches "(Microsoft|System)\.([a-zA-Z0-9\.]+)Exception" then
         report issue:
             severity: info
             confidence: firm

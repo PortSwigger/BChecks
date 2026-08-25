@@ -1,0 +1,29 @@
+metadata:
+    language: v2-beta
+    name: "Support for WebDAV detected"
+    description: "Check if a path supports WebDAV requests."
+    author: "Dominique Righetto"
+    tags: "active"
+
+# Sources:
+# https://pentesterlab.com/exercises/web-fundamentals-webdav
+# https://developer.mozilla.org/en-US/docs/Glossary/WebDAV
+# http://www.webdav.org/
+# https://en.wikipedia.org/wiki/WebDAV
+given path then
+    send request called checkSupport:
+        replacing method: "OPTIONS"
+        removing body
+        removing headers:
+          "Content-Type"
+     # Raise attention point when at least one of the following cases is true:
+     # The "DAV" response header is present.
+     # The "Allow" response header contains one of these values: PROPFIND, PROPPATCH, MKCOL, COPY, MOVE, LOCK, UNLOCK.
+     if {checkSupport.response.headers} matches "(?i)dav:\s+[0-9,\s]+" or
+        {checkSupport.response.headers} matches "(?i)allow:\s+[A-Z,\s]*(PROPFIND|PROPPATCH|MKCOL|COPY|MOVE|LOCK|UNLOCK)[A-Z,\s]*" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: "The endpoint supports WebDAV requests."
+            remediation: "Remove support for WebDAV if it is not an expected feature."
+    end if

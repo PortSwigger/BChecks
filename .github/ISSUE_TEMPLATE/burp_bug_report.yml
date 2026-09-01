@@ -1,0 +1,35 @@
+name: "Bug report"
+description: "Create a bug report to help us improve BChecks within Burp Suite"
+labels: "bug"
+title: "[BUG]"
+body:
+- type: textarea
+  attributes:
+    label: Current behavior
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Expected behavior
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: Burp Suite version
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: BCheck language version
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: Operating system
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Additional details
+  validations:
+    required: false

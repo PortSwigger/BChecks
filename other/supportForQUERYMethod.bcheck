@@ -1,0 +1,25 @@
+metadata:
+    language: v2-beta
+    name: "Support for the QUERY HTTP method was detected."
+    description: "Check if a path supports the QUERY HTTP method."
+    author: "Dominique Righetto"
+    tags: "active"
+
+# Sources:
+# https://isc.sans.edu/diary/HTTP+QUERY+Method+The+Grey+Zone+Between+GET+And+POST/33352
+# https://www.rfc-editor.org/info/rfc10008
+# https://www.rfc-editor.org/info/rfc10008/#appendix-A.2
+given path then
+    send request called checkSupport:
+        replacing method: "OPTIONS"
+        removing body
+        removing headers:
+          "Content-Type"
+     # Raise attention point when the "Allow" response header contains the "QUERY" term
+     if {checkSupport.response.headers} matches "(?i)allow:\s+[A-Z,\s]*(QUERY)[A-Z,\s]*" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: "The endpoint supports the QUERY HTTP method."
+            remediation: "Remove support for the QUERY HTTP method if it is not an expected feature."
+    end if

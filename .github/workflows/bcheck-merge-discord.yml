@@ -1,0 +1,101 @@
+name: Discord notification on merge
+
+on:
+  pull_request_target:
+    types: [closed]
+    branches:
+      - main
+    paths:
+      - '**.bcheck'
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  send_discord_webhooks:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && github.event.repository.fork == false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+
+      - name: Find new BChecks
+        id: new_bchecks
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          NEW=$(gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files" \
+            --jq '.[] | select(.status == "added") | .filename' | grep '\.bcheck$' | grep -v '^archived/' || true)
+          if [ -n "$NEW" ]; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            echo "files<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$NEW" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Send Discord messages
+        if: steps.new_bchecks.outputs.found == 'true'
+        env:
+          BCHECK_LIST: ${{ steps.new_bchecks.outputs.files }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${DISCORD_WEBHOOK_URL:-}" ]; then
+            echo "DISCORD_WEBHOOK_URL secret is not set" >&2
+            exit 1
+          fi
+
+          # Reads a field from the metadata block, stripping the surrounding quotes
+          metadata() {
+            sed -n '/^metadata:/,/^[^[:space:]]/p' "$1" |
+              grep -m1 "^[[:space:]]*$2:" |
+              sed -E "s/^[[:space:]]*$2:[[:space:]]*//; s/^\"//; s/\"[[:space:]]*\$//" || true
+          }
+
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
+
+            name=$(metadata "$file" name)
+            description=$(metadata "$file" description)
+            author=$(metadata "$file" author)
+            tags=$(metadata "$file" tags | sed 's/"//g')
+            encoded_path=$(jq -rn --arg f "$file" '$f | split("/") | map(@uri) | join("/")')
+            url="https://github.com/${GITHUB_REPOSITORY}/blob/main/${encoded_path}"
+
+            payload=$(jq -n \
+              --arg name ":tada: ${name:-$file}" \
+              --arg description "$description" \
+              --arg author "${author:-Unknown}" \
+              --arg tags "$tags" \
+              --arg url "$url" \
+              '{
+                embeds: [{
+                  type: "rich",
+                  title: $name,
+                  description: (
+                    $description + "\n\n" +
+                    "**Author:** " + $author +
+                    (if $tags != "" then "\n**Tags:** " + $tags else "" end)
+                  ),
+                  color: 2123412,
+                  url: $url
+                }]
+              }')
+
+            http_code=$(curl -s -w "%{http_code}" -o /dev/null \
+              -H "Content-Type: application/json" \
+              -d "$payload" "$DISCORD_WEBHOOK_URL" || true)
+
+            if [ "$http_code" = "204" ]; then
+              echo "✓ Sent webhook for $file"
+            else
+              echo "✗ Failed to send webhook for $file (HTTP $http_code)" >&2
+            fi
+          done <<< "$BCHECK_LIST"

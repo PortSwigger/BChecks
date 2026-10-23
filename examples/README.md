@@ -26,5 +26,5 @@ Uses a mixture of response matching and dynamic requests to detect the presence 
 
 ## Suspicious Input Transformation
 
-Uses a hueristic to detect transformed inputs which are an indicator of possible server-side code injection.
+Uses a heuristic to detect transformed inputs which are an indicator of possible server-side code injection.
 

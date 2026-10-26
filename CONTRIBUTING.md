@@ -61,4 +61,4 @@ Verify the output. To do this quickly, check the exit code is 0 for a valid run.
 - Inappropriate use of the passive tag.
 
 ## Code of Conduct
-Please ensure that you are familar with and respect our [code of conduct](https://github.com/PortSwigger/BChecks/blob/main/CODE_OF_CONDUCT.md).
+Please ensure that you are familiar with and respect our [code of conduct](https://github.com/PortSwigger/BChecks/blob/main/CODE_OF_CONDUCT.md).

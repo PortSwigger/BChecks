@@ -16,12 +16,11 @@ jobs:
 
     steps:
       - name: Harden runner
-        uses: portswigger-tim/safer-runner-action@b2208f653b6bf422e08501155f4df82bad008184 # v1.2.2
+        uses: portswigger-tim/safer-runner-action@4462cc2f8df82dde6975f0e07dfc3a7ef4830237 # v2.5.4
         with:
           mode: enforce
           allowed-domains: 'hooks.slack.com'
           disable-sudo: 'true'
-          disable-docker: 'true'
           block-risky-github-subdomains: 'true'
 
       - name: Sanitize inputs
